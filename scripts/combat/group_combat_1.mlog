@@ -1,0 +1,19 @@
+#global
+set utype @zenith
+set ctrl arc1
+set switch switch1
+
+_loop:
+sensor enabled switch @enabled
+jump _loop notEqual enabled 1
+ubind utype
+sensor flag @unit @flag
+jump _loop notEqual flag 0
+sensor x ctrl @shootX
+sensor y ctrl @shootY
+sensor shoot ctrl @shooting
+ucontrol target x y shoot
+jump _jump1 equal shoot 1
+ucontrol move x y
+_jump1:
+jump _loop always
