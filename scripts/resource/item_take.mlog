@@ -1,14 +1,20 @@
-# j 10
+# j 14
 # global editable variables
 set utype null
 set item1 null
+set cap1 0
 set item2 null
+set cap2 0
 set item3 null
+set cap3 0
 # Debugging purposes
     # set utype @flare
-    # set item1 @graphite
-    # set item2 null
-    # set item3 null
+    # set item1 @silicon
+    # set cap1 300
+    # set item2 @graphite
+    # set cap2 300
+    # set item3 @titanium
+    # set cap3 300
 getlink container 0
 set transferDistance 1
 # restart if required
@@ -25,11 +31,10 @@ jump 0 strictEqual utype null
 op rand aflag 1000000
 op floor aflag aflag
 
-# set __proc 0
+set __proc 0
 
 sensor containerX container @x
 sensor containerY container @y
-sensor cap container @itemCapacity
 
 # bind unit
 _bindUnit:
@@ -38,36 +43,54 @@ sensor uflag @unit @flag
 jump _bindUnit notEqual uflag 0
 ucontrol flag aflag
 sensor ucap @unit @itemCapacity
-jump _startTasks always
+jump _jumpProc always
+
+# checks
+_checks:
+set __ret2 @counter
+jump _coreCheck always
+set __ret2 @counter
+jump _unitCheck always
+set __ret2 @counter
+jump _itemCheck always
+op add __reg1 __ret1 1
+set @counter __reg1
+
+# core check
+_coreCheck:
+ulocate building core false @copper coreX coreY coreFound core
+jump _coreCheck equal coreFound false
+op add __reg1 __ret2 1
+set @counter __reg1
 
 # unit check
 _unitCheck:
-ulocate building core false @copper coreX coreY coreFound core
-jump _bindUnit equal coreFound false
 sensor __reg1 @unit @dead
 jump _bindUnit equal __reg1 1
 sensor __reg1 @unit @controller
 op strictEqual __reg2 __reg1 @this
 jump _bindUnit equal __reg2 false
-op add __reg1 __ret 1
+op add __reg1 __ret2 1
 set @counter __reg1
 
-# choose item
-_chooseItem:
+# item check
+_itemCheck:
 jump __jump7 strictEqual item1 null
 sensor __reg1 core item1
 jump __jump7 equal __reg1 0
+jump __jump7 strictEqual cap1 null
 sensor __reg1 container item1
-op div __reg1 __reg1 cap
+op sub __reg1 cap1 __reg1
 jump __jump1 always
 __jump7:
 set __reg1 1
 __jump1:
 jump __jump8 strictEqual item2 null
 sensor __reg2 core item2
-jump __jump8 equal __reg2 0
+jump __jump8 equal __reg2 null
+jump __jump8 strictEqual cap2 null
 sensor __reg2 container item2
-op div __reg2 __reg2 cap
+op sub __reg2 cap2 __reg2
 jump __jump2 always
 __jump8:
 set __reg2 1
@@ -75,64 +98,92 @@ __jump2:
 jump __jump9 strictEqual item3 null
 sensor __reg3 core item3
 jump __jump9 equal __reg3 0
+jump __jump9 strictEqual cap3 null
 sensor __reg3 container item3
-op div __reg3 __reg3 cap
+op sub __reg3 cap3 __reg3
 jump __jump3 always
 __jump9:
 set __reg3 1
 __jump3:
-op min __reg4 __reg1 __reg2
-op min __reg4 __reg4 __reg3
+op max __reg4 __reg1 __reg2
+op max __reg4 __reg4 __reg3
 jump __jump4 notEqual __reg4 __reg1
 set itemToTake item1
+op min iAmount cap1 ucap
 jump __jump10 always
 __jump4:
 jump __jump5 notEqual __reg4 __reg2
 set itemToTake item2
+op min iAmount cap2 ucap
 jump __jump10 always
 __jump5:
 set itemToTake item3
+op min iAmount cap3 ucap
 __jump10:
-op add __reg1 __ret 1
+op add __reg1 __ret2 1
 set @counter __reg1
 
-# start tasks
-_startTasks:
-noop
+# main task execution
+_jumpProc:
+set __ret1 @counter
+jump _checks always
+
+sensor __reg1 @unit @firstItem
+op strictEqual __reg2 __reg1 itemToTake
+op xor __reg2 __reg2 1
+op equal __reg3 __proc 3
+op land __reg3 __reg2 __reg3
+jump _takeItem equal __reg3 true
+jump _goToCore equal __reg2 true
+op strictEqual __reg2 __reg1 itemToTake
+op equal __reg3 __proc 5
+op land __reg3 __reg2 __reg3
+jump _dropItem equal __reg3 true
+jump _goToContainer equal __reg2 true
+jump _takeItem equal __reg3 true
+jump _goToCore equal __reg2 true
+print "[red]Jump Proc Error"
+printflush message1
+jump _jumpProc always
+
+
+# tasks
 _goToCore:
-set __ret @counter
-jump _unitCheck always
+set __proc 2
 ucontrol move coreX coreY
 ucontrol within coreX coreY transferDistance __reg1
-jump _goToCore equal __reg1 false
+jump __jump11 equal __reg1 false
+set __proc 3
+__jump11:
+jump _jumpProc always
 
 _takeItem:
-set __ret @counter
-jump _unitCheck always
-set __ret @counter
-jump _chooseItem always
-sensor __reg1 @unit @firstItem
-jump _goToContainer equal __reg1 itemToTake
+set __proc 3
 sensor __reg1 @unit @totalItems
 jump __jump6 equal __reg1 0
+sensor __reg2 @unit @firstItem
+op strictEqual __reg2 __reg2 itemToTake
+jump __jump6 equal __reg2 true
 ucontrol itemDrop core __reg1
 __jump6:
-ucontrol itemTake core itemToTake ucap
+ucontrol itemTake core itemToTake iAmount
 sensor __reg1 @unit @totalItems
-jump _takeItem equal __reg1 0
+jump __jump12 equal __reg1 0
+set __proc 4
+__jump12:
+jump _jumpProc always
 
 _goToContainer:
-set __ret @counter
-jump _unitCheck always
+set __proc 4
 ucontrol move containerX containerY
 ucontrol within containerX containerY transferDistance __reg1
-jump _goToContainer equal __reg1 false
+jump __jump13 equal __reg1 false
+set __proc 5
+__jump13:
+jump _jumpProc always
 
 _dropItem:
-set __ret @counter
-jump _unitCheck always
+set __proc 5
 sensor __reg1 @unit @totalItems
 ucontrol itemDrop container __reg1
-sensor __reg1 @unit @totalItems
-jump _dropItem notEqual __reg1 0
-jump _startTasks always
+jump _jumpProc always
