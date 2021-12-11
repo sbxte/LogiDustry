@@ -1,5 +1,15 @@
-# j 14
-# global editable variables
+# # # Next jump: 23
+
+print "\n\n[white]By [green]SBytes"
+printflush message1
+print "Item Transport [green]v2[white]"
+jump _skipSetDebugInfo equal debug 1
+    print "\nSet debug to 1 for details\n"
+_skipSetDebugInfo:
+
+
+### Static global variables
+
 set utype null
 set item1 null
 set cap1 0
@@ -7,183 +17,360 @@ set item2 null
 set cap2 0
 set item3 null
 set cap3 0
+set container null
+set switch null
+set healthPercentage 0.8
+set debug 0
+
 # Debugging purposes
-    # set utype @flare
-    # set item1 @silicon
-    # set cap1 300
-    # set item2 @graphite
-    # set cap2 300
-    # set item3 @titanium
-    # set cap3 300
-getlink container 0
-set transferDistance 1
-# restart if required
+# set utype @flare
+# set item1 @silicon
+# set cap1 1000
+# set item2 @plastanium
+# set cap2 600
+# set item3 @surge-alloy
+# set cap3 500
+# set container reconstructor1
+# set switch null
+# set healthPercentage 0.8
+# set debug 0
+
+
+### Reset switch check
+jump __jump14 strictEqual switch null
+sensor reset switch @enabled
+jump __jump14 equal reset false
+    set proc 99
+    set @unit null
+    set pflag 0
+    set core null
+    control enabled switch 0
+    end
+__jump14:
+
+
+### Static variable check
+
+# Check for existing container
 jump 0 strictEqual container null
+sensor cCap container @itemCapacity
+sensor containerX container @x
+sensor containerY container @y
+
+# Check if atleast 1 of the item vars are not null
 op strictEqual __reg1 item1 null
 op strictEqual __reg2 item2 null
 op strictEqual __reg3 item3 null
 op land __reg1 __reg1 __reg2
 op land __reg1 __reg1 __reg3
 jump 0 equal __reg1 true
+
+# Check if utype is null
 jump 0 strictEqual utype null
 
-# global auto variables
-op rand aflag 1000000
-op floor aflag aflag
+# Initialize processor flag
+jump _skipFlagInit notEqual pflag 0
+op rand pflag 1000000
+op floor pflag pflag
+_skipFlagInit:
 
-set __proc 0
 
-sensor containerX container @x
-sensor containerY container @y
 
-# bind unit
-_bindUnit:
-ubind utype
-sensor uflag @unit @flag
-jump _bindUnit notEqual uflag 0
-ucontrol flag aflag
-sensor ucap @unit @itemCapacity
-jump _jumpProc always
 
-# checks
-_checks:
-set __ret2 @counter
-jump _coreCheck always
-set __ret2 @counter
-jump _unitCheck always
-set __ret2 @counter
-jump _itemCheck always
-op add __reg1 __ret1 1
-set @counter __reg1
 
-# core check
-_coreCheck:
+# Update vars
 ulocate building core false @copper coreX coreY coreFound core
-jump _coreCheck equal coreFound false
-op add __reg1 __ret2 1
-set @counter __reg1
+ulocate building repair false @copper repairX repairY repairFound repair
 
-# unit check
-_unitCheck:
-sensor __reg1 @unit @dead
-jump _bindUnit equal __reg1 1
-sensor __reg1 @unit @controller
-op strictEqual __reg2 __reg1 @this
-jump _bindUnit equal __reg2 false
-op add __reg1 __ret2 1
-set @counter __reg1
+sensor uDead @unit @dead
+sensor uControlled @unit @controller
 
-# item check
-_itemCheck:
-jump __jump7 strictEqual item1 null
-sensor __reg1 core item1
-jump __jump7 equal __reg1 0
-jump __jump7 strictEqual cap1 null
-sensor __reg1 container item1
-op sub __reg1 cap1 __reg1
-jump __jump1 always
-__jump7:
-set __reg1 1
-__jump1:
-jump __jump8 strictEqual item2 null
-sensor __reg2 core item2
-jump __jump8 equal __reg2 null
-jump __jump8 strictEqual cap2 null
-sensor __reg2 container item2
-op sub __reg2 cap2 __reg2
-jump __jump2 always
-__jump8:
-set __reg2 1
-__jump2:
-jump __jump9 strictEqual item3 null
-sensor __reg3 core item3
-jump __jump9 equal __reg3 0
-jump __jump9 strictEqual cap3 null
-sensor __reg3 container item3
-op sub __reg3 cap3 __reg3
-jump __jump3 always
-__jump9:
-set __reg3 1
-__jump3:
-op max __reg4 __reg1 __reg2
-op max __reg4 __reg4 __reg3
-jump __jump4 notEqual __reg4 __reg1
-set itemToTake item1
-op min iAmount cap1 ucap
-jump __jump10 always
-__jump4:
-jump __jump5 notEqual __reg4 __reg2
-set itemToTake item2
-op min iAmount cap2 ucap
-jump __jump10 always
-__jump5:
-set itemToTake item3
-op min iAmount cap3 ucap
-__jump10:
-op add __reg1 __ret2 1
-set @counter __reg1
+sensor uItem @unit @firstItem
+sensor uItemCount @unit @totalItems
+sensor uCap @unit @itemCapacity
 
-# main task execution
-_jumpProc:
-set __ret1 @counter
-jump _checks always
+sensor cItemCount container uItem
+sensor cBestItemCount container bestItem
 
-sensor __reg1 @unit @firstItem
-op strictEqual __reg2 __reg1 itemToTake
+# Log some stuff
+jump _skipDebugLog equal debug 0
+print "\n[magenta]Use switch to reset[white]"
+
+print "\n"
+print @unit
+print "\n"
+print uItem
+print " "
+print uItemCount
+print "\n"
+print bestItem
+print " "
+print cBestItemCount
+print "/"
+print cCap
+print "\n"
+print coreX
+print ", "
+print coreY
+print "\n"
+_skipDebugLog:
+print "[#00ccff]"
+
+
+
+
+### Check if unit is alive, if not then bind
+op strictEqual __reg1 @unit null
+op strictEqual __reg2 uControlled @this
 op xor __reg2 __reg2 1
-op equal __reg3 __proc 3
-op land __reg3 __reg2 __reg3
-jump _takeItem equal __reg3 true
-jump _goToCore equal __reg2 true
-op strictEqual __reg2 __reg1 itemToTake
-op equal __reg3 __proc 5
-op land __reg3 __reg2 __reg3
-jump _dropItem equal __reg3 true
-jump _goToContainer equal __reg2 true
-jump _takeItem equal __reg3 true
-jump _goToCore equal __reg2 true
-print "[red]Jump Proc Error"
-printflush message1
-jump _jumpProc always
+op or __reg1 __reg1 uDead
+op or __reg1 __reg1 __reg2
+op equal __reg2 proc 99
+op or __reg1 __reg2 __reg1
+jump _skipUnitBind equal __reg1 false
+set proc 0
+_skipUnitBind:
 
 
-# tasks
-_goToCore:
-set __proc 2
-ucontrol move coreX coreY
-ucontrol within coreX coreY transferDistance __reg1
-jump __jump11 equal __reg1 false
-set __proc 3
-__jump11:
-jump _jumpProc always
+### Check for unit health
+jump _skipUnitRepairLocate equal proc 7
+sensor __reg1 @unit @health
+sensor __reg2 @unit @maxHealth
+op mul  __reg2 __reg2 healthPercentage
+op greaterThanEq __reg1 __reg1 __reg2
+jump _skipUnitRepairLocate equal __reg1 true
+    set prevProc proc
+    set proc 7
+_skipUnitRepairLocate:
 
-_takeItem:
-set __proc 3
-sensor __reg1 @unit @totalItems
-jump __jump6 equal __reg1 0
-sensor __reg2 @unit @firstItem
-op strictEqual __reg2 __reg2 itemToTake
-jump __jump6 equal __reg2 true
-ucontrol itemDrop core __reg1
-__jump6:
-ucontrol itemTake core itemToTake iAmount
-sensor __reg1 @unit @totalItems
-jump __jump12 equal __reg1 0
-set __proc 4
-__jump12:
-jump _jumpProc always
 
-_goToContainer:
-set __proc 4
-ucontrol move containerX containerY
-ucontrol within containerX containerY transferDistance __reg1
-jump __jump13 equal __reg1 false
-set __proc 5
-__jump13:
-jump _jumpProc always
+### Jump to processes
 
-_dropItem:
-set __proc 5
-sensor __reg1 @unit @totalItems
-ucontrol itemDrop container __reg1
-jump _jumpProc always
+# Proc
+# 0 binding unit
+# 1 determine what to do with new unit
+# 2 going to core
+# 3 taking item
+# 4 going to container
+# 5 depositing item
+# 6 Waiting for item
+# 7 going to heal
+jump _jProc0 equal proc 0
+jump _jProc1 equal proc 1
+jump _jProc2 equal proc 2
+jump _jProc3 equal proc 3
+jump _jProc4 equal proc 4
+jump _jProc5 equal proc 5
+jump _jProc6 equal proc 6
+jump _jProc7 equal proc 7
+end
+
+
+# Bind Unit
+_jProc0:
+    print "\nBind Unit"
+    _unitBindLoop:
+    ubind utype
+
+    # Check for unit flag, if not 0 rebind
+    sensor uflag @unit @flag
+    jump _unitBindLoop notEqual uflag 0
+    # Set the flag to this processor's flag val
+    ucontrol flag pflag
+
+    set proc 1
+    end
+
+
+# Determine what to do with new unit
+_jProc1:
+    op add __reg1 uItemCount cBestItemCount
+    op lessThanEq __reg1 __reg1 cCap
+    op strictEqual __reg2 uItem null
+    op xor __reg2 __reg2 1
+    op land __reg1 __reg1 __reg2
+    jump __jump1 equal __reg1 true
+        print "\nGoing to core"
+        set proc 2
+        end
+    __jump1:
+        print "\nGoing to container"
+        set proc 4
+    end
+
+# Go to core
+_jProc2:
+    print "\nGoing to core"
+
+    ucontrol approach coreX coreY 5
+    ucontrol within coreX coreY 5 __reg1
+    jump __jump2 equal __reg1 false
+        set proc 3
+    __jump2:
+    end
+
+
+# Take item
+_jProc3:
+    print "\nTaking Item"
+    set _bestItemReturn @counter
+    jump _getBestItem always
+
+    # Check if best item is null
+    op strictEqual __reg1 bestItem null
+    jump __jump17 equal __reg1 false
+        set proc 6
+        end
+    __jump17:
+
+    sensor __reg1 @unit @firstItem
+    jump __jump15 strictEqual bestItem __reg1
+    ucontrol itemDrop core uCap
+
+
+    sensor __reg1 @unit @firstItem
+    op strictEqual __reg1 null
+    jump __jump15 equal __reg1 false
+        ucontrol itemTake core bestItem iAmount
+        end
+    __jump15:
+    set proc 4
+    end
+
+
+# Go to container
+_jProc4:
+    print "\nGoing to container"
+
+    op add __reg1 uItemCount cItemCount
+    op lessThanEq __reg1 __reg1 cCap
+    jump __jump3 equal __reg1 true
+        print " [red]Bad Item"
+        set proc 3
+    __jump3:
+
+    ucontrol approach containerX containerY 5
+    ucontrol within containerX containerY 5 __reg1
+    jump __jump4 equal __reg1 false
+        set proc 5
+    __jump4:
+    end
+
+
+
+# Deposit items
+_jProc5:
+    print "\nDropping Items"
+    ucontrol itemDrop container uCap
+    set proc 2
+    end
+
+
+# Waiting for items
+_jProc6:
+    print "\nWaiting for Items"
+    ucontrol approach coreX coreY 10
+
+    set _bestItemReturn @counter
+    jump _getBestItem always
+    op strictEqual __reg1 bestItem null
+    jump __jump18 equal __reg1 true
+        set proc 2
+        end
+    __jump18:
+    end
+
+
+# Heal
+_jProc7:
+    print "\nHealing"
+    ucontrol approach repairX repairY 7
+
+    sensor __reg1 @unit @health
+    sensor __reg2 @unit @maxHealth
+    jump __jump19 notEqual __reg1 __reg2
+        jump __jump20 equal prevProc 3
+            set proc 2
+        __jump20:
+        jump __jump21 equal prevProc 5
+            set proc 4
+        __jump21:
+
+        set proc prevProc
+    __jump19:
+    end
+
+
+
+### Get priority item
+
+_getBestItem:
+    # Check if item1 is null
+    jump __jump5 strictEqual item1 null
+    sensor __reg1 core item1
+    jump __jump5 equal __reg1 0
+    jump __jump5 equal cap1 0
+    sensor __reg1 container item1
+    op sub __reg1 cap1 __reg1
+    jump __jump6 always
+    __jump5:
+        set __reg1 0
+    __jump6:
+
+
+    # Check if item2 is null
+    jump __jump7 strictEqual item2 null
+    sensor __reg2 core item2
+    jump __jump7 equal __reg2 0
+    jump __jump7 equal cap2 0
+    sensor __reg2 container item2
+    op sub __reg2 cap2 __reg2
+    jump __jump8 always
+    __jump7:
+        set __reg2 0
+    __jump8:
+
+
+    # Check if item3 is null
+    jump __jump9 strictEqual item3 null
+    sensor __reg3 core item3
+    jump __jump9 equal __reg3 0
+    jump __jump9 equal cap3 0
+    sensor __reg3 container item3
+    op sub __reg3 cap3 __reg3
+    jump __jump10 always
+    __jump9:
+        set __reg3 0
+    __jump10:
+
+
+    # Get the item with lowest amount as highest priority
+    op max __reg4 __reg1 __reg2
+    op max __reg4 __reg4 __reg3
+    jump __jump13 equal __reg4 0
+
+    jump __jump11 notEqual __reg4 __reg1
+    set bestItem item1
+    op min iAmount __reg1 uCap
+    jump __jump16 always
+    __jump11:
+
+
+    jump __jump12 notEqual __reg4 __reg2
+    set bestItem item2
+    op min iAmount __reg2 uCap
+    jump __jump16 always
+    __jump12:
+
+
+    set bestItem item3
+    op min iAmount __reg3 uCap
+    jump __jump16 always
+
+    __jump13:
+    set bestItem null
+
+    __jump16:
+
+    op add __reg1 _bestItemReturn 1
+    set @counter __reg1
