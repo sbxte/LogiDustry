@@ -1,3 +1,0 @@
-set __reg1 1
-
-jump 0 equal __reg1 1
