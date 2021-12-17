@@ -1,0 +1,6 @@
+getlink b i
+sensor c b @cryofluid
+op greaterThan e c 10
+control enabled b e
+op add i i 1
+op mod i i @links
