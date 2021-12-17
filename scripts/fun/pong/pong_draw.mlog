@@ -1,0 +1,132 @@
+sensor notReady switch1 @enabled
+jump _skipNotReadyState equal notReady 0
+    draw clear 0 0 0
+    drawflush display1
+    draw clear 0 0 0
+    drawflush display2
+    draw clear 0 0 0
+    drawflush display3
+    draw clear 0 0 0
+    drawflush display4
+    end
+_skipNotReadyState:
+
+### Read from mem
+read gameState cell1 0
+read ballX cell1 3
+read ballY cell1 4
+read P1Y cell1 5
+read P2Y cell1 6
+read P1Size cell1 7
+read P2Size cell1 8
+
+
+### Static vars
+set D1_OX 0
+set D1_OY 80
+set D2_OX 80
+set D2_OY 80
+set D3_OX 0
+set D3_OY 0
+set D4_OX 80
+set D4_OY 0
+
+set backgroundColorR 0
+set backgroundColorG 100
+set backgroundColorB 0
+
+set PONG_COL_R 255
+set PONG_COL_G 255
+set PONG_COL_B 255
+
+set ALL_PLAYER_WIDTH 3
+
+set BALL_SIZE 3
+set BALL_SIDES 16
+
+### Display1
+# Background
+draw clear backgroundColorR backgroundColorG backgroundColorB
+
+# Pong
+op sub D1_PYD P1Y D1_OY
+draw color PONG_COL_R PONG_COL_G PONG_COL_B
+draw rect 0 D1_PYD  ALL_PLAYER_WIDTH P1Size
+
+# Ball
+op sub D1_BX ballX D1_OX
+op sub D1_BY ballY D1_OY
+draw poly D1_BX D1_BY BALL_SIDES BALL_SIZE 0
+
+
+# Draw flush
+drawflush display1
+
+
+
+
+### Display 2
+
+# Background
+draw clear backgroundColorR backgroundColorG backgroundColorB
+
+# Pong
+op sub D2_PYD P2Y D2_OY
+op sub __reg1 80 ALL_PLAYER_WIDTH
+draw color PONG_COL_R PONG_COL_G PONG_COL_B
+draw rect __reg1 D2_PYD  ALL_PLAYER_WIDTH P2Size
+
+# Ball
+op sub D2_BX ballX D2_OX
+op sub D2_BY ballY D2_OY
+draw poly D2_BX D2_BY BALL_SIDES BALL_SIZE 0
+
+# Draw flush
+drawflush display2
+
+
+
+
+### Display 3
+
+# Background
+draw clear backgroundColorR backgroundColorG backgroundColorB
+
+# Pong
+op sub D3_PYD P1Y D3_OY
+draw color PONG_COL_R PONG_COL_G PONG_COL_B
+draw rect 0 D3_PYD  ALL_PLAYER_WIDTH P1Size
+
+# Ball
+op sub D3_BX ballX D3_OX
+op sub D3_BY ballY D3_OY
+draw poly D3_BX D3_BY BALL_SIDES BALL_SIZE 0
+
+# Draw flush
+drawflush display3
+
+
+
+
+### Display 4
+
+# Background
+draw clear backgroundColorR backgroundColorG backgroundColorB
+
+# Pong
+op sub D4_PYD P2Y D4_OY
+op sub __reg1 80 ALL_PLAYER_WIDTH
+draw color PONG_COL_R PONG_COL_G PONG_COL_B
+draw rect __reg1 D4_PYD  ALL_PLAYER_WIDTH P2Size
+
+# Ball
+op sub D4_BX ballX D4_OX
+op sub D4_BY ballY D4_OY
+draw poly D4_BX D4_BY BALL_SIDES BALL_SIZE 0
+
+# Draw flush
+drawflush display4
+
+
+### End
+end

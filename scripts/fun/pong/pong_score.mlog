@@ -1,0 +1,9 @@
+print "Pong v0.4"
+read P1 cell1 13
+read P2 cell1 14
+print "\n\n[#00ccff]Score[white]\n"
+print P1
+print " - "
+print P2
+print "\n\nBy [green] SBytes"
+printflush message1

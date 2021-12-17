@@ -1,0 +1,32 @@
+### Reset all
+sensor reset switch1 @enabled
+jump 0 equal reset false
+    # Get default values and transfer them
+    # 0 state
+        # 0 resetting / initializing
+        # 1 GAME!
+        # 2 Win?
+    # 1 Max width
+    # 2 Max height
+    # 3 ball X
+    # 4 ball Y
+    # 5 P1 Y
+    # 6 P2 Y
+    # 7 P1 Size (in height)
+    # 8 P2 Size (in height)
+    # 9 P1 Speed
+    # 10 P2 Speed
+    # 11 Ball speed increment
+    # 12 initial ball speed
+    # 13 P1 score
+    # 14 P2 Score
+    write 0 cell1 0
+    set i 1
+    _loop:
+        read __reg1 cell2 i
+        write __reg1 cell1 i
+        op add i i 1
+        jump _loop lessThan i 64
+    control enabled switch1 0
+    wait 1
+    write 1 cell1 0

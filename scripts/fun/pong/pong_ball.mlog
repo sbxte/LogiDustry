@@ -1,0 +1,211 @@
+### Delta time (warning: scuffed)
+set _time @time
+op sub _deltatime _time _prevTime
+set _prevTime _time
+# Delta time speed
+op div _deltaTimeSec _deltatime 1000
+
+
+
+### Read from cell
+read gameState cell1 0
+jump _skipInit notEqual gameState 0
+    _initLoop:
+        read gameState cell1 0
+    jump _initLoop equal gameState 0
+    read initBallSpeed cell1 12
+    op rand __reg1 2000
+    op rand __reg2 __reg1
+    op div __reg3 __reg1 2
+    op sub __reg2 __reg2 __reg3
+    op sub __reg1 __reg1 1000
+    op len __reg3 __reg1 __reg2
+    op div __reg1 __reg1 __reg3
+    op div __reg2 __reg2 __reg3
+    op mul __reg1 __reg1 initBallSpeed
+    op mul __reg2 __reg2 initBallSpeed
+    set ballSpeedX __reg1
+    set ballSpeedY __reg2
+
+    # Init delta time
+    set _prevTime @time
+    set _deltatime 10
+    set _deltaTimeSec 0.01
+
+    # static values
+    read MAX_WIDTH cell1 1
+    read MAX_HEIGHT cell1 2
+    read P1Size cell1 7
+    read P2Size cell1 8
+    read BallSpeedInc cell1 11
+_skipInit:
+read ballX cell1 3
+read ballY cell1 4
+read P1Y cell1 5
+read P2Y cell1 6
+read P1Score cell1 13
+read P2Score cell1 14
+
+# Ball movement
+op len ballSpeed ballSpeedX ballSpeedY
+    # Horizontal edge (Flip Y speed)
+    jump _skipBallSpeedYFlipUp greaterThan ballY 0
+        op abs ballSpeedY ballSpeedY
+
+        # Increment speed
+        op mul ballSpeedX ballSpeedX BallSpeedInc
+        op mul ballSpeedY ballSpeedY BallSpeedInc
+
+
+        # Jump
+        jump _skipBallSpeedYFlipDown always
+    _skipBallSpeedYFlipUp:
+
+    jump _skipBallSpeedYFlipDown lessThan ballY MAX_HEIGHT
+        op abs ballSpeedY ballSpeedY
+        op mul ballSpeedY ballSpeedY -1
+
+        # Increment speed
+        op mul ballSpeedX ballSpeedX BallSpeedInc
+        op mul ballSpeedY ballSpeedY BallSpeedInc
+
+
+    _skipBallSpeedYFlipDown:
+
+
+    # Vertical edges (Flip X speed + player pong)
+    jump _skipBallSpeedXFlipRight greaterThan ballX 0
+        # Check if P1's pong touches
+        op add __reg1 P1Y P1Size
+        op lessThanEq __reg1 ballY __reg1
+        op greaterThanEq __reg2 ballY P1Y
+        op land __reg1 __reg1 __reg2
+        jump _P2AddScore equal __reg1 false
+
+        # Flip X speed
+        op abs ballSpeedX ballSpeedX
+
+
+        # Depending on where the ball hit, add some deviation angles
+        op sub __reg1 ballY P1Y
+        op div __reg1 __reg1 P1Size
+
+        jump _skipP1HitQ1 greaterThan __reg1 0.334
+            set __reg1 -40
+            jump _skipP1HitQ3 always
+        _skipP1HitQ1:
+        jump _skipP1HitQ2 greaterThan __reg1 0.667
+            jump _skipP1DeviateBall always
+        _skipP1HitQ2:
+            set __reg1 40
+        _skipP1HitQ3:
+
+        op cos __reg2 __reg1
+        op mul __reg2 __reg2 ballSpeedX
+        op sin __reg3 __reg1
+        op mul __reg3 __reg3 ballSpeedY
+        op sub __reg1 __reg2 __reg3
+        set ballSpeedX __reg1
+
+        op cos __reg2 __reg1
+        op mul __reg2 __reg2 ballSpeedY
+        op sin __reg3 __reg1
+        op mul __reg3 __reg3 ballSpeedX
+        op add __reg2 __reg2 __reg3
+        set ballSpeedY __reg2
+        _skipP1DeviateBall:
+
+        jump _skipBallSpeedXFlipLeft always
+    _skipBallSpeedXFlipRight:
+
+    jump _skipBallSpeedXFlipLeft lessThan ballX MAX_WIDTH
+        # Check if P2's pong touches
+        op add __reg1 P2Y P2Size
+        op lessThanEq __reg1 ballY __reg1
+        op greaterThanEq __reg2 ballY P2Y
+        op land __reg1 __reg1 __reg2
+        jump _P1AddScore equal __reg1 false
+
+        # Flip X speed
+        op abs ballSpeedX ballSpeedX
+        op mul ballSpeedX ballSpeedX -1
+
+
+        # Depending on where the ball hit, add some deviation angles
+        op sub __reg1 ballY P2Y
+        op div __reg1 __reg1 P1Size
+
+
+        jump _skipP2HitQ1 greaterThan __reg1 0.334
+            set __reg1 -40
+            jump _skipP2HitQ3 always
+        _skipP2HitQ1:
+        jump _skipP2HitQ2 greaterThan __reg1 0.667
+            jump _skipP2DeviateBall always
+        _skipP2HitQ2:
+            set __reg1 40
+        _skipP2HitQ3:
+
+        op cos __reg2 __reg1
+        op mul __reg2 __reg2 ballSpeedX
+        op sin __reg3 __reg1
+        op mul __reg3 __reg3 ballSpeedY
+        op sub __reg1 __reg2 __reg3
+        set ballSpeedX __reg1
+
+        op cos __reg2 __reg1
+        op mul __reg2 __reg2 ballSpeedY
+        op sin __reg3 __reg1
+        op mul __reg3 __reg3 ballSpeedX
+        op add __reg2 __reg2 __reg3
+        set ballSpeedY __reg2
+        _skipP2DeviateBall:
+
+
+    _skipBallSpeedXFlipLeft:
+
+
+
+    # Apply speed
+    op mul ballDSpeedX _deltaTimeSec ballSpeedX
+    op mul ballDSpeedY _deltaTimeSec ballSpeedY
+    op add ballX ballX ballDSpeedX
+    op add ballY ballY ballDSpeedY
+
+
+### Write to cell
+_write:
+    write ballX cell1 3
+    write ballY cell1 4
+    write P1Score cell1 13
+    write P2Score cell1 14
+
+
+### End
+end
+
+### Add score
+
+# P1
+_P1AddScore:
+    op add P1Score P1Score 1
+    jump _resetBall always
+
+_P2AddScore:
+    op add P2Score P2Score 1
+    jump _resetBall always
+
+
+# Reset ball
+_resetBall:
+    read resetBallX cell2 3
+    read resetBallY cell2 4
+    set ballX resetBallX
+    set ballY resetBallY
+    op rand __reg1 360
+    op floor __reg1 __reg1
+    op sin ballSpeedX __reg1
+    op cos ballSpeedY __reg1
+    op mul ballSpeedX ballSpeedX initBallSpeed
+    op mul ballSpeedY ballSpeedY initBallSpeed
+    jump _write always

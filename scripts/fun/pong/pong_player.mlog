@@ -1,0 +1,66 @@
+### Delta time (warning: scuffed)
+set _time @time
+op sub _deltatime _time _prevTime
+set _prevTime _time
+
+### Read mem
+read gameState cell1 0
+# Reset / initializing
+jump 0 equal gameState 0
+read MAX_HEIGHT cell1 2
+read P1Y cell1 5
+read P2Y cell1 6
+read P1Size cell1 7
+read P2Size cell1 8
+read P1_SPEED cell1 9
+read P2_SPEED cell1 10
+
+
+
+
+
+
+# Delta time speed
+op div _deltaTimeSec _deltatime 1000
+
+
+### Player switches
+# P1 switch
+    sensor P1switch switch1 @enabled
+    jump _skipP1SwitchAddY equal P1switch false
+        # add
+        op mul P1DSpeed _deltaTimeSec P1_SPEED
+        op add P1Y P1Y P1DSpeed
+        jump _skipP1SwitchSubY always
+    _skipP1SwitchAddY:
+        # sub
+        op mul P1DSpeed _deltaTimeSec P1_SPEED
+        op sub P1Y P1Y P1DSpeed
+    _skipP1SwitchSubY:
+    op max P1Y 0 P1Y
+    op sub __reg1 MAX_HEIGHT P1Size
+    op min P1Y __reg1 P1Y
+
+# P2 switch
+    sensor P2switch switch2 @enabled
+    jump _skipP2SwitchAddY equal P2switch false
+        # add
+        op mul P2DSpeed _deltaTimeSec P2_SPEED
+        op add P2Y P2Y P2DSpeed
+        jump _skipP2SwitchSubY always
+    _skipP2SwitchAddY:
+        # sub
+        op mul P2DSpeed _deltaTimeSec P2_SPEED
+        op sub P2Y P2Y P2DSpeed
+    _skipP2SwitchSubY:
+    op max P2Y 0 P2Y
+    op sub __reg1 MAX_HEIGHT P2Size
+    op min P2Y __reg1 P2Y
+
+
+### Store variables into mem cell
+write P1Y cell1 5
+write P2Y cell1 6
+
+
+end
