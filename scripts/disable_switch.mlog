@@ -1,0 +1,5 @@
+sensor e switch1 @enabled
+getlink b i
+control enabled b e
+op add i i 1
+op mod i i @links
