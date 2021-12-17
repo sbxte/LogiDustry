@@ -1,0 +1,4 @@
+getlink turret 0
+getlink shield 1
+radar enemy any any distance turret 1 enemy
+control enabled shield enemy
