@@ -1,0 +1,7 @@
+read pc cell1 0
+read pcn cell1 1
+op div avg pc pcn
+op mul avg avg 10000
+op floor avg avg
+op div avg avg 100
+write avg cell1 2

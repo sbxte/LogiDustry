@@ -1,0 +1,15 @@
+sensor reset switch1 @enabled
+jump _skipReset equal reset 0
+    set pc 0
+    set pcn 0
+_skipReset:
+
+getlink b 2
+sensor p b @progress
+jump _skipInc equal p pp
+    op add pc pc 1
+_skipInc:
+set pp p
+op add pcn pcn 1
+write pc cell1 0
+write pcn cell1 0
