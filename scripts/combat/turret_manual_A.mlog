@@ -1,0 +1,8 @@
+getlink t 0
+getlink ti i
+sensor sx t @shootX
+sensor sy t @shootY
+sensor s t @shooting
+control shoot ti sx sy s
+op add i i 1
+op mod i i @links

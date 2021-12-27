@@ -1,0 +1,13 @@
+sensor Switch switch1 @enabled
+jump 5 equal Switch true
+getlink Block 1
+radar player ally any distance Block 1 Player
+end
+sensor x Player @shootX
+sensor y Player @shootY
+sensor s Player @shooting
+getlink Block Link
+op add Link Link 1
+control shoot Block x y s 0
+jump 8 lessThan Link @links
+set Link 1

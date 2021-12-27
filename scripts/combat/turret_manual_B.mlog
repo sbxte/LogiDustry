@@ -1,0 +1,8 @@
+radar player ally any distance @this 1 p
+sensor sx p @shootX
+sensor sy p @shootY
+sensor s p @shooting
+getlink t i
+control shoot t sx sy s
+op add i i 1
+op mod i i @links
