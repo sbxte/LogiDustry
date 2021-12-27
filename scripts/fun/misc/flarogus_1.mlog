@@ -1,0 +1,264 @@
+# Flarogus V1 by SBytes
+jump _skipInitFlags notEqual flag1 0
+op rand flag1 1000000
+op floor flag1 flag1
+op rand flag2 1000000
+op floor flag2 flag2
+op rand flag3 1000000
+op floor flag3 flag3
+op rand flag4 1000000
+op floor flag4 flag4
+op rand flag5 1000000
+op floor flag5 flag5
+op rand flag6 1000000
+op floor flag6 flag6
+op rand flag7 1000000
+op floor flag7 flag7
+op rand flag8 1000000
+op floor flag8 flag8
+op rand flag9 1000000
+op floor flag9 flag9
+op rand flag10 1000000
+op floor flag10 flag10
+op rand flag11 1000000
+op floor flag11 flag11
+op rand flag12 1000000
+op floor flag12 flag12
+op rand flag13 1000000
+op floor flag13 flag13
+op rand flag14 1000000
+op floor flag14 flag14
+op rand flag15 1000000
+op floor flag15 flag15
+op rand flag16 1000000
+op floor flag16 flag16
+op rand flag17 1000000
+op floor flag17 flag17
+op rand flag18 1000000
+op floor flag18 flag18
+op rand flag19 1000000
+op floor flag19 flag19
+op rand flag20 1000000
+op floor flag20 flag20
+_skipInitFlags:
+
+
+# Bind unit and check flag
+ubind @flare
+sensor f @unit @flag
+jump _goFlag1 equal f flag1
+jump _goFlag2 equal f flag2
+jump _goFlag3 equal f flag3
+jump _goFlag4 equal f flag4
+jump _goFlag5 equal f flag5
+jump _goFlag6 equal f flag6
+jump _goFlag7 equal f flag7
+jump _goFlag8 equal f flag8
+jump _goFlag9 equal f flag9
+jump _goFlag10 equal f flag10
+jump _goFlag11 equal f flag11
+jump _goFlag12 equal f flag12
+jump _goFlag13 equal f flag13
+jump _goFlag14 equal f flag14
+jump _goFlag15 equal f flag15
+jump _goFlag16 equal f flag16
+jump _goFlag17 equal f flag17
+jump _goFlag18 equal f flag18
+jump _goFlag19 equal f flag19
+jump _goFlag20 equal f flag20
+ucontrol flag flag1
+end
+
+
+# Flaroguuusssss!!!
+_goFlag1:
+    ucontrol move @thisx @thisy
+    ucontrol within @thisx @thisy 3 __reg1
+    jump _flag2 equal __reg1 0
+        ucontrol flag flag2
+    _flag2:
+    end
+
+_goFlag2:
+    op add __reg1 @thisy 30
+    ucontrol move @thisx __reg1
+    ucontrol within @thisx __reg1 3 __reg1
+    jump _flag3 equal __reg1 0
+        ucontrol flag flag3
+    _flag3:
+    end
+
+_goFlag3:
+    op sub __reg1 @thisx 10
+    op add __reg2 @thisy 30
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag4 equal __reg1 0
+        ucontrol flag flag4
+    _flag4:
+    end
+
+_goFlag4:
+    op sub __reg1 @thisx 10
+    op add __reg2 @thisy 10
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag5 equal __reg1 0
+        ucontrol flag flag5
+    _flag5:
+    end
+
+_goFlag5:
+    op add __reg1 @thisy 10
+    ucontrol move @thisx __reg1
+    ucontrol within @thisx __reg1 3 __reg1
+    jump _flag6 equal __reg1 0
+        ucontrol flag flag6
+    _flag6:
+    end
+
+_goFlag6:
+    op add __reg1 @thisy 40
+    ucontrol move @thisx __reg1
+    ucontrol within @thisx __reg1 3 __reg1
+    jump _flag7 equal __reg1 0
+        ucontrol flag flag7
+    _flag7:
+    end
+
+_goFlag7:
+    op add __reg1 @thisx 30
+    op add __reg2 @thisy 40
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag8 equal __reg1 0
+        ucontrol flag flag8
+    _flag8:
+    end
+
+_goFlag8:
+    op add __reg1 @thisx 30
+    op add __reg2 @thisy 30
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag9 equal __reg1 0
+        ucontrol flag flag9
+    _flag9:
+    end
+
+_goFlag9:
+    op add __reg1 @thisx 25
+    op add __reg2 @thisy 30
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag10 equal __reg1 0
+        ucontrol flag flag10
+    _flag10:
+    end
+
+_goFlag10:
+    op add __reg1 @thisx 25
+    op add __reg2 @thisy 25
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag11 equal __reg1 0
+        ucontrol flag flag11
+    _flag11:
+    end
+
+_goFlag11:
+    op add __reg1 @thisx 35
+    op add __reg2 @thisy 25
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag12 equal __reg1 0
+        ucontrol flag flag12
+    _flag12:
+    end
+
+_goFlag12:
+    op add __reg1 @thisx 35
+    op add __reg2 @thisy 30
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag13 equal __reg1 0
+        ucontrol flag flag13
+    _flag13:
+    end
+
+_goFlag13:
+    op add __reg1 @thisx 25
+    op add __reg2 @thisy 30
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag14 equal __reg1 0
+        ucontrol flag flag14
+    _flag14:
+    end
+
+_goFlag14:
+    op add __reg1 @thisx 25
+    op add __reg2 @thisy 25
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag15 equal __reg1 0
+        ucontrol flag flag15
+    _flag15:
+    end
+
+_goFlag15:
+    op add __reg1 @thisx 30
+    op add __reg2 @thisy 25
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag16 equal __reg1 0
+        ucontrol flag flag16
+    _flag16:
+    end
+
+_goFlag16:
+    op add __reg1 @thisx 30
+    ucontrol move __reg1 @thisy
+    ucontrol within __reg1 @thisy 3 __reg1
+    jump _flag17 equal __reg1 0
+        ucontrol flag flag17
+    _flag17:
+    end
+
+_goFlag17:
+    op add __reg1 @thisx 12
+    ucontrol move __reg1 @thisy
+    ucontrol within __reg1 @thisy 3 __reg1
+    jump _flag18 equal __reg1 0
+        ucontrol flag flag18
+    _flag18:
+    end
+
+_goFlag18:
+    op add __reg1 @thisx 12
+    op add __reg2 @thisy 10
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag19 equal __reg1 0
+        ucontrol flag flag19
+    _flag19:
+    end
+
+_goFlag19:
+    op add __reg1 @thisx 8
+    op add __reg2 @thisy 10
+    ucontrol move __reg1 __reg2
+    ucontrol within __reg1 __reg2 3 __reg1
+    jump _flag20 equal __reg1 0
+        ucontrol flag flag20
+    _flag20:
+    end
+
+_goFlag20:
+    op add __reg1 @thisx 8
+    ucontrol move __reg1 @thisy
+    ucontrol within __reg1 @thisy 3 __reg1
+    jump _flag1 equal __reg1 0
+        ucontrol flag flag21
+    _flag1:
+    end
