@@ -1,0 +1,6 @@
+getlink t 0
+getlink p i
+radar enemy any any distance t 1 enemy
+control enabled p enemy
+op add i i 1
+op mod i i @links
