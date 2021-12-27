@@ -1,0 +1,10 @@
+sensor switch switch1 @enabled
+jump 0 equal switch 0
+ubind @horizon
+sensor flag @unit @flag
+jump 0 notEqual flag 0
+sensor uitem @unit @firstItem
+jump 0 notEqual uitem 0
+ulocate building core false 0 cx cy 0 core
+ucontrol approach cx cy 10
+ucontrol itemTake core @blast-compound 999

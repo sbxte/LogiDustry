@@ -1,0 +1,15 @@
+sensor switch switch1 @enabled
+jump 0 equal switch 0
+
+ubind @horizon
+
+sensor flag @unit @flag
+jump 0 notEqual flag 0
+sensor uItem @unit @firstItem
+jump 0 equal uItem 0
+
+
+sensor mx arc1 @shootX
+sensor my arc1 @shootY
+ucontrol move mx my 0 0 0
+ucontrol targetp @unit 1
