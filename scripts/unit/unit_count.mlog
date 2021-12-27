@@ -1,0 +1,11 @@
+set type @flare
+set count 0
+ubind type
+set iUnit @unit
+_rebind:
+ubind type
+op add count count 1
+jump _rebind notEqual @unit iUnit
+print "Count: "
+print count
+printflush message1
