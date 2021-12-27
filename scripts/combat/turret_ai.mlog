@@ -1,0 +1,125 @@
+# Pseudocode:
+# if switch is not enabled {
+#   for linkIndex in 0..(links) {
+#     link = getlink(linkIndex)
+#     if link is hail or ripple or foreshadow {
+#       ranger = link
+#     }
+#   }
+#
+#   if ranger is null (doesnt exist) {
+#     END
+#   }
+#
+#   enemy = radar (get enemies in ranger's range)
+#   shoot at enemy's x y
+#
+#   END
+# }
+#
+# player = radar (get player in processor [this] range)
+# if player doesnt exist {
+#   END
+# }
+# shoot at player's shootX shootY
+
+
+
+# Check if the switch is enabled
+sensor pmode switch1 @enabled
+print "PMode: "
+print pmode
+jump _jump1 equal pmode 1
+# If the switch is enabled, shoot at player's shootX shootY
+# Else check for available ranger blocks
+
+
+# Iterate through all links to find a ranger
+set ranger @null
+
+set linkIndex -1
+_jump2:
+getlink link linkIndex
+op add linkIndex linkIndex 1
+
+sensor type link @type
+# Compare for hail, ripple or foreshadow (ranger)
+op equal __reg1 type @hail
+op equal __reg2 type @ripple
+op or __reg1 __reg1 __reg2
+op equal __reg2 type @foreshadow
+op or __reg1 __reg1 __reg2
+# If not found ranger, skip
+# Else set ranger variable
+jump _jump3 equal __reg1 0
+set ranger link
+
+# Keep reiterating until no more links
+_jump3:
+jump _jump2 lessThan linkIndex @links
+
+# If no ranger is found, END (back to start)
+print "\nRanger: "
+print ranger
+jump _end equal ranger @null
+
+
+# Get enemies from ranger and store to enemy
+# Get the x and y coords
+radar enemy any any distance ranger 1 enemy
+sensor enemyX enemy @x
+sensor enemyY enemy @y
+
+print "\nEnemy: "
+print enemy
+jump _end equal enemy @null
+
+# Iterate through all linked towers except ranger
+set linkIndex -1
+
+_jump4:
+op add linkIndex linkIndex 1
+getlink link linkIndex # Get link
+jump _jump4 equal link ranger # Skip if link is ranger
+control shoot link enemyX enemyY 1 # Shoot at enemy
+# END if no more links
+jump _jump4 lessThan linkIndex @links
+jump _end always
+
+
+
+# If switch is enabled, radar get player from this processor
+# Shoot player's shootX shootY
+_jump1:
+radar player ally any distance @this 1 player
+jump _end equal player @null # End if no player
+
+sensor sx player @shootX
+sensor sy player @shootY
+sensor shoot player @shooting
+
+print "\nPlayer:"
+print player
+print "\nSX:"
+print sx
+print " SY:"
+print sy
+print "\nShoot:"
+print shoot
+
+# Iterate through all links
+set linkIndex -1
+set __stack1 @counter # Store counter to stack 1
+
+_jump5:
+op add linkIndex linkIndex 1 # Increment linkIndex
+getlink link linkIndex # Get link
+control shoot link sx sy shoot 0
+
+# Keep iterating till no more links
+jump _jump5 lessThan linkIndex @links
+
+
+# END
+_end:
+printflush message1
