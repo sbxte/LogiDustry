@@ -1,0 +1,17 @@
+sensor e arc1 @controlled
+jump 0 equal e 0
+
+ubind @corvus
+sensor x arc1 @shootX
+sensor y arc1 @shootY
+sensor s arc1 @shooting
+ucontrol move x y
+op mod ss @time 6000
+op lessThanEq ss ss 1000
+ucontrol target xs ys ss
+ucontrol target xs ys 1
+jump 0 equal s 0
+set xs x
+set ys y
+# end
+# set Credits "Credits to Username ; Slightly improved by SBytes"
