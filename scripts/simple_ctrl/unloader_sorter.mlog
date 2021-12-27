@@ -1,0 +1,7 @@
+getlink sorter 0
+sensor item sorter @config
+getlink b i
+control config b item
+op add i i 1
+op mod i i @links
+op max i i 1

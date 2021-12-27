@@ -1,0 +1,23 @@
+lookup item item ii
+op add ii ii 1
+op mod ii ii 16
+
+_iterUnloaders:
+    getlink b i
+    control config b item
+    op add i i 1
+    jump _iterUnloaders lessThan i @links
+    set i 0
+
+_wait:
+    getlink container 0
+    sensor count container item
+    sensor maxCount container @itemCapacity
+    op equal enough count maxCount
+    getlink core 1
+    sensor coreItems core item
+    op equal tooFew coreItems 0
+    op or stopWaiting enough tooFew
+jump _wait equal stopWaiting 0
+
+print "By [green]SBytes"
