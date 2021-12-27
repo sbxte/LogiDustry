@@ -1,0 +1,24 @@
+# Bind unit
+lookup unit utype i
+ubind utype
+
+# Flag and proc checks
+sensor flag @unit @flag
+jump _skipDeflag equal flag 0
+
+sensor ctrl @unit @controlled
+jump _skipDeflag equal ctrl 1
+
+# Deflag
+ucontrol flag 0
+
+# Memory
+read m cell1 i
+op add m m 1
+write m cell1 i
+
+_skipDeflag:
+
+op add i i 1
+op mod i i @unitCount
+

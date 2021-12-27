@@ -1,0 +1,30 @@
+print "[sky]Unit Deflagger v1.2[]\nby [green]SBytes[]"
+
+sensor e switch1 @enabled
+control enabled processor1 e
+jump _enabled equal e 1
+    print "\n\n[red]Disabled"
+    printflush message1
+    end
+
+_enabled:
+
+
+jump _skipD equal d 0
+    print "\n\n[lime]Deflagged[]"
+_skipD:
+
+_loop:
+read m cell1 i
+jump _skip equal m 0
+set d 1
+lookup unit u i
+print ",\n"
+print m
+print " "
+print u
+_skip:
+op add i i 1
+jump _loop lessThan i @unitCount
+set i 0
+printflush message1
