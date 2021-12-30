@@ -1,0 +1,12 @@
+# Switch
+sensor reset switch1 @enabled
+jump 0 equal reset 0
+
+# Loop
+_loop:
+    write 0 cell1 i
+    op add i i 1
+jump _loop lessThan i 64
+set i 0
+write 1 cell1 i
+control enabled switch1 0

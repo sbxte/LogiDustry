@@ -1,15 +1,51 @@
-sensor reset switch1 @enabled
-jump _skipReset equal reset 0
-    set pc 0
-    set pcn 0
-_skipReset:
+# On / off
+read @counter cell1 0
 
-getlink b 2
-sensor p b @progress
-jump _skipInc equal p pp
-    op add pc pc 1
-_skipInc:
-set pp p
-op add pcn pcn 1
-write pc cell1 0
-write pcn cell1 0
+# Wait ~0.021 seconds (21ms)
+op add timeWaitTill @time 21
+_timeWait:
+jump _timeWait lessThan @time timeWaitTill
+
+# Links / buildings
+op sub buildingCount @links 1
+write buildingCount cell1 1
+
+# Increment Total Count
+read totalCount cell1 2
+op add totalCount totalCount 1
+write totalCount cell1 2
+
+# Set variables
+    # Offset by 3 because the first 3 variables are used for enable, links and "totalCount"
+    set address 3
+    # Offset by 1 because the first link is for mem cell
+    set linkI 1
+
+# Loop through every building (except first coz its memcell)
+_loop:
+    # Get building and sensor progress
+    getlink building linkI
+    sensor progress building @progress
+
+    # Read previous progress
+    read prevProgress cell1 address
+
+    # Write new progress at address
+    write progress cell1 address
+
+    # Increment counter and write at next memcell address if progress changed or isnt 0
+    op add address address 1
+    jump _skipAddACount equal progress 0
+    jump _skipAddACount equal progress prevProgress
+        read count cell1 address
+        op add count count 1
+        write count cell1 address
+
+    _skipAddACount:
+
+    # Increment address counter
+    op add address address 1
+
+    # Increment link iterator
+    op add linkI linkI 1
+jump _loop lessThan linkI @links

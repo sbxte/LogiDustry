@@ -1,1 +1,58 @@
-print "[sky]Efficiency Measurer v1.0\n[]by [green]SBytes[]"
+# Wait if total count hasn't changed
+read totalCount cell1 2
+jump 0 equal totalCount prevTotalCount
+set prevTotalCount totalCount
+
+# Building count
+read buildingCount cell1 1
+jump _skipNoBuildings notEqual buildingCount 0
+    print "[slate]EFficiency Measurer[]\n[sky]by Username ; SBytes[]\n\n[#ff]⚠ No building detected"
+    printflush message1
+    end
+_skipNoBuildings:
+
+print "[slate]EFficiency Measurer[]\n[sky]by Username ; SBytes[]\n\n[#ffff]Building Efficiencies (by link order)[]\n   "
+# Set variables
+    # Offset because the first 4 addresses are reserved
+    set address 4
+    set avgSTCount 0
+    set avgSCount 0
+jump _skipLoop always 0
+
+# Keep looping until count is 0
+_loop:
+    # Sum all for average efficiency
+    op add avgSTCount avgSTCount totalCount
+    op add avgSCount avgSCount count
+
+    # Get efficiency and round percentage to 4 d.c.
+    op div efficiency count totalCount
+    op idiv efficiencyF efficiency 1e-6
+    op div efficiencyF efficiencyF 1e4
+    print efficiencyF
+    print "%\n   "
+
+    # Increment (next) address
+    op add address address 2
+_skipLoop:
+read count cell1 address
+jump _loop notEqual count 0
+
+# Get average efficiency
+print "\n[green] Avg. Efficiency: "
+op div avgEff avgSCount avgSTCount
+op idiv avgEffF avgEff 1e-6
+op div avgEffF avgEffF 1e4
+print avgEffF
+print "%\n[magenta] DeltaTime: "
+
+# Print delta time (time spent lol)
+op sub deltaTime @time prevTime
+op floor deltaTime deltaTime 0
+op div deltaTime deltaTime 1000
+print deltaTime
+print "s"
+set prevTime @time
+
+# Print flush
+printflush message1
