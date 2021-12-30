@@ -1,11 +1,17 @@
 set type @flare
 set count 0
 ubind type
-set iUnit @unit
+set unit @unit
 _rebind:
+jump _skip equal @unit 0
+sensor dead unit @dead
+jump 0 equal dead 1
 ubind type
 op add count count 1
-jump _rebind notEqual @unit iUnit
-print "Count: "
+jump _rebind notEqual @unit unit
+_skip:
+print "Unit: "
+print type
+print "\nCount: "
 print count
 printflush message1
