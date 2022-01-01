@@ -1,0 +1,136 @@
+# Reset
+sensor reset switch1 @enabled
+jump _skipReset equal reset 0
+    _reset:
+        print "[slate]EFficiency Measurer[]\n[sky]by Username ; SBytes[]\n\n[coral]Resetting..."
+        printflush message1
+
+        _resetLoop:
+            write 0 cell1 resetI
+            op add resetI resetI 1
+        jump _resetLoop lessThan resetI 64
+        set resetI 0
+        set dividerCount 0
+        set prevTime @time
+        set prevPDeltaTime @time
+        set prevBuildingCount buildingCount
+        control enabled switch1 0
+        end
+_skipReset:
+
+# Wait ~0.021 seconds (21ms)
+# op add timeWaitTill @time 21
+# _timeWait:
+# jump _timeWait lessThan @time timeWaitTill
+_timeWait:
+op sub deltaTime @time prevTime
+jump _timeWait lessThan deltaTime 21
+set prevTime @time
+
+# Links / buildings
+op sub buildingCount @links 3
+jump _reset notEqual buildingCount prevBuildingCount
+
+# Increment divider Count
+op add dividerCount dividerCount 1
+
+# Set variables
+    set address 0
+    # Offset by 3 because the first link is for mem cell, switch and msg
+    set linkI 3
+
+# Loop through every building (except first coz its memcell)
+_buildingLoop:
+    # Get building and sensor progress
+    getlink building linkI
+    sensor progress building @progress
+
+    # Read previous progress
+    read prevProgress cell1 address
+
+    # Write new progress at address
+    write progress cell1 address
+
+    # Increment counter and write at next memcell address if progress changed or isnt 0
+    op add address address 1
+    jump _skipAddACount equal progress 0
+    jump _skipAddACount equal progress prevProgress
+        read count cell1 address
+        op add count count 1
+        write count cell1 address
+
+    _skipAddACount:
+
+    # Increment address counter
+    op add address address 1
+
+    # Increment link iterator
+    op add linkI linkI 1
+jump _buildingLoop lessThan linkI @links
+
+# Print
+op sub printDeltaTime @time prevPDeltaTime
+jump 0 lessThan printDeltaTime 600
+    set prevPDeltaTime @time
+
+    # No building detected
+    jump _skipNoBuildings notEqual buildingCount 0
+        print "[slate]EFficiency Measurer[]\n[sky]by Username ; SBytes[]\n\n[#ff]⚠ No building detected"
+        printflush message1
+        end
+    _skipNoBuildings:
+
+    # Too many buildings
+    jump _skipErrBuildings lessThanEq buildingCount 32
+        print "[slate]EFficiency Measurer[]\n[sky]by Username ; SBytes[]\n\n[#ff]⚠ Too many buildings (max 32)\n[gray]Count: "
+        print buildingCount
+        printflush message1
+        end
+    _skipErrBuildings:
+
+    print "[slate]EFficiency Measurer[]\n[sky]by Username ; SBytes[]\n\n[#ffff] Building Efficiencies[]\nCount: "
+    print buildingCount
+    print "[#bdbdbd] (showing first 5)[]\n   "
+
+    # Set variables
+    set address 1
+    set totalCount 0
+    set bPrintCount 0
+    jump _skipPrintLoop always 0
+
+    _printLoop:
+        # Addup the total count
+        op add totalCount totalCount count
+
+        # Only show first 6 building's efficiencies or else this would overflow message
+        jump _skipPrintIndividualEff greaterThanEq bPrintCount 5
+            # Get efficiency and round percentage to 4 d.c.
+            op div efficiency count dividerCount
+            op idiv efficiencyF efficiency 1e-6
+            op div efficiencyF efficiencyF 1e4
+            print efficiencyF
+            print "%\n   "
+            op add bPrintCount bPrintCount 1
+        _skipPrintIndividualEff:
+
+        # Increment address
+        op add address address 2
+
+        _skipPrintLoop:
+        read count cell1 address
+    jump _printLoop notEqual count 0
+
+    # Average efficiency
+    print "\n[green] Avg. Efficiency: "
+    op mul TdividerCount dividerCount buildingCount
+    op div avgEff totalCount TdividerCount
+    op idiv avgEffF avgEff 1e-6
+    op div avgEffF avgEffF 1e4
+    print avgEffF
+    print "%"
+
+    # Run time
+
+
+    # Print flush
+    printflush message1
