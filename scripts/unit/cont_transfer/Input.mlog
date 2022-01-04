@@ -1,0 +1,66 @@
+getlink cell 3
+
+# Items
+jump _skipIBit equal iInit 1
+    op shl cop false 0
+    op shl lea false 1
+    op shl met false 2
+    op shl gra false 3
+    op shl san false 4
+    op shl coa false 5
+    op shl tit false 6
+    op shl tho false 7
+    op shl scr false 8
+    op shl sil false 9
+    op shl pla false 10
+    op shl pha false 11
+    op shl sur false 12
+    op shl spo false 13
+    op shl bla false 14
+    op shl pyi false 15
+
+    __edit_freeze:
+    jump __edit_freeze notEqual "end of edit" 0
+
+
+    # Item bit
+    op add iBit cop lea
+    op add iBit iBit met
+    op add iBit iBit gra
+    op add iBit iBit san
+    op add iBit iBit coa
+    op add iBit iBit tit
+    op add iBit iBit tho
+    op add iBit iBit scr
+    op add iBit iBit sil
+    op add iBit iBit pla
+    op add iBit iBit pha
+    op add iBit iBit sur
+    op add iBit iBit spo
+    op add iBit iBit bla
+    op add iBit iBit pyi
+
+    set iInit 1
+
+_skipIBit:
+write iBit cell 5
+
+# Ready
+sensor ready switch1 @enabled
+write ready cell 0
+
+# Coords
+sensor config sorter1 @config
+jump 0 equal config null
+sensor x arc1 @shootX
+sensor y arc1 @shootY
+jump _sC2 notEqual config @copper
+write x cell 1
+write y cell 2
+_sC2:
+jump 0 notEqual config @lead
+write x cell 3
+write y cell 4
+end
+set Author "SBytes"
+set HelpedBy "Username"

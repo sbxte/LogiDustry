@@ -1,0 +1,337 @@
+jump 0 equal cell1 0
+read _ready cell1 0
+jump _init equal _ready 0
+jump _skipInit equal _init 1
+    _init:
+    set _init 0
+    # Read cell
+    read fromX cell1 1
+    read fromY cell1 2
+    read toX cell1 3
+    read toY cell1 4
+    read itemBit cell1 5
+
+    # rounding
+        # from X
+        op mul RfromX fromX 10
+        op mod RfromX RfromX 10
+        op div RfromX RfromX 10
+        jump _init_roundFromX_floor lessThan RfromX 0.25
+        jump _init_roundFromX_ceil lessThan RfromX 0.5
+        jump _init_roundFromX_floor lessThan RfromX 0.75
+        jump _init_roundFromX_ceil always 0
+        _init_roundFromX_floor:
+            op mul fromX fromX 4
+            op floor fromX fromX
+            op div fromX fromX 4
+            jump _init_roundFromX_skip always 0
+        _init_roundFromX_ceil:
+            op mul fromX fromX 4
+            op ceil fromX fromX
+            op div fromX fromX 4
+        _init_roundFromX_skip:
+        # from Y
+        op mul RfromY fromY 10
+        op mod RfromY RfromY 10
+        op div RfromY RfromY 10
+        jump _init_roundfromY_floor lessThan RfromY 0.25
+        jump _init_roundfromY_ceil lessThan RfromY 0.5
+        jump _init_roundfromY_floor lessThan RfromY 0.75
+        jump _init_roundfromY_ceil always 0
+        _init_roundfromY_floor:
+            op mul fromY fromY 4
+            op floor fromY fromY
+            op div fromY fromY 4
+            jump _init_roundfromY_skip always 0
+        _init_roundfromY_ceil:
+            op mul fromY fromY 4
+            op ceil fromY fromY
+            op div fromY fromY 4
+        _init_roundfromY_skip:
+        # to X
+        op mul RtoX toX 10
+        op mod RtoX RtoX 10
+        op div RtoX RtoX 10
+        jump _init_roundtoX_floor lessThan RtoX 0.25
+        jump _init_roundtoX_ceil lessThan RtoX 0.5
+        jump _init_roundtoX_floor lessThan RtoX 0.75
+        jump _init_roundtoX_ceil always 0
+        _init_roundtoX_floor:
+            op mul toX toX 4
+            op floor toX toX
+            op div toX toX 4
+            jump _init_roundtoX_skip always 0
+        _init_roundtoX_ceil:
+            op mul toX toX 4
+            op ceil toX toX
+            op div toX toX 4
+        _init_roundtoX_skip:
+        # to Y
+        op mul RtoY toY 10
+        op mod RtoY RtoY 10
+        op div RtoY RtoY 10
+        jump _init_roundtoY_floor lessThan RtoY 0.25
+        jump _init_roundtoY_ceil lessThan RtoY 0.5
+        jump _init_roundtoY_floor lessThan RtoY 0.75
+        jump _init_roundtoY_ceil always 0
+        _init_roundtoY_floor:
+            op mul toY toY 4
+            op floor toY toY
+            op div toY toY 4
+            jump _init_roundtoY_skip always 0
+        _init_roundtoY_ceil:
+            op mul toY toY 4
+            op ceil toY toY
+            op div toY toY 4
+        _init_roundtoY_skip:
+
+
+    # Reset units
+    set unit1 0
+    set unit2 0
+    set unit3 0
+    set unit4 0
+    set unit5 0
+    set unit6 0
+    set unit7 0
+    set unit8 0
+            set unit9 0
+            set unit10 0
+            set unit11 0
+            set unit12 0
+
+    # Reset take drop vars
+    set UCB_dropID 0
+    set UCB_takeID 0
+    # set UCR_dropID 4
+    # set UCR_takeID 4
+                set UCR_dropID 6
+                set UCR_takeID 6
+
+
+    # This flag
+    set thisFlag @thisy
+    op floor thisFlag thisFlag
+    op mul thisFlag thisFlag @mapw
+    op add thisFlag thisFlag @thisx
+    op floor thisFlag thisFlag
+
+    set aliveCheckPTime -20e3 # instantly do check afterwards
+    jump _skipSetInit equal _ready 0
+        set _init 1
+    _skipSetInit:
+    end
+_skipInit:
+
+# Alive check every 20 seconds
+op sub aliveCheckETime @time aliveCheckPTime
+jump _skipUAliveCheck lessThan aliveCheckETime 20e3
+    set aliveCheckPTime @time
+
+    _UAliveCheck:
+        op mul UACIcounter UAliveCheckI 3
+        op add @counter @counter UACIcounter
+            set 0 0
+            ubind unit1
+            jump _UAC_cBind always 0
+            set unit1 @unit
+            ubind unit2
+            jump _UAC_cBind always 0
+            set unit2 @unit
+            ubind unit3
+            jump _UAC_cBind always 0
+            set unit3 @unit
+            ubind unit4
+            jump _UAC_cBind always 0
+            set unit4 @unit
+            ubind unit5
+            jump _UAC_cBind always 0
+            set unit5 @unit
+            ubind unit6
+            jump _UAC_cBind always 0
+            set unit6 @unit
+            ubind unit7
+            jump _UAC_cBind always 0
+            set unit7 @unit
+            ubind unit8
+            jump _UAC_cBind always 0
+            set unit8 @unit
+                        ubind unit9
+                        jump _UAC_cBind always 0
+                        set unit9 @unit
+                        ubind unit10
+                        jump _UAC_cBind always 0
+                        set unit10 @unit
+                        ubind unit11
+                        jump _UAC_cBind always 0
+                        set unit11 @unit
+                        ubind unit12
+                        jump _UAC_cBind always 0
+        _UAC_cBind:
+
+        sensor dead @unit @dead
+        jump _bindUnit equal dead 1
+        sensor flag @unit @flag
+        jump _bindUnit notEqual flag thisFlag
+        sensor ctrl @unit @controlled
+        jump _bindUnit_skip equal ctrl 1
+            _bindUnit:
+                ubind @mega
+                sensor dead @unit @dead
+                jump _bindUnit equal dead 1
+                sensor flag @unit @flag
+                jump _bindUnit notEqual flag 0
+                sensor ctrl @unit @controlled
+                jump _bindUnit_skip2 equal ctrl 0
+                jump _bindUnit notEqual ctrl 1
+            _bindUnit_skip2:
+            ucontrol flag thisFlag
+        _bindUnit_skip:
+
+        op add UAliveCheckI UAliveCheckI 1
+    # jump _UAliveCheck lessThan UAliveCheckI 8
+                    jump _UAliveCheck lessThan UAliveCheckI 12
+    # set unit8 @unit
+                    set unit12 @unit
+    set UAliveCheckI 0
+    end
+_skipUAliveCheck:
+
+### Ctrl units
+
+_UnitCtrl:
+    op mul UCIcounter UCtrlI 2
+    op add @counter @counter UCIcounter
+        ubind unit1
+        jump _UC_cBind always 0
+        ubind unit2
+        jump _UC_cBind always 0
+        ubind unit3
+        jump _UC_cBind always 0
+        ubind unit4
+        jump _UC_cBind always 0
+        ubind unit5
+        jump _UC_cBind always 0
+        ubind unit6
+        jump _UC_cBind always 0
+        ubind unit7
+        jump _UC_cBind always 0
+        ubind unit8
+        jump _UC_cBind always 0
+                    ubind unit9
+                    jump _UC_cBind always 0
+                    ubind unit10
+                    jump _UC_cBind always 0
+                    ubind unit11
+                    jump _UC_cBind always 0
+                    ubind unit12
+                    jump _UC_cBind always 0
+    _UC_cBind:
+
+    # Bring or return
+    # jump _UC_return greaterThanEq UCtrlI 4
+                        jump _UC_return greaterThanEq UCtrlI 6
+        # Has payload or not
+        sensor payload @unit @payloadType
+        jump _UCB_payload equal payload @container
+            # If takeID is our id or -1 and free spot and enough items
+            jump _UCB_take equal UCB_takeID UCtrlI
+
+            jump _UCB_approach_take notEqual UCB_takeID -1
+                ucontrol getBlock fromX fromY fromType fromBuilding
+            jump _UCB_approach_take notEqual fromType @container
+                # Bit fuckery magic (determine whether its suitable to take)
+            set bitI 0
+            _UCB_takeCheck:
+                op shl bitSel 1 bitI
+                op and itemBitCheck bitSel itemBit
+                jump _UCB_takeCheck_skip equal itemBitCheck 0
+                    lookup item item bitI
+                    sensor fromItem fromBuilding item
+                    jump _UCB_approach_take lessThan fromItem 300
+                _UCB_takeCheck_skip:
+                op add bitI bitI 1
+            jump _UCB_takeCheck lessThan bitI @itemCount
+
+                # move towards it and take it
+                _UCB_take:
+                    set UCB_takeID UCtrlI
+                    ucontrol move fromX fromY
+                    ucontrol within fromX fromY 0.5 uWithin
+                    jump _UC_skip equal uWithin 0
+                        ucontrol payTake 0
+                        set UCB_takeID -1
+                jump _UC_skip always 0
+
+            _UCB_approach_take:
+                ucontrol approach fromX fromY 8
+            jump _UC_skip always 0
+
+        _UCB_payload:
+            # If dropID is our id, or -1 and free spot (toType is air)
+            jump _UCB_drop equal UCB_dropID UCtrlI
+
+            jump _UCB_approach_drop notEqual UCB_dropID -1
+                ucontrol getBlock toX toY toType 0
+            jump _UCB_approach_drop notEqual toType @air
+                _UCB_drop:
+                    set UCB_dropID UCtrlI
+                    ucontrol move toX toY
+                    ucontrol within toX toY 0.5 uWithin
+                    jump _UC_skip equal uWithin 0
+                        ucontrol payDrop
+                        set UCB_dropID -1
+                jump _UC_skip always 0
+
+            _UCB_approach_drop:
+                ucontrol approach toX toY 8
+        jump _UC_skip always 0
+    _UC_return:
+        # Has payload or not
+        sensor payload @unit @payloadType
+        jump _UCR_payload equal payload @container
+            # If take ID is our ID or -1 and free, and no more items
+            jump _UCR_take equal UCR_takeID UCtrlI
+
+            jump _UCR_approach_take notEqual UCR_takeID -1
+                ucontrol getBlock toX toY toType toBuilding
+            jump _UCR_approach_take notEqual toType @container
+                sensor toItem toBuilding @firstItem
+            jump _UCR_approach_take notEqual toItem 0
+                # Move to it and make sure exactly on top
+                _UCR_take:
+                    set UCR_takeID UCtrlI
+                    ucontrol move toX toY
+                    ucontrol within toX toY 0.5 uWithin
+                    jump _UC_skip equal uWithin 0
+                        ucontrol payTake 0
+                        set UCR_takeID -1
+                jump _UC_skip always 0
+            _UCR_approach_take:
+                ucontrol approach toX toY 8
+            jump _UC_skip always 0
+
+        _UCR_payload:
+            # If dropID is our ID, or -1 and free
+            jump _UCR_drop equal UCR_dropID UCtrlI
+
+            jump _UCR_approach_drop notEqual UCR_dropID -1
+                ucontrol getBlock fromX fromY fromType 0
+            jump _UCR_approach_drop notEqual fromType @air
+                _UCR_drop:
+                    set UCR_dropID UCtrlI
+                    ucontrol move fromX fromY
+                    ucontrol within fromX fromY 0.5 uWithin
+                    jump _UC_skip equal uWithin 0
+                        ucontrol payDrop
+                        set UCR_dropID -1
+                    jump _UC_skip always 0
+            _UCR_approach_drop:
+                ucontrol approach fromX fromY 8
+    _UC_skip:
+    op add UCtrlI UCtrlI 1
+# jump _UnitCtrl lessThan UCtrlI 8
+                        jump _UnitCtrl lessThan UCtrlI 12
+set UCtrlI 0
+end
+set Author "SBytes"

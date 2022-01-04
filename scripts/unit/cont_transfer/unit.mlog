@@ -1,0 +1,216 @@
+jump 0 equal cell1 0
+
+# testing
+# op sub __deltaTime @time __prevTime
+# set __prevTime @time
+
+read __ready cell1 0
+jump _skipInit equal __init 1
+    # Read coords
+    read fromX cell1 1
+    read fromY cell1 2
+    read toX cell1 3
+    read toY cell1 4
+    read itemBit cell1 5
+
+    # rounding
+        # from X
+        op mul RfromX fromX 10
+        op mod RfromX RfromX 10
+        op div RfromX RfromX 10
+        jump _init_roundFromX_floor lessThan RfromX 0.25
+        jump _init_roundFromX_ceil lessThan RfromX 0.5
+        jump _init_roundFromX_floor lessThan RfromX 0.75
+        jump _init_roundFromX_ceil always 0
+        _init_roundFromX_floor:
+            op mul fromX fromX 4
+            op floor fromX fromX
+            op div fromX fromX 4
+            jump _init_roundFromX_skip always 0
+        _init_roundFromX_ceil:
+            op mul fromX fromX 4
+            op ceil fromX fromX
+            op div fromX fromX 4
+        _init_roundFromX_skip:
+        # from Y
+        op mul RfromY fromY 10
+        op mod RfromY RfromY 10
+        op div RfromY RfromY 10
+        jump _init_roundfromY_floor lessThan RfromY 0.25
+        jump _init_roundfromY_ceil lessThan RfromY 0.5
+        jump _init_roundfromY_floor lessThan RfromY 0.75
+        jump _init_roundfromY_ceil always 0
+        _init_roundfromY_floor:
+            op mul fromY fromY 4
+            op floor fromY fromY
+            op div fromY fromY 4
+            jump _init_roundfromY_skip always 0
+        _init_roundfromY_ceil:
+            op mul fromY fromY 4
+            op ceil fromY fromY
+            op div fromY fromY 4
+        _init_roundfromY_skip:
+        # from X
+        op mul RtoX toX 10
+        op mod RtoX RtoX 10
+        op div RtoX RtoX 10
+        jump _init_roundtoX_floor lessThan RtoX 0.25
+        jump _init_roundtoX_ceil lessThan RtoX 0.5
+        jump _init_roundtoX_floor lessThan RtoX 0.75
+        jump _init_roundtoX_ceil always 0
+        _init_roundtoX_floor:
+            op mul toX toX 4
+            op floor toX toX
+            op div toX toX 4
+            jump _init_roundtoX_skip always 0
+        _init_roundtoX_ceil:
+            op mul toX toX 4
+            op ceil toX toX
+            op div toX toX 4
+        _init_roundtoX_skip:
+        # from Y
+        op mul RtoY toY 10
+        op mod RtoY RtoY 10
+        op div RtoY RtoY 10
+        jump _init_roundtoY_floor lessThan RtoY 0.25
+        jump _init_roundtoY_ceil lessThan RtoY 0.5
+        jump _init_roundtoY_floor lessThan RtoY 0.75
+        jump _init_roundtoY_ceil always 0
+        _init_roundtoY_floor:
+            op mul toY toY 4
+            op floor toY toY
+            op div toY toY 4
+            jump _init_roundtoY_skip always 0
+        _init_roundtoY_ceil:
+            op mul toY toY 4
+            op ceil toY toY
+            op div toY toY 4
+        _init_roundtoY_skip:
+
+
+
+    # Cookie
+    op mul cookieFlag @mapw @thisy
+    op add cookieFlag @thisx
+
+
+    jump __init_skip_init equal __ready 0
+        read __init cell1 0
+    __init_skip_init:
+    end
+_skipInit:
+set __init __ready
+
+## Get units
+    # Unit 1
+    sensor u1Flag unit1 @flag
+    jump _bindU1 notEqual u1Flag cookieFlag
+    sensor u1Dead unit1 @dead
+    jump _skipSetU1 equal u1Dead 0
+        _bindU1:
+            ubind @mega
+            sensor dead @unit @dead
+            jump _bindU1 equal dead 1
+            sensor flag @unit @flag
+            jump _bindU1 notEqual flag 0
+        set unit1 @unit
+    _skipSetU1:
+    # Unit 2
+    sensor u2Flag unit2 @flag
+    jump _bindU2 notEqual u2Flag cookieFlag
+    sensor u2Dead unit2 @dead
+    jump _skipSetU2 equal u2Dead 0
+        _bindU2:
+            ubind @mega
+            sensor dead @unit @dead
+            jump _bindU2 equal dead 1
+            sensor flag @unit @flag
+            jump _bindU2 notEqual flag 0
+        set unit2 @unit
+    _skipSetU2:
+
+### Unit 1 actions
+    ubind unit1
+    ucontrol flag cookieFlag
+
+    sensor u1Payload @unit @payloadType
+    jump _U1dropTo_j equal u1Payload @container
+        # Take from
+            ucontrol getBlock fromX fromY fromType fromBuilding
+            jump _U1takeFrom_notCont notEqual fromType @container
+                # Bit fuckery
+                set bitI 0
+                _u1itemCheck_Loop:
+                    op shl bitSel 1 bitI
+                    op and itemBitCheck bitSel itemBit
+                    jump _u1itemCheck_skip equal itemBitCheck 0
+                        lookup item item bitI
+                        sensor fromItem fromBuilding item
+                        jump _u2actions_j lessThan fromItem 300
+                    _u1itemCheck_skip:
+                op add bitI bitI 1
+                jump _u1itemCheck_Loop lessThan bitI @itemCount
+
+                ucontrol move fromX fromY
+                ucontrol within fromX fromY 0.2 u1WithinFrom
+                jump _u2actions_j notEqual u1WithinFrom 1
+                    ucontrol payTake 0
+                    jump _u2actions_j always 0
+
+            _U1takeFrom_notCont:
+                ucontrol approach fromX fromY 10
+                jump _u2actions_j always 0
+            # _U1takeFrom_skip:
+
+        # Drop to
+        _U1dropTo_j:
+            ucontrol getBlock toX toY toType toBuilding
+            jump _U1dropTo_notCont notEqual toType @air
+                ucontrol move toX toY
+                ucontrol within toX toY 0.2 u1WithinTo
+                jump _u2actions_j notEqual u1WithinTo 1
+                    ucontrol payDrop 0
+                    jump _u2actions_j always 0
+
+            _U1dropTo_notCont:
+                ucontrol approach toX toY 10
+            # _U1dropTo_skip:
+
+### Unit 2 actions
+_u2actions_j:
+    ubind unit2
+    ucontrol flag cookieFlag
+
+    sensor u2Payload @unit @payloadType
+    jump _U2dropTo_j equal u2Payload @container
+        # Take to
+            ucontrol getBlock toX toY toType toBuilding
+            jump _U2takeFrom_approach notEqual toType @container
+            sensor toItem toBuilding @firstItem
+            jump _U2takeFrom_approach notEqual toItem null
+                ucontrol move toX toY
+                ucontrol within toX toY 0.2 u2WithinTo
+                jump 0 notEqual u2WithinTo 1
+                    ucontrol payTake 0
+                    end
+
+            _U2takeFrom_approach:
+                ucontrol approach toX toY 10
+                end
+            # _U2takeFrom_skip:
+
+        # Drop from
+        _U2dropTo_j:
+            ucontrol getBlock fromX fromY fromType fromBuilding
+            jump _U2dropTo_notCont notEqual fromType @air
+                ucontrol move fromX fromY
+                ucontrol within fromX fromY 0.2 u2WithinFrom
+                jump 0 notEqual u2WithinFrom 1
+                    ucontrol payDrop 0
+                    end
+
+            _U2dropTo_notCont:
+                ucontrol approach fromX fromY 10
+            # _U2dropTo_skip:
+end
+set Author "SBytes"
