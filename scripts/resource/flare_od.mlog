@@ -1,0 +1,61 @@
+# Original by Gewi
+# SBytes version
+
+# Init
+op mul flag @thisy @mapw
+op add flag flag @thisx
+
+start:
+
+jump start equal projector1 null
+
+# Enable/disable based on dome
+sensor ts @this @timescale
+op equal disable ts 2.5
+jump loop_skip equal @links 1
+    loop:
+        getlink b i
+        sensor ts b @timescale
+        op equal boosted ts 2.5
+        op land disable disable boosted
+        op add i i 1
+    jump loop lessThan i @links
+loop_skip:
+jump enabled equal disable 0
+    control enabled projector1 0
+    jump start always 0
+enabled:
+control enabled projector1 1
+
+
+# Bind flare
+sensor uCtrl @unit @controlled
+jump bind greaterThan uCtrl 1
+sensor uDead @unit @dead
+jump bind_skip equal uDead 0
+    bind:
+        ubind @flare
+        sensor uFlag @unit @flag
+        ucontrol flag flag
+    jump bind notEqual uFlag 0
+bind_skip:
+
+# Phase check
+ulocate building core 0 0 cx cy 0 core
+sensor cPhase core @phase-fabric
+jump start lessThan cPhase 100
+
+# Control Unit
+sensor uItem @unit @firstItem
+jump take_skip equal uItem @phase-fabric
+    ucontrol itemDrop core 999
+    ucontrol itemTake core @phase-fabric 999
+    ucontrol move cx cy
+    jump start always 0
+take_skip:
+
+sensor px projector1 @x
+sensor py projector1 @y
+ucontrol itemDrop projector1 999
+ucontrol move px py
+jump start always 0
