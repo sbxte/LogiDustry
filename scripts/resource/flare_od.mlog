@@ -59,3 +59,6 @@ take_skip:
 ucontrol itemDrop projector1 999
 ucontrol move px py
 jump start always 0
+
+print "Original by Gewi"
+print "Improvement by SBytes"
