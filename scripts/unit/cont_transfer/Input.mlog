@@ -1,7 +1,5 @@
-getlink cell 3
-
-# Items
-jump _skipIBit equal iInit 1
+# Init
+    # Items
     op shl cop false 0
     op shl lea false 1
     op shl met false 2
@@ -40,9 +38,9 @@ jump _skipIBit equal iInit 1
     op add iBit iBit bla
     op add iBit iBit pyi
 
-    set iInit 1
+start:
 
-_skipIBit:
+getlink cell 3
 write iBit cell 5
 
 # Ready
@@ -51,16 +49,17 @@ write ready cell 0
 
 # Coords
 sensor config sorter1 @config
-jump 0 equal config null
+jump start equal config null
 sensor x arc1 @shootX
 sensor y arc1 @shootY
 jump _sC2 notEqual config @copper
 write x cell 1
 write y cell 2
 _sC2:
-jump 0 notEqual config @lead
+jump start notEqual config @lead
 write x cell 3
 write y cell 4
-end
+jump start always
+
 set Author "SBytes"
 set HelpedBy "Username"
