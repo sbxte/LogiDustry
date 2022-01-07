@@ -1,0 +1,20 @@
+# getlink core 1
+jump _coreLocate equal core 0
+sensor cDead core @dead
+jump _skipCoreLocate equal cDead 1
+    _coreLocate:
+        ubind @mono
+        ulocate building core 0 0 0 0 0 core
+_skipCoreLocate:
+sensor a core @copper
+op sub da a pa
+set pa a
+set t @time
+op sub dt t pt
+set pt t
+op div r da dt
+op idiv r r 1e-3
+print "Rate (/s): "
+print r
+printflush message1
+wait 0.7

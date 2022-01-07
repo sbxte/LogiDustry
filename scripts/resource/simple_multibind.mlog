@@ -1,0 +1,86 @@
+set unitType @flare
+set itemType @copper
+set unitCount 5
+
+op mul flag @mapw @thisy
+op add flag flag @thisx
+
+start:
+getlink block 0
+jump start equal block 0
+
+# Unit select
+op mul counterJump unitI 2
+op add @counter @counter counterJump
+    ubind unit1
+    jump cntr_uSelect always 0
+    ubind unit2
+    jump cntr_uSelect always 0
+    ubind unit3
+    jump cntr_uSelect always 0
+    ubind unit4
+    jump cntr_uSelect always 0
+    ubind unit5
+    jump cntr_uSelect always 0
+    ubind unit6
+    jump cntr_uSelect always 0
+    ubind unit7
+    jump cntr_uSelect always 0
+    ubind unit8
+    jump cntr_uSelect always 0
+    ubind unit9
+cntr_uSelect:
+
+# Binding
+sensor uCtrl @unit @controlled
+jump bind greaterThan uCtrl 1
+sensor uDead @unit @dead
+jump bind_skip equal uDead 0
+    bind:
+        ubind unitType
+        sensor uFlag @unit @flag
+        jump bind notEqual uFlag 0
+
+    # Set unit
+    op mul counterJump unitI 2
+    op add @counter @counter counterJump
+        set unit1 @unit
+        jump bind_setUnit always 0
+        set unit2 @unit
+        jump bind_setUnit always 0
+        set unit3 @unit
+        jump bind_setUnit always 0
+        set unit4 @unit
+        jump bind_setUnit always 0
+        set unit5 @unit
+        jump bind_setUnit always 0
+        set unit6 @unit
+        jump bind_setUnit always 0
+        set unit7 @unit
+        jump bind_setUnit always 0
+        set unit8 @unit
+        jump bind_setUnit always 0
+        set unit9 @unit
+    bind_setUnit:
+bind_skip:
+ucontrol flag flag
+
+# Unit control
+sensor uItem @unit @firstItem
+jump goToCore notEqual uItem itemType
+jump goToCore equal uItem 0
+    sensor bx block @x
+    sensor by block @y
+    ucontrol itemDrop block 999
+    ucontrol move bx by
+    jump ctrl_end always 0
+goToCore:
+    ulocate building core 0 0 cx cy 0 core
+    ucontrol itemDrop core 999
+    ucontrol itemTake core itemType 999
+    ucontrol move cx cy
+ctrl_end:
+
+op add unitI unitI 1
+op mod unitI unitI unitCount
+jump start always 0
