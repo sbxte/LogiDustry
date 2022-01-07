@@ -1,0 +1,15 @@
+# Unit Griefe'th
+lookup unit unit i
+ubind unit
+op rand flag flag 1e6
+op floor flag flag
+ucontrol flag flag
+ucontrol targetp @unit 1
+op rand mx @mapw
+op rand my @maph
+ucontrol move mx my
+op rand boost 2
+op floor boost boost
+ucontrol boost boost
+op add i i 1
+op mod i i @unitCount
