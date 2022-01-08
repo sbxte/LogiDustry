@@ -10,19 +10,28 @@ op add flag flag @thisx
 
 start:
 
+# Powered or not
+    # sensor powerIn projector1 @powerNetIn
+    # sensor powerOut projector1 @powerNetOut
+    # jump disable lessThanEq powerIn powerOut
 
-# Enable/disable based on timescale
+# Enable/disable if ODD nearby
 sensor ts @this @timescale
-jump disable equal ts 2.5
+jump disable greaterThan ts 2.25
 jump disable_skip equal @links 1
     loop:
         getlink b i
         sensor ts b @timescale
-        jump disable equal ts 2.5
+        op greaterThan tsODD ts 2.25
+        op land disable disable tsODD
         op add i i 1
     jump loop lessThan i @links
+    jump disable_skip equal disable 1
+
 
     disable:
+        ucontrol flag 0
+        ubind 0
         set i 0
         control enabled projector1 0
         jump start always 0
@@ -33,6 +42,8 @@ control enabled projector1 1
 # Bind flare
 sensor uCtrl @unit @controlled
 jump bind greaterThan uCtrl 1
+sensor uFlag @unit @flag
+jump bind notEqual uFlag flag
 sensor uDead @unit @dead
 jump bind_skip equal uDead 0
     bind:
