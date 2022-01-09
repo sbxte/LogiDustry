@@ -1,11 +1,10 @@
 # Switch
 sensor enabled switch1 @enabled
-jump _skipDisabled equal enabled 1
-    print "[sky]Flare Keeper v1.1[] by [green]SBytes"
-    print "\n\n[magenta] Disabled"
+jump disable_skip equal enabled 1
+    print "[sky]Flare Keeper v1.2[] by [green]SBytes\n\n[magenta] Disabled"
     printflush message1
     end
-_skipDisabled:
+disable_skip:
 
 
 # Bind Unit
@@ -13,18 +12,18 @@ ubind @flare
 
 # Unit dead?
 sensor uDead unit @dead
-jump _printUnits equal uDead 1
+jump printUnits equal uDead 1
 
 
 # Print results
-jump _skipPrintUnits notEqual unit @unit
-    _printUnits:
-        print "[sky]Flare Keeper v1.1[] by [green]SBytes[]\n[lightgray]Now with a deflagger![]\n\n"
-        jump _skipPrintInit notEqual prevTime 0
+jump print_skip notEqual unit @unit
+    printUnits:
+        print "[sky]Flare Keeper v1.2[] by [green]SBytes[]\n[lightgray]Fixed checks and improved flare protection[]\n\n"
+        jump skipPrintInit notEqual prevTime 0
             print "Initializing Timer..."
             set prevTime @time
-            jump _goodTime always
-        _skipPrintInit:
+            jump printSlowProc_skip always
+        skipPrintInit:
         print " Count: "
         print uCount
         print "\n Deflagged: "
@@ -34,51 +33,54 @@ jump _skipPrintUnits notEqual unit @unit
         print ")"
         op sub timeTaken @time prevTime
         set prevTime @time
-        op lessThanEq goodTime timeTaken 1e4
-        jump _goodTime equal goodTime 1
+        op lessThanEq printSlowProc_skip timeTaken 1e4
+        jump printSlowProc_skip equal printSlowProc_skip 1
             print "\n\n[red] Processor too slow![]\n    "
             op div timeTakenF timeTaken 1e1
             op floor timeTakenF timeTakenF
             op div timeTakenF timeTakenF 1e2
             print timeTakenF
             print "s > 10s\n[gray]Copy code into faster processor and link switch and message"
-        _goodTime:
+        printSlowProc_skip:
         printflush message1
         set uCount 0
         op add uDTCount uDTCount uDCount
         set uDCount 0
         set unit @unit
-_skipPrintUnits:
+print_skip:
 
 # Ctrl check
-sensor flag @unit @flag
-sensor ctrl @unit @controlled
-jump _deflag notEqual flag 0
 sensor ctrlr @unit @controller
-jump _skipCtrlCheck strictEqual ctrlr @this
-jump 0 equal ctrl 1
-_skipCtrlCheck:
+jump ctrlCheck_skip strictEqual ctrlr @this
+    sensor ctrl @unit @controlled
+    jump 0 equal ctrl 1
+ctrlCheck_skip:
+sensor flag @unit @flag
+jump deflag notEqual flag 0
 
 
 # Add counter
 op add uCount uCount 1
 
 # Locate core
-ulocate building core false 0 cx cy null core
+ulocate building core 0 0 cx cy null core
 
 # Drop items then approach core 20 rad
 sensor item @unit @firstItem
-jump _dropItem notEqual item 0
+jump dropItem notEqual item 0
     ucontrol approach cx cy 15
     end
 
-_dropItem:
+dropItem:
     ucontrol itemDrop core 999
     ucontrol move cx cy
 end
 
 # Deflag
-_deflag:
+deflag:
     jump 0 equal ctrl 1
     op add uDCount uDCount 1
     ucontrol flag 0
+    # Also override movement
+    ulocate building core 0 0 cx cy null core
+    ucontrol move cx cy
