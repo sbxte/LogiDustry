@@ -1,7 +1,6 @@
 import re
 import random
 import string
-import secrets
 from pprint import pprint
 
 jumps = {}
@@ -10,7 +9,7 @@ JUMP_REGEX = r"jump (\d+)"
 with open(FILE_NAME, "r") as file:
     for line in file:
         if re.search(JUMP_REGEX, line):
-            jumps[re.search(JUMP_REGEX, line).group(1)] = secrets.token_hex(4)
+            jumps[re.search(JUMP_REGEX, line).group(1)] = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase, k=8))
 with open(FILE_NAME, "r") as f:
     text = f.read()
 
