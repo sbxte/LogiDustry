@@ -1,0 +1,152 @@
+op mul flag @thisy @mapw
+op add flag flag @thisx
+start:
+op sub totalRecons @links 2
+jump start equal totalRecons 0 # change later
+
+sensor sorterCfg sorter1 @config
+jump unitSelect_end equal sorterCfg prevSorterCfg
+
+jump unitSelect_nova notEqual sorterCfg @copper
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @dagger
+    set taxiBType1 @mega
+
+    set unitBType2 @mace
+    set taxiBType2 @mega
+
+    set unitBType3 @fortress
+    set taxiBType3 @mega
+
+    set unitBType4 @scepter
+    set taxiBType4 @quad
+    jump unitSelect_end always 0
+unitSelect_nova:
+jump unitSelect_crawler notEqual sorterCfg @lead
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @nova
+    set taxiBType1 null
+
+    set unitBType2 @pulsar
+    set taxiBType2 null
+
+    set unitBType3 @quasar
+    set taxiBType3 null
+
+    set unitBType4 @vela
+    set taxiBType4 null
+    jump unitSelect_end always 0
+unitSelect_crawler:
+jump unitSelect_flare notEqual sorterCfg @metaglass
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @crawler
+    set taxiBType1 @mega
+
+    set unitBType2 @atrax
+    set taxiBType2 @mega
+
+    set unitBType3 @spiroct
+    set taxiBType3 @mega
+
+    set unitBType4 @arkyid
+    set taxiBType4 @quad
+    jump unitSelect_end always 0
+unitSelect_flare:
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @flare
+    set taxiBType1 null
+
+    set unitBType2 @horizon
+    set taxiBType2 null
+
+    set unitBType3 @zenith
+    set taxiBType3 null
+
+    set unitBType4 @antumbra
+    set taxiBType4 null
+    jump unitSelect_end always 0
+unitSelect_mono:
+jump unitSelect_risso notEqual sorterCfg @graphite
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @mono
+    set taxiBType1 null
+
+    set unitBType2 @poly
+    set taxiBType2 null
+
+    set unitBType3 @mega
+    set taxiBType3 null
+
+    set unitBType4 @quad
+    set taxiBType4 null
+    jump unitSelect_end always 0
+unitSelect_risso:
+jump unitSelect_retusa notEqual sorterCfg @sand
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @risso
+    set taxiBType1 @mega
+
+    set unitBType2 @minke
+    set taxiBType2 @mega
+
+    set unitBType3 @bryde
+    set taxiBType3 @quad
+
+    set unitBType4 @sei
+    set taxiBType4 @oct
+    jump unitSelect_end always 0
+unitSelect_retusa:
+jump start notEqual sorterCfg @coal
+    set prevSorterCfg sorterCfg
+
+    set unitBType1 @retusa
+    set taxiBType1 @mega
+
+    set unitBType2 @oxynoe
+    set taxiBType2 @mega
+
+    set unitBType3 @cyerce
+    set taxiBType3 @quad
+unitSelect_end:
+
+
+set reconI 2
+recon_loop:
+    getlink reconstructor reconI
+
+    sensor reconType reconstructor @type
+    jump reconSel_t2 notEqual reconType @additive-reconstructor
+        set unitBType unitBType1
+        set taxiBType taxiBType1
+        jump reconSel_end always 0
+    reconSel_t2:
+    jump reconSel_t3 notEqual reconType @multiplicative-reconstructor
+        set unitBType unitBType2
+        set taxiBType taxiBType2
+        jump reconSel_end always 0
+    reconSel_t3:
+    jump reconSel_t4 notEqual reconType @exponential-reconstructor
+        set unitBType unitBType3
+        set taxiBType taxiBType3
+        jump reconSel_end always 0
+    reconSel_t4:
+    jump recon_loop_continue notEqual reconType @tetrative-reconstructor
+        set unitBType unitBType4
+        set taxiBType taxiBType4
+    reconSel_end:
+
+    
+
+    recon_loop_continue:
+    op add reconI reconI 1
+jump recon_loop lessThan reconI totalRecons
+
+jump start always 0
+
+print "Unit Upgrader: Unit Trees Edition v1.0 by SBytes"

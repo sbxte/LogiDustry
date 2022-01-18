@@ -1,0 +1,41 @@
+# DT
+    # op sub _dt @time _pt
+    # set _pt @time
+    # print _dt
+    # printflush message1
+
+enable_loop:
+    getlink block i
+    sensor type block @type
+    jump enable_lcon equal type @micro-processor
+    jump enable equal type @mender
+    jump enable_lcon notEqual type @mend-projector
+        enable:
+        control enabled block enable
+    enable_lcon:
+    op add i i 1
+jump enable_loop lessThan i @links
+set i 0
+
+op sub checkETime @time checkPTime
+jump 0 lessThan checkETime 1e3
+    check:
+    set checkPTime @time
+    set enable 0
+    check_loop:
+        getlink block i
+        sensor health block @health
+        sensor maxHealth block @maxHealth
+        jump check_lcon equal health maxHealth
+            set enable 1
+            set i 0
+            end
+        check_lcon:
+        op add i i 1
+    jump check_loop lessThan i @links
+    set i 0
+end
+
+# Credits (and maybe usage instructions)
+print "Original by Cirro"
+print "Improved by SBytes"

@@ -1,7 +1,7 @@
 ubind @flare
 sensor flag @unit @flag
-jump _end equal flag 0
+jump 0 equal flag 0
 sensor ctrl @unit @ctrl
-jump _end equal flag 1
+jump 0 equal ctrl 1
 
 ucontrol flag 0

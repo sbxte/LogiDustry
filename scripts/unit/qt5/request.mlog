@@ -1,0 +1,105 @@
+# SB's analysis. Code from Username & Zxtej's QT5.
+# "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+
+### Unloaders
+    # Exponential Cosntructor 1
+        sensor t reconstructor1 @titanium
+        jump _EC1titanU lessThan t 1400
+            control config unloader1 @silicon 0
+            jump _EC1titanU_skip always 0
+        # Titanium Unloader
+        _EC1titanU:
+            control config unloader1 @titanium 0
+        _EC1titanU_skip:
+
+    # Exponential Constructor 3
+        jump _EC3siliU lessThan t 800
+        sensor t reconstructor3 @titanium
+        jump _EC3siliU greaterThanEq t 1400
+            control config unloader2 @titanium 0
+            jump _EC3siliU_skip always 0
+        # Silicon unloader
+        _EC3siliU:
+            control config unloader2 @silicon 0
+        _EC3siliU_skip:
+
+    # Thing 3
+    sensor t reconstructor2 @titanium
+    jump _thing3 lessThan t 1400
+    control config unloader3 @silicon 0
+    jump _thing3_skip always 0
+    _thing3:
+    control config unloader3 @titanium 0
+    _thing3_skip:
+
+    # Thing 4
+    jump _thing4 lessThan t 800
+    sensor t reconstructor4 @titanium
+    jump _thing4 greaterThanEq t 1400
+    control config unloader4 @titanium 0
+    jump _thing4_skip always 0
+    _thing4:
+    control config unloader4 @plastanium 0
+    _thing4_skip:
+
+    # Still unloaders apparently. lel.
+    # Thing 5
+    sensor p reconstructor1 @payloadCount
+    sensor p1 reconstructor3 @payloadCount
+    op land p1 p p1
+    op equal p p1 0
+    control enabled router1 p 0 # excuse me what the fuck
+    sensor p reconstructor2 @payloadCount
+    sensor p2 reconstructor4 @payloadCount
+    op land p p p2
+    op equal p p 0
+    op land p p p1
+    control enabled router2 p 0
+    sensor p container1 @phase-fabric
+    jump _thing5 greaterThan p 200
+    sensor p vault1 @phase-fabric
+    jump _thing5 lessThan p 1
+    control config unloader5 @phase-fabric 0
+    jump _thing5_skip always 0
+    _thing5:
+    sensor s container1 @surge-alloy
+    _thing5_skip:
+
+    # Thing 6
+    jump _thing6 lessThanEq s 200
+    control enabled unloader5 0
+    jump _thing6_skip always 0
+    _thing6:
+    control config unloader5 @surge-alloy 0
+    control enabled unloader5 1 0
+    _thing6_skip:
+
+### Sorters. FUUUU-
+    sensor p container2 @phase-fabric
+    sensor s container2 @surge-alloy
+    jump _thing7a greaterThan p s
+    control config sorter1 @phase-fabric 0
+    jump _cellBitReq always 0
+    _thing7a:
+    jump _thing7b lessThan p 50
+    jump _thing7b lessThan s 50
+    control config sorter1 null 0
+    jump _cellBitReq always 0
+    _thing7b:
+    control config sorter1 @surge-alloy 0
+
+### Oh god the bit fuckery has started. AAAAAAAAAAAA
+_cellBitReq:
+    op shl Enable1 1 i
+    lookup item item i
+    op and Enable2 Enable1 0b1101001101110
+    jump _bitLoopSkip equal Enable2 0
+    sensor storedItem vault1 item
+    jump _bitLoopSkip greaterThan storedItem 600
+        op add write write Enable1
+    _bitLoopSkip:
+    op add i i 1
+    jump _cellBitReq lessThan i @itemCount
+    set i 0
+    write write cell1 0
+    set write 0

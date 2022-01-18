@@ -1,0 +1,64 @@
+read bit cell1 0
+set enabled 0
+set siliEn 0
+set surgeEn 0
+
+op and silReq bit 0b1000000000
+jump _skipSil equal silReq 0
+
+    set siliEn 1
+    set enabled 1
+    sensor cSil container1 @silicon
+    op greaterThanEq wait cSil 120
+    write wait cell1 4
+    jump _skipSilskip always 0
+_skipSil:
+write 0 cell1 4
+_skipSilskip:
+
+op and surReq bit 0b1000000000000
+jump _skipSur equal surReq 0
+    set surgeEn 1
+    op or enabled enabled 1
+    sensor cSur container1 @surge-alloy
+    op greaterThanEq wait cSur 120
+    write wait cell1 6
+    jump _skipSurSkip always 0
+_skipSur:
+write 0 cell1 6
+_skipSurSkip:
+
+
+control enabled unloader1 enabled
+control enabled unloader2 enabled
+control enabled unloader3 enabled
+jump 0 equal enabled 0
+
+
+op and bothEnable siliEn surgeEn
+jump bothEnable equal bothEnable 1
+
+jump surgeOnly equal siliEn 0
+    control config unloader1 @silicon
+    control config unloader2 @silicon
+    control config unloader3 @silicon
+    end
+surgeOnly:
+    control config unloader1 @surge-alloy
+    control config unloader2 @surge-alloy
+    control config unloader3 @surge-alloy
+    end
+bothEnable:
+    control config unloader2 @silicon
+    control config unloader3 @surge-alloy
+
+    op xor flicker flicker 1
+    jump flicker_no equal flicker 0
+        control config unloader1 @silicon
+        end
+    flicker_no:
+        control config unloader1 @surge-alloy
+end
+
+print "MDR Buffer vAlpha1 by SBytes"
+print "Modified for QT5 MD"

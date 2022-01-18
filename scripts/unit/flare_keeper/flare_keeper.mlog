@@ -50,14 +50,12 @@ jump print_skip notEqual unit @unit
 print_skip:
 
 # Ctrl check
-sensor ctrlr @unit @controller
-jump ctrlCheck_skip strictEqual ctrlr @this
-    sensor ctrl @unit @controlled
-    jump 0 equal ctrl 1
-ctrlCheck_skip:
 sensor flag @unit @flag
+jump skip_check equal flag 0
+sensor ctrl @unit @controlled
+jump 0 equal ctrl 1
 jump deflag notEqual flag 0
-
+skip_check:
 
 # Add counter
 op add uCount uCount 1

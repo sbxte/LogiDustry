@@ -1,0 +1,109 @@
+set unitType @flare
+set ammoType @plastanium
+getlink CenterTurret 1
+print "edit above of here"
+jump 7 notEqual f 0
+op mul f @thisy @mapw
+op add f f @thisx
+sensor tf u1 @flag
+sensor th u1 @health
+set broken 0
+jump 38 notEqual tf f
+jump 38 lessThan th 0
+sensor tf u2 @flag
+sensor th u2 @health
+set broken 1
+jump 38 notEqual tf f
+jump 38 lessThan th 0
+sensor tf u3 @flag
+sensor th u3 @health
+set broken 2
+jump 38 notEqual tf f
+jump 38 lessThan th 0
+sensor tf u4 @flag
+sensor th u4 @health
+set broken 3
+jump 38 notEqual tf f
+jump 38 lessThan th 0
+sensor th u5 @health
+sensor tf u5 @flag
+set broken 4
+jump 38 notEqual tf f
+jump 38 lessThan th 0
+sensor th u6 @health
+sensor tf u6 @flag
+set broken 5
+jump 38 notEqual tf f
+jump 38 lessThan th 0
+jump 56 always tf f
+ubind unitType
+sensor ff @unit @flag
+jump 38 notEqual ff 0
+ucontrol flag f 0
+op mul j broken 2
+op add @counter @counter j
+set u1 @unit
+jump 56 always x false
+set u2 @unit
+jump 56 always x false
+set u3 @unit
+jump 56 always x false
+set u4 @unit
+jump 56 always x false
+set u5 @unit
+jump 56 always x false
+set u6 @unit
+jump 56 always x false
+set i -4
+op add i i 4
+op add @counter @counter i
+ubind u1
+getlink b 0
+ucontrol itemDrop b 100
+jump 84 always x false
+ubind u2
+getlink b 1
+ucontrol itemDrop b 100
+jump 84 always x false
+ubind u3
+getlink b 2
+ucontrol itemDrop b 100
+jump 84 always x false
+ubind u4
+getlink b 3
+ucontrol itemDrop b 100
+jump 84 always x false
+ubind u5
+getlink b 4
+ucontrol itemDrop b 100
+jump 84 always x false
+ubind u6
+getlink b 5
+ucontrol itemDrop b 100
+jump 84 always x false
+end
+sensor fi @unit @firstItem
+jump 93 equal fi ammoType
+ulocate building core 0 @copper x y 0 b
+ucontrol move x y 0
+jump 91 equal fi null
+ucontrol itemDrop b 100
+ucontrol itemDrop @air 100
+ucontrol itemTake b ammoType 100
+jump 57 always i p
+jump 97 equal CenterTurret null
+sensor x CenterTurret @x
+sensor y CenterTurret @y
+jump 99 always x false
+set x @thisx
+set y @thisy
+ucontrol move x y 0
+set l -1
+op add l l 1
+getlink rip l
+ucontrol itemDrop rip 100
+jump 101 lessThan l @links
+sensor fi @unit @firstItem
+jump 86 notEqual fi ammoType
+jump 57 always i p
+set Author "Gewi"

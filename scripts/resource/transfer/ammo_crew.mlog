@@ -1,0 +1,221 @@
+# Kind of a failed project lol
+set units 4
+set minRes 2e3
+
+jump 0 greaterThanEq units 10
+
+op mul flag @thisy @mapw
+op add flag flag @thisx
+
+set unit1BlockI 0
+op mod unit1BlockI unit1BlockI @links
+set unit2BlockI 1
+op mod unit2BlockI unit2BlockI @links
+set unit3BlockI 2
+op mod unit3BlockI unit3BlockI @links
+set unit4BlockI 3
+op mod unit4BlockI unit4BlockI @links
+set unit5BlockI 4
+op mod unit5BlockI unit5BlockI @links
+set unit6BlockI 5
+op mod unit6BlockI unit6BlockI @links
+set unit7BlockI 6
+op mod unit7BlockI unit7BlockI @links
+set unit8BlockI 7
+op mod unit8BlockI unit8BlockI @links
+set unit9BlockI 8
+op mod unit9BlockI unit9BlockI @links
+
+set blockIIPTime @time
+start:
+
+# Block rotation
+op sub blockIIETime @time blockIIPTime
+jump block_increment_I greaterThanEq blockIIETime 8e3
+
+# Unit selection
+op mul counterJump unitI 3
+op add @counter @counter counterJump
+    ubind unit1
+    getlink block unit1BlockI
+    jump unit_sel always 0
+
+    ubind unit2
+    getlink block unit2BlockI
+    jump unit_sel always 0
+
+    ubind unit3
+    getlink block unit3BlockI
+    jump unit_sel always 0
+
+    ubind unit4
+    getlink block unit4BlockI
+    jump unit_sel always 0
+
+    ubind unit5
+    getlink block unit5BlockI
+    jump unit_sel always 0
+
+    ubind unit6
+    getlink block unit6BlockI
+    jump unit_sel always 0
+
+    ubind unit7
+    getlink block unit7BlockI
+    jump unit_sel always 0
+
+    ubind unit8
+    getlink block unit8BlockI
+    jump unit_sel always 0
+
+    ubind unit9
+    getlink block unit9BlockI
+unit_sel:
+
+# Bind unit
+sensor uFlag @unit @flag
+jump bind notEqual uFlag flag
+sensor uCtrl @unit @controlled
+jump bind greaterThan uCtrl 1
+sensor uDead @unit @dead
+jump bind_skip equal uDead 0
+    bind:
+        op add bindAttempt bindAttempt 1
+        jump _end greaterThan bindAttempt 8
+        ubind @flare
+        sensor uFlag @unit @flag
+        jump bind notEqual uFlag 0
+    ucontrol flag flag
+
+    op mul counterJump unitI 2
+    op add @counter @counter counterJump
+        set unit1 @unit
+        jump bind_skip always 0
+        set unit2 @unit
+        jump bind_skip always 0
+        set unit3 @unit
+        jump bind_skip always 0
+        set unit4 @unit
+        jump bind_skip always 0
+        set unit5 @unit
+        jump bind_skip always 0
+        set unit6 @unit
+        jump bind_skip always 0
+        set unit7 @unit
+        jump bind_skip always 0
+        set unit8 @unit
+        jump bind_skip always 0
+        set unit9 @unit
+bind_skip:
+
+# Turret selection
+sensor type block @type
+jump type_fs equal type @foreshadow
+jump type_ripple equal type @ripple
+jump type_cyclone equal type @cyclone
+jump type_overdrive equal type @overdrive-projector
+jump _end always 0
+
+type_fs:
+    ulocate building core 0 0 coreX coreY 0 core
+    sensor coreItem core @surge-alloy
+    jump _end lessThan coreItem minRes
+    sensor unitItem @unit @firstItem
+    jump unit_drop equal unitItem @surge-alloy
+    set itemNeeded @surge-alloy
+    jump unit_take always 0
+type_ripple:
+    ulocate building core 0 0 coreX coreY 0 core
+    sensor coreItem core @plastanium
+    jump t_ri_gra lessThan coreItem minRes
+    sensor unitItem @unit @firstItem
+    jump unit_drop equal unitItem @plastanium
+    set itemNeeded @plastanium
+    jump unit_take always 0
+
+    t_ri_gra:
+    sensor coreItem core @graphite
+    jump _end lessThan coreItem minRes
+    sensor unitItem @unit @firstItem
+    jump unit_drop equal unitItem @graphite
+    set itemNeeded @graphite
+    jump unit_take always 0
+type_cyclone:
+    ulocate building core 0 0 coreX coreY 0 core
+    sensor coreItem core @plastanium
+    jump _end lessThan coreItem minRes
+    sensor unitItem @unit @firstItem
+    jump unit_drop equal unitItem @plastanium
+    set itemNeeded @plastanium
+    jump unit_take always 0
+type_overdrive:
+    ulocate building core 0 0 coreX coreY 0 core
+    sensor coreItem core @phase-fabric
+    jump _end lessThan coreItem minRes
+    sensor unitItem @unit @firstItem
+    jump unit_drop equal unitItem @phase-fabric
+    set itemNeeded @phase-fabric
+    # jump unit_take always 0
+
+# Unit control
+unit_take:
+    ucontrol itemDrop core 999
+    ucontrol itemTake core itemNeeded 999
+    ucontrol move coreX coreY
+    jump _end always 0
+unit_drop:
+    ucontrol itemDrop block 999
+    sensor blockX block @x
+    sensor blockY block @y
+    ucontrol move blockX blockY
+    jump _end always 0
+
+block_increment_I:
+    set blockIIPTime @time
+    op rand unit1BlockI @links 0
+    op floor unit1BlockI unit1BlockI 0
+    op rand unit2BlockI @links 0
+    op floor unit2BlockI unit2BlockI 0
+    op rand unit3BlockI @links 0
+    op floor unit3BlockI unit3BlockI 0
+    op rand unit4BlockI @links 0
+    op floor unit4BlockI unit4BlockI 0
+    op rand unit5BlockI @links 0
+    op floor unit5BlockI unit5BlockI 0
+    op rand unit6BlockI @links 0
+    op floor unit6BlockI unit6BlockI 0
+    op rand unit7BlockI @links 0
+    op floor unit7BlockI unit7BlockI 0
+    op rand unit8BlockI @links 0
+    op floor unit8BlockI unit8BlockI 0
+    op rand unit9BlockI @links 0
+    op floor unit9BlockI unit9BlockI 0
+    # op add unit1BlockI unit1BlockI 1
+    # op mod unit1BlockI unit1BlockI @links
+    # op add unit2BlockI unit2BlockI 1
+    # op mod unit2BlockI unit2BlockI @links
+    # op add unit3BlockI unit3BlockI 1
+    # op mod unit3BlockI unit3BlockI @links
+    # op add unit4BlockI unit4BlockI 1
+    # op mod unit4BlockI unit4BlockI @links
+    # op add unit5BlockI unit5BlockI 1
+    # op mod unit5BlockI unit5BlockI @links
+    # op add unit6BlockI unit6BlockI 1
+    # op mod unit6BlockI unit6BlockI @links
+    # op add unit7BlockI unit7BlockI 1
+    # op mod unit7BlockI unit7BlockI @links
+    # op add unit8BlockI unit8BlockI 1
+    # op mod unit8BlockI unit8BlockI @links
+    # op add unit9BlockI unit9BlockI 1
+    # op mod unit9BlockI unit9BlockI @links
+
+_end:
+set bindAttempt 0
+op add unitI unitI 1
+jump start lessThan unitI units
+set unitI 0
+
+jump start always 0
+
+print "Ammunition Crew vAlpha1 by SBytes"
+print "Max 9 units"

@@ -1,75 +1,175 @@
-# Original by Gewi
-# (Attempted) Improvement by SBytes
-
-# Init
-jump 0 equal projector1 null
-sensor px projector1 @x
-sensor py projector1 @y
-op mul flag @thisy @mapw
-op add flag flag @thisx
+# sends phase into an overdrive when there is more than 100 in core but no dome in range
+# linked to projector/dome, probe points that need to be under dome to disable
+# can also be linked to a dome to supply it instead of the projector
+setup:
+jump dome_setup notEqual dome1 null
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\n[red]⚠ Missing linked [][red] or []"
+printflush message1
+jump setup equal projector1 null
+sensor x projector1 @x
+sensor y projector1 @y
+op mul f @thisy @mapw
+op add f f @thisx
 
 start:
+jump dome_setup notEqual dome1 null
+jump setup equal projector1 null
+jump multiple_overdrives notEqual projector2 null
+jump continue_logic always
+disable_logic:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\n[purple] Disabled by []"
+printflush message1
+jump start always
+continue_logic:
 
-# Powered or not
-    # sensor powerIn projector1 @powerNetIn
-    # sensor powerOut projector1 @powerNetOut
-    # jump disable lessThanEq powerIn powerOut
-
-# Enable/disable if ODD nearby
 sensor ts @this @timescale
-jump disable greaterThan ts 2.25
-jump disable_skip equal @links 1
-    loop:
-        getlink b i
-        sensor ts b @timescale
-        op greaterThan tsODD ts 2.25
-        op land disable disable tsODD
-        op add i i 1
+op equal enable ts 2.5
+sensor ts @this @timescale
+op equal boosted ts 2.5
+op or enable enable boosted
+jump enable equal enable 0
+jump disable equal @links 1
+
+set i 0
+loop:
+    getlink a i
+    jump dont_check equal a projector1
+        sensor ts a @timescale
+        jump enable notEqual ts 2.5
+    dont_check:
+    op add i i 1
     jump loop lessThan i @links
-    jump disable_skip equal disable 1
 
-
-    disable:
-        ucontrol flag 0
-        ubind 0
-        set i 0
-        control enabled projector1 0
-        jump start always 0
-disable_skip:
+disable:
+    print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\n[orange]All buildings are covered under []\n[orange]Disabled []"
+    printflush message1
+    ucontrol flag 0
+    ubind 0
+    control enabled projector1 0
+    jump start always
+enable:
 control enabled projector1 1
+sensor switched switch1 @enabled
+jump disable_logic strictEqual switched 0
+sensor h @unit @health
+jump new_flare lessThan h 0
+    sensor tf @unit @flag
+    jump keep_flare equal tf f
+    jump keep_flare strictEqual tf 0
+new_flare:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nNo  bound, getting new one"
+printflush message1
+new_flare_loop:
+    ubind @flare
+    sensor ff @unit @flag
+    jump new_flare_loop notEqual ff 0
 
+keep_flare:
+ucontrol flag f
+sensor fi @unit @firstItem
+jump drop equal fi @phase-fabric
+ulocate building core 0 @copper cx cy 0 b
+sensor amount b @phase-fabric
+jump missing_phase lessThan amount 100
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nTaking "
+printflush message1
+ucontrol move cx cy
+ucontrol itemDrop b 100
+jump skip_drop equal fi null
+    ucontrol itemDrop @air 100
+skip_drop:
+ucontrol itemTake b @phase-fabric 100
+jump start always
+drop:
+    print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDelivering "
+    printflush message1
+    ucontrol move x y
+    ucontrol itemDrop projector1 100
+jump start always
 
-# Bind flare
-sensor uCtrl @unit @controlled
-jump bind greaterThan uCtrl 1
-sensor uFlag @unit @flag
-jump bind notEqual uFlag flag
-sensor uDead @unit @dead
-jump bind_skip equal uDead 0
-    bind:
-        ubind @flare
-        sensor uFlag @unit @flag
-        jump bind notEqual uFlag 0
-        ucontrol flag flag
-bind_skip:
+missing_phase:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\n[red]⚠[]  [red]< 100 in [][red], refusing to take"
+printflush message1
+jump start always
 
-# Phase check
-ulocate building core 0 0 cx cy 0 core
-sensor cPhase core @phase-fabric
-jump start lessThan cPhase 100
+multiple_overdrives:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\n[red]⚠ Multiple [][red] linked, only one is supported"
+printflush message1
+jump start always
 
-# Control Unit
-sensor uItem @unit @firstItem
-jump take_skip equal uItem @phase-fabric
-    ucontrol itemDrop core 999
-    ucontrol itemTake core @phase-fabric 999
-    ucontrol move cx cy
-    jump start always 0
-take_skip:
+already_full:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDetected \n[green] is already full, refusing to take []"
+print needed-icon
+printflush message1
+ulocate building core 0 @copper cx cy 0 b
+ucontrol move cx cy
+jump dome always
 
-ucontrol itemDrop projector1 999
-ucontrol move px py
-jump start always 0
+dome_setup:
+sensor x dome1 @x
+sensor y dome1 @y
+op mul f @thisy @mapw
+op add f f @thisx
+dome:
+jump setup equal dome1 null
 
-print "Original by Gewi"
-print "Improvement by SBytes"
+sensor switched switch1 @enabled
+jump disable_logic_dome strictEqual switched 0
+jump continue_logic_dome always
+disable_logic_dome:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDetected \n[purple] Disabled by []"
+printflush message1
+jump dome always
+continue_logic_dome:
+
+control enabled projector1 0
+sensor h @unit @health
+jump new_flare_dome lessThan h 0
+    sensor tf @unit @flag
+    jump keep_flare_dome equal tf f
+    jump keep_flare_dome strictEqual tf 0
+new_flare_dome:
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDetected \nNo  bound, getting new one"
+printflush message1
+new_flare_dome_loop:
+    ubind @flare
+    sensor ff @unit @flag
+    jump new_flare_dome_loop notEqual ff 0
+
+keep_flare_dome:
+ucontrol flag f
+sensor fi @unit @firstItem
+sensor sili dome1 @silicon
+sensor phase dome1 @phase-fabric
+jump phase lessThan phase sili
+    set needed @silicon
+    set needed-icon ""
+    jump continue always
+phase:
+    set needed @phase-fabric
+    set needed-icon ""
+continue:
+sensor actual dome1 needed
+jump already_full greaterThanEq actual 5
+jump drop_dome equal fi needed
+print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDetected \nTaking "
+print needed-icon
+printflush message1
+ulocate building core 0 @copper cx cy 0 b
+ucontrol move cx cy
+ucontrol itemDrop b 100
+jump skip_drop_dome equal fi null
+    ucontrol itemDrop @air 100
+skip_drop_dome:
+ucontrol itemTake b needed 10
+jump dome always
+    drop_dome:
+    print "[sky]Smart Overdrive[]\n[blue]by Gewi, [green]thanks to SBytes[][]\n\nDetected \nDelivering "
+    print needed-icon
+    printflush message1
+    ucontrol move x y
+    ucontrol itemDrop dome1 100
+jump dome always
+set Author "Gewi"
+set Helper "SBytes"
+set Link https://github.com/Gewi413/mindustry-logic/blob/main/overdrive.mlog

@@ -1,0 +1,127 @@
+# set copper 0
+# set lead 0
+# set metaglass 0
+# set graphite 0
+# set sand 0
+# set coal 0
+# set titanium 0
+# set thorium 0
+# set scrap 0
+# set silicon 0
+# set plastanium 0
+# set phase 0
+# set surge 0
+# set spore 0
+# set blast 0
+# set pyratite 0
+# set done 0
+set copper 800
+set lead 800
+set metaglass 800
+set graphite 800
+set sand 800
+set coal 800
+set titanium 800
+set thorium 800
+set scrap 800
+set silicon 800
+set plastanium 800
+set phase 800
+set surge 800
+set spore 800
+set blast 800
+set pyratite 800
+set done 1
+_edit:
+jump _edit equal done 0
+
+start:
+getlink cell 0
+jump start equal cell1 0
+getlink storage 1
+jump start equal storage 0
+
+sensor sCopper storage @copper
+op lessThan gCopper sCopper copper
+op shl bit gCopper 0
+
+sensor sLead storage @lead
+op lessThan gLead sLead lead
+op shl bit_ gLead 1
+op add bit bit bit_
+
+sensor sMetaglass storage @metaglass
+op lessThan gMetaglass sMetaglass metaglass
+op shl bit_ gMetaglass 2
+op add bit bit bit_
+
+sensor sGraphite storage @graphite
+op lessThan gGraphite sGraphite graphite
+op shl bit_ gGraphite 3
+op add bit bit bit_
+
+sensor sSand storage @sand
+op lessThan gSand sSand sand
+op shl bit_ gSand 4
+op add bit bit bit_
+
+sensor sCoal storage @coal
+op lessThan gCoal sCoal coal
+op shl bit_ gCoal 5
+op add bit bit bit_
+
+sensor sTitanium storage @titanium
+op lessThan gTitanium sTitanium titanium
+op shl bit_ gTitanium 6
+op add bit bit bit_
+
+sensor sThorium storage @thorium
+op lessThan gThorium sThorium thorium
+op shl bit_ gThorium 7
+op add bit bit bit_
+
+sensor sScrap storage @scrap
+op lessThan gScrap sScrap scrap
+op shl bit_ gScrap 8
+op add bit bit bit_
+
+sensor sSilicon storage @silicon
+op lessThan gSilicon sSilicon silicon
+op shl bit_ gSilicon 9
+op add bit bit bit_
+
+sensor sPlastanium storage @plastanium
+op lessThan gPlastanium sPlastanium plastanium
+op shl bit_ gPlastanium 10
+op add bit bit bit_
+
+sensor sPhase storage @phase-fabric
+op lessThan gPhase sPhase phase
+op shl bit_ gPhase 11
+op add bit bit bit_
+
+sensor sSurge storage @surge-alloy
+op lessThan gSurge sSurge surge
+op shl bit_ gSurge 12
+op add bit bit bit_
+
+sensor sSpore storage @spore-pod
+op lessThan gSpore sSpore spore
+op shl bit_ gSpore 13
+op add bit bit bit_
+
+sensor sBlast storage @blast-compound
+op lessThan gBlast sBlast blast
+op shl bit_ gBlast 14
+op add bit bit bit_
+
+sensor sPyra storage @pyratite
+op lessThan gPyra sPyra pyratite
+op shl bit_ gPyra 15
+op add bit bit bit_
+
+write bit cell 0
+
+jump start always 0
+
+print "MDR Request vAlpha1 by SBytes"

@@ -1,0 +1,49 @@
+set FLAG_SIGN 0b100000
+start:
+sensor setup switch1 @enabled
+jump setup_skip equal setup 0
+    bind:
+        ubind @flare
+        sensor uFlag @unit @flag
+        jump bind notEqual uFlag 0
+
+    op mul flagPos @thisy @mapw
+    op add flagPos flagPos @thisx
+
+    op mul mapArea @mapw @maph
+    op mul flagDataF FLAG_SIGN mapArea
+
+    op add flag flagDataF flagPos
+    ucontrol flag flag
+
+    control enabled switch1 0
+    jump start always 0
+setup_skip:
+
+sensor uDead @unit @dead
+jump bind equal uDead 1
+
+ucontrol move @thisx @thisy
+
+lookupItem:
+    sensor inputItem sorter1 @config
+    jump lookupItem_null equal inputItem null
+
+    lookup item inputItemCompare lookupI
+    jump lookupItem_end equal inputItemCompare inputItem
+    op add lookupI lookupI 1
+    op mod lookupI lookupI @itemCount
+jump lookupItem always 0
+lookupItem_end:
+    op add lookupF lookupI 1
+    jump lookupF_skip always 0
+lookupItem_null:
+    set lookupF 0
+lookupF_skip:
+
+op add flagData FLAG_SIGN lookupF
+op mul flagDataF flagData mapArea
+op add flag flagDataF flagPos
+ucontrol flag flag
+
+jump start always 0

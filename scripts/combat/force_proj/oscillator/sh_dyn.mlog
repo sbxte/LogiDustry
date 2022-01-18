@@ -1,0 +1,73 @@
+# DT
+    op sub _dt @time _pt
+    set _pt @time
+    print _dt
+    printflush message1
+
+# Manual override
+sensor config unloader1 @config
+jump activate equal config @phase-fabric
+
+# Radar
+radar enemy any any distance hail1 1 enemy
+jump activate notEqual enemy 0
+
+op sub disableA_ETime @time disableA_PTime
+jump 0 lessThan disableA_ETime 5800
+jump disable_all always 0
+    activate:
+    control enabled projector1 1
+
+    op max currentI currentI 3
+    getlink proj currentI
+
+    # Get max heat
+    set maxHeat 200
+    sensor phase proj @phase-fabric
+    jump phase_skip equal phase 0
+        op add maxHeat maxHeat 200
+    phase_skip:
+
+    # Heat check
+    sensor heat proj @heat
+    jump heat_skip lessThan heat maxHeat
+        # Determine Next shield
+        set currentI 3
+        next_shield_loop:
+            getlink projN currentI
+            sensor typeN projN @type
+            jump nShield_loop_skip notEqual typeN @force-projector
+            sensor heatN projN @heat
+            jump 0 lessThanEq heatN 50 # found available shield
+            nShield_loop_skip:
+            op add currentI currentI 1
+        jump next_shield_loop lessThan currentI @links
+        set currentI 3
+        end
+    heat_skip:
+
+    set enableI 3
+    enable_loop:
+        getlink proj enableI
+        jump disable notEqual enableI currentI
+            control enabled proj 1
+            jump enable_skip always 0
+        disable:
+            control enabled proj 0
+        enable_skip:
+        op add enableI enableI 1
+    jump enable_loop lessThan enableI @links
+    end
+
+disable_all:
+set disableA_PTime @time
+set enableI 1
+disable_all_loop:
+    getlink proj enableI
+    control enabled proj 0
+    op add enableI enableI 1
+jump disable_all_loop lessThan enableI @links
+end
+
+print "Original by Cirro"
+print "Improvement by SBytes"

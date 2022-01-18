@@ -1,0 +1,119 @@
+# DT
+    # op sub _dt @time _pt
+    # set _pt @time
+    # print _dt
+    # printflush message1
+
+# Phase
+sensor config unloader1 @config
+jump activate equal config @phase-fabric
+
+# Radar
+radar enemy any any distance hail1 1 enemy
+jump skip equal enemy 0
+    activate:
+
+    # OD
+    control enabled projector4 1
+
+    op mul counterJump counterJump 19
+    op add @counter @counter counterJump
+
+    # Shield 1
+    sensor dead projector1 @dead
+    jump sh1_skip equal dead 1
+    jump sh1_notCurrent notEqual currentI 0
+        # Max heat (phase)
+        set maxHeat 200
+        sensor phase projector1 @phase-fabric
+        jump sh1_noPhase equal phase 0
+            op add maxHeat maxHeat 200
+        sh1_noPhase:
+
+        # Heat check
+        sensor heat projector1 @heat
+        jump sh1_goodHeat lessThan heat maxHeat
+            set currentI 1
+            end
+        sh1_goodHeat:
+
+        # Enable
+        control enabled projector1 1
+        control enabled projector2 0
+        control enabled projector3 0
+        end
+    sh1_notCurrent:
+        sensor heat projector1 @heat
+        jump sh1_skip greaterThan heat 10
+            set currentI 0
+            end
+    sh1_skip:
+
+    # Shield 2
+    sensor dead projector2 @dead
+    jump sh2_skip equal dead 1
+    jump sh2_notCurrent notEqual currentI 1
+        # Max heat (phase)
+        set maxHeat 200
+        sensor phase projector2 @phase-fabric
+        jump sh2_noPhase equal phase 0
+            op add maxHeat maxHeat 200
+        sh2_noPhase:
+
+        # Heat check
+        sensor heat projector2 @heat
+        jump sh2_goodHeat lessThan heat maxHeat
+            set currentI 2
+            end
+        sh2_goodHeat:
+
+        # Enable
+        control enabled projector1 0
+        control enabled projector2 1
+        control enabled projector3 0
+        end
+    sh2_notCurrent:
+        sensor heat projector2 @heat
+        jump sh2_skip greaterThan heat 10
+            set currentI 1
+            end
+    sh2_skip:
+
+    # Shield 3
+    sensor dead projector3 @dead
+    jump 0 equal dead 1
+    jump sh3_notCurrent notEqual currentI 2
+        # Max heat (phase)
+        set maxHeat 200
+        sensor phase projector3 @phase-fabric
+        jump sh3_noPhase equal phase 0
+            op add maxHeat maxHeat 200
+        sh3_noPhase:
+
+        # Heat check
+        sensor heat projector3 @heat
+        jump sh3_goodHeat lessThan heat maxHeat
+            set currentI 0
+            end
+        sh3_goodHeat:
+
+        # Enable
+        control enabled projector1 0
+        control enabled projector2 0
+        control enabled projector3 1
+        end
+    sh3_notCurrent:
+        sensor heat projector3 @heat
+        jump 0 greaterThan heat 10
+            set currentI 2
+            end
+    # sh3_nC_end:
+skip:
+control enabled projector4 0
+control enabled projector1 0
+control enabled projector2 0
+control enabled projector3 0
+
+end
+print "Original by Cirro"
+print "Improved by SBytes"

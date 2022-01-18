@@ -1,126 +1,124 @@
-    # Disable switch
-    sensor switch switch1 @enabled
-    jump _disabled equal switch 0
+# Disable switch
+sensor switch switch1 @enabled
+jump disabled equal switch 0
 
 
-    # Bind unit
-    ubind @corvus
-    jump _end equal @unit 0
-    op add uTotalCount uTotalCount 1
-    sensor ctrl @unit @controlled
-    jump _end equal ctrl @ctrlPlayer
-    jump _end equal ctrl @ctrlFormation
+# Bind unit
+ubind @corvus
+jump end equal @unit 0
+op add uTotalCount uTotalCount 1
+sensor ctrl @unit @controlled
+jump end equal ctrl @ctrlPlayer
+jump end equal ctrl @ctrlFormation
 
 
-    # Health checks
-        sensor health @unit @health
-        op greaterThanEq goodHealth health 15000
-        ulocate building repair false @copper routx routy found @repair-turret
-        jump _locate equal goodHealth 1
-        ucontrol approach routx routy 5
-        op add uHCount uHCount 1
-    jump _end always
+# Health checks
+sensor health @unit @health
+jump locate greaterThanEq health 15000
+ulocate building repair 0 0 repairX repairY found repairBuilding
+ucontrol approach repairX repairY 5
+op add uHCount uHCount 1
+jump end always
 
-    # Locate enemy unit and structures
-    _locate:
-        # Count
-        op add uCount uCount 1
+# Locate enemy unit and structures
+locate:
+    # Count
+    op add uCount uCount 1
 
-        jump _locate_ strictEqual buildingDead null
-        jump _shootStructures equal buildingDead 0
+    # jump locate equal buildingDead 0
+    jump shootStructures equal buildingDead 0
 
-        _locate_:
-        # TODO: ENEMY TARGETTING SHOULD BE IMPROVED
-                # jump _skipEnemyShouldTargetCheck equal enemy 0
-                # sensor enemyDead enemy @dead
-                # sensor enemyHealth enemy @maxHealth
-                # op greaterThanEq enemyHealthGood enemyHealth 6e3
-                # op xor enemyAlive enemyDead 1
-                # op and enemyShouldTarget enemyAlive enemyHealthGood
-                # jump _enemy equal enemyShouldTarget 1
-                # _skipEnemyShouldTargetCheck:
-                # uradar enemy any any maxHealth 0 1 enemy
+    # TODO: ENEMY TARGETTING SHOULD BE IMPROVED
+        # jump skipEnemyShouldTargetCheck equal enemy 0
+        # sensor enemyDead enemy @dead
+        # sensor enemyHealth enemy @maxHealth
+        # op greaterThanEq enemyHealthGood enemyHealth 6e3
+        # op xor enemyAlive enemyDead 1
+        # op and enemyShouldTarget enemyAlive enemyHealthGood
+        # jump enemy equal enemyShouldTarget 1
+        # skipEnemyShouldTargetCheck:
+        # uradar enemy any any maxHealth 0 1 enemy
 
-        ulocate building turret true 0 buildingX buildingY foundBuilding building
-        jump _shootStructures equal foundBuilding 1
-        ulocate building factory true 0 buildingX buildingY foundBuilding building
-        jump _shootStructures equal foundBuilding 1
-        ulocate building core true 0 buildingX buildingY foundBuilding building
-        jump _shootStructures equal foundBuilding 1
-    jump _end always
+    ulocate building turret true 0 buildingX buildingY foundBuilding building
+    jump shootStructures equal foundBuilding 1
+    ulocate building factory true 0 buildingX buildingY foundBuilding building
+    jump shootStructures equal foundBuilding 1
+    ulocate building core true 0 buildingX buildingY foundBuilding building
+    jump shootStructures equal foundBuilding 1
+jump end always
 
-    # Shoot at structures
-    _shootStructures:
-        # Check if building is dead
-        ucontrol getBlock buildingX buildingY buildingType building
-        op equal buildingDead buildingType @air # might use sensor instead if this doesnt work
-        write buildingDead cell1 1
-        jump 0 equal buildingDead 1
+# Shoot at structures
+shootStructures:
+    # Check if building is dead
+    ucontrol getBlock buildingX buildingY buildingType building
+    op equal buildingDead buildingType @air # might use sensor instead if this doesnt work
+    write buildingDead cell1 1
+    jump 0 equal buildingDead 1
 
-        # Approach them at corvus range
-        ucontrol approach buildingX buildingY 50
+    # Sync shots
+    op div shouldShoot @time 1000
+    op mod shouldShoot shouldShoot 6
+    op lessThanEq shouldShoot shouldShoot 1
+    ucontrol target buildingX buildingY shouldShoot
+    # Approach them at corvus range
+    ucontrol approach buildingX buildingY 50
 
-        # Sync shots
-        op div shouldShoot @time 1000
-        op mod shouldShoot shouldShoot 6
-        op lessThanEq shouldShoot shouldShoot 1
-        ucontrol target buildingX buildingY shouldShoot
-        jump _end always
+    jump end always
 
 
-    # Shoot at enemy in range (no sync needed lol)
-    _enemy:
-        sensor ex enemy @x
-        sensor ey enemy @y
-        ucontrol approach ex ey 40
-        ucontrol targetp enemy 1
-    jump _end always
+# Shoot at enemy in range (no sync needed lol)
+enemy:
+    sensor ex enemy @x
+    sensor ey enemy @y
+    ucontrol approach ex ey 40
+    ucontrol targetp enemy 1
+jump end always
 
-    # Disabled
-    _disabled:
-        print "[sky]Corvus AI v2.0[] [magenta]WIP[]\nby [green]SBytes[]\n\n[brick] Disabled"
+# Disabled
+disabled:
+    print "[sky]Corvus AI v2.0[] [magenta]WIP[]\nby [green]SBytes[]\n\n[brick] Disabled"
+    printflush message1
+end
+
+# Count and print
+end:
+    # Refresh rate
+    jump skipPrint lessThan printTimer 80
+        print "[sky]Corvus AI v2.0[] [magenta]WIP[]\nby [green]SBytes[]\n\n Count:\n    [#ffff]⚠[] "
+        print printUHCount
+        print " Healing\n    [lime][] "
+        print printUCount
+        print " Active\n     "
+        print printUTotalCount
+        print " Total \n\nTarget Building: "
+        print buildingX
+        print ", "
+        print buildingY
+                # sensor enemyX enemy @x
+                # op floor enemyXF enemyX
+                # sensor enemyY enemy @y
+                # op floor enemyYF enemyY
+                # print "\nTarget Enemy: "
+                # print enemyXF
+                # print ", "
+                # print enemyYF
         printflush message1
-    end
-
-    # Count and print
-    _end:
-        # Refresh rate
-        jump _skipPrint lessThan printTimer 80
-            print "[sky]Corvus AI v2.0[] [magenta]WIP[]\nby [green]SBytes[]\n\n Count:\n    [#ffff]⚠[] "
-            print printUHCount
-            print " Healing\n    [lime][] "
-            print printUCount
-            print " Active\n     "
-            print printUTotalCount
-            print " Total \n\nTarget Building: "
-            print buildingX
-            print ", "
-            print buildingY
-                    # sensor enemyX enemy @x
-                    # op floor enemyXF enemyX
-                    # sensor enemyY enemy @y
-                    # op floor enemyYF enemyY
-                    # print "\nTarget Enemy: "
-                    # print enemyXF
-                    # print ", "
-                    # print enemyYF
-            printflush message1
-            set printTimer 0
-        _skipPrint:
-        op add printTimer printTimer 1
+        set printTimer 0
+    skipPrint:
+    op add printTimer printTimer 1
 
 
-        sensor uDead unit @dead
-        jump _resetCount equal uDead 1
+    sensor uDead unit @dead
+    jump resetCount equal uDead 1
 
-        jump _skipResetCount notEqual unit @unit
-            _resetCount:
-                set printUHCount uHCount
-                set uHCount 0
-                set printUTotalCount uTotalCount
-                set uTotalCount 0
-                set printUCount uCount
-                set uCount 0
-                set unit @unit
-        _skipResetCount:
-    end
+    jump skipResetCount notEqual unit @unit
+        resetCount:
+            set printUHCount uHCount
+            set uHCount 0
+            set printUTotalCount uTotalCount
+            set uTotalCount 0
+            set printUCount uCount
+            set uCount 0
+            set unit @unit
+    skipResetCount:
+end

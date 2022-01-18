@@ -1,0 +1,11 @@
+read bit cell1 0
+write bit cell2 0
+
+read wait cell1 1
+read waitIn cell1 2
+op or wait wait waitIn
+write wait cell2 1
+
+end
+
+print "MDR Pylon vAlpha1 by SBytes"

@@ -1,0 +1,83 @@
+sensor cDead core @dead
+jump core_skip equal cDead false
+ubind @mono
+ulocate building core 0 0 0 0 0 core
+set maxValue 0x7fffffff
+set MaxCapI 10000
+end
+core_skip:
+
+sensor sCap core @itemCapacity
+op min sCap sCap MaxCapI
+read bit cell1 0
+
+# Surge
+op and bitSurge bit 0b1000000000000
+jump disable_surge equal bitSurge 0
+read waitSurge cell1 5
+jump disable_surge equal waitSurge 1
+sensor sSurge core @surge-alloy
+jump disable_surge lessThan sSurge sCap
+    # control config unloader1 @surge-alloy 0
+    # control config unloader2 @surge-alloy 0
+    # jump enable_unl12 always bit 0
+    control config sorter2 null
+    jump skip_surge always 0
+disable_surge:
+    control config sorter2 @surge-alloy
+skip_surge:
+
+
+
+# # Silicon
+# op and bit1 bit 0b1000000000
+# jump c equal bit1 0
+# sensor sSili core @silicon
+# jump unl12_sil greaterThanEq sSili sCap
+# c:
+# control config sorter1 @silicon 0
+# control enabled unloader1 0
+# control enabled unloader2 0
+# jump skip_sil always 0
+# unl12_sil:
+# control config unloader1 @silicon 0
+# control config unloader2 @silicon 0
+# enable_unl12:
+# control enabled unloader1 1
+# control enabled unloader2 1
+# skip_sil:
+
+op and bitSili bit 0b1000000000
+jump disable_sili equal bitSili 0
+read waitSili cell1 3
+jump disable_sili equal waitSili 1
+sensor sSili core @silicon
+jump disable_sili lessThan sSili sCap
+    control config sorter1 null
+    jump skip_sili always 0
+disable_sili:
+    control config sorter1 @silicon
+skip_sili:
+
+
+
+# op greaterThanEq e sSili sCap
+# control config sorter1 @silicon 0
+# control enabled unloader3 e 0
+# control enabled unloader4 e 0
+# control enabled unloader5 e 0
+# control enabled unloader6 e 0
+# control config unloader3 @silicon 0
+# control config unloader4 @silicon 0
+# control config unloader5 @silicon 0
+# control config unloader6 @silicon 0
+
+# Plast
+sensor sPlast core @plastanium
+op greaterThanEq e sPlast sCap
+control enabled unloader7 e 0
+control enabled unloader8 e 0
+control enabled unloader9 e 0
+control config unloader7 @plastanium 0
+control config unloader8 @plastanium 0
+control config unloader9 @plastanium 0

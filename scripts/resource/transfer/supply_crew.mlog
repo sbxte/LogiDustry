@@ -1,0 +1,277 @@
+set unit @flare
+set units 1
+
+set item1 null
+set cap1 0
+set item2 null
+set cap2 0
+set item3 null
+set cap3 0
+set item4 null
+set cap4 0
+
+set return1 null
+set min1 0
+set return2 null
+set min2 0
+
+# set unit @flare
+# set units 4
+
+# set item1 @copper
+# set cap1 10
+# set item2 @lead
+# set cap2 10
+# set item3 @silicon
+# set cap3 10
+# set item4 @titanium
+# set cap4 10
+
+# set return1 @surge-alloy
+# set min1 0
+# set return2 null
+# set min2 0
+
+op div unitItemStep 1 units
+
+op mul flag @thisy @mapw
+op add flag flag @thisx
+start:
+
+getlink destination 0
+sensor destDead destination @dead
+jump start equal destDead 1
+
+sensor destX destination @x
+sensor destY destination @y
+
+set unitI 0
+
+# Item selection
+sensor have1 destination item1
+sensor have2 destination item2
+sensor have3 destination item3
+sensor have4 destination item4
+sensor haveR1 destination return1
+sensor haveR2 destination return2
+op sub need1 cap1 have1
+op sub need2 cap2 have2
+op sub need3 cap3 have3
+op sub need4 cap4 have4
+op sub needR1 haveR1 min1 # return item to core
+op sub needR2 haveR2 min2
+op max need1 0 need1
+op max need2 0 need2
+op max need3 0 need3
+op max need4 0 need4
+op max needR1 0 needR1
+op max needR2 0 needR2
+op add needT need1 need2
+op add needT needT need3
+op add needT needT need4
+op add needT needT needR1
+op add needT needT needR2
+jump need0_skip greaterThan needT 0
+    jump inactive notEqual unit1 0
+    jump start equal needT 0
+need0_skip:
+op div need1P need1 needT
+op div need2P need2 needT
+op add need2P need2P need1P
+op div need3P need3 needT
+op add need3P need3P need2P
+op div need4P need4 needT
+op add need4P need4P need3P
+op div needR1P needR1 needT
+op add needR1P needR1P need4P
+op div needR2P needR2 needT
+op add needR2P needR2P needR1P
+
+
+set attempt 0
+set unitItemI 0
+
+# Unit select
+unit_loop:
+    op mul counterJump unitI 2
+    op add @counter @counter counterJump
+        ubind unit1
+        jump cntr_uSelect always 0
+        ubind unit2
+        jump cntr_uSelect always 0
+        ubind unit3
+        jump cntr_uSelect always 0
+        ubind unit4
+        jump cntr_uSelect always 0
+        ubind unit5
+        jump cntr_uSelect always 0
+        ubind unit6
+        jump cntr_uSelect always 0
+        ubind unit7
+        jump cntr_uSelect always 0
+        ubind unit8
+        jump cntr_uSelect always 0
+        ubind unit9
+    cntr_uSelect:
+
+
+    # Binding
+    sensor uFlag @unit @flag
+    jump bind notEqual uFlag flag
+    sensor uCtrl @unit @controlled
+    jump bind greaterThan uCtrl 1
+    sensor uDead @unit @dead
+    jump bind_skip equal uDead 0
+        bind:
+            op add attempt attempt 1
+            jump ctrl_end greaterThan attempt 8
+            ubind unit
+            sensor uFlag @unit @flag
+            jump bind notEqual uFlag 0
+        # Set flag
+        ucontrol flag flag
+
+        # Set unit
+        op add @counter @counter counterJump
+            set unit1 @unit
+            jump bind_skip always 0
+            set unit2 @unit
+            jump bind_skip always 0
+            set unit3 @unit
+            jump bind_skip always 0
+            set unit4 @unit
+            jump bind_skip always 0
+            set unit5 @unit
+            jump bind_skip always 0
+            set unit6 @unit
+            jump bind_skip always 0
+            set unit7 @unit
+            jump bind_skip always 0
+            set unit8 @unit
+            jump bind_skip always 0
+            set unit9 @unit
+    bind_skip:
+
+
+
+    # Item selection
+    jump inactive equal needT 0
+    sensor uItem @unit @firstItem
+
+    jump item_return_skip lessThan unitItemI need4P
+        jump ctrl_return_drop notEqual uItem null
+        jump ctrl_return_take always 0
+    item_return_skip:
+
+    jump item2 notEqual uItem item1
+        jump ctrl_drop lessThan have1 cap1
+        jump ctrl_take always 0
+    item2:
+    jump item3 notEqual uItem item2
+        jump ctrl_drop lessThan have2 cap2
+        jump ctrl_take always 0
+    item3:
+    jump item4 notEqual uItem item3
+        jump ctrl_drop lessThan have3 cap3
+        jump ctrl_take always 0
+    item4:
+    jump ctrl_take notEqual uItem item4
+    jump ctrl_drop lessThan have4 cap4
+    jump ctrl_take always 0
+
+
+    # Unit control
+    ctrl_drop:
+        ucontrol itemDrop destination 999
+        ucontrol move destX destY
+        jump ctrl_end always 0
+    ctrl_take:
+        jump ctrl_end equal needT 0
+        jump choose_i2 greaterThan unitItemI need1P
+            set itemToTake item1
+            jump choose_end always 0
+        choose_i2:
+        jump choose_i3 greaterThan unitItemI need2P
+            set itemToTake item2
+            jump choose_end always 0
+        choose_i3:
+        jump choose_i4 greaterThan unitItemI need3P
+            set itemToTake item3
+            jump choose_end always 0
+        choose_i4:
+            set itemToTake item4
+        choose_end:
+        ulocate building core 0 0 cx cy 0 core
+        ucontrol itemDrop core 999
+        ucontrol itemTake core itemToTake 999
+        ucontrol move cx cy
+        jump ctrl_end always 0
+    ctrl_return_take:
+        jump ctrl_end equal needT 0
+        jump choose_rI2 greaterThan unitItemI needR1P
+            set itemToTake return1
+            jump choose_rEnd always 0
+        set itemToTake return1
+        choose_rI2:
+            set itemToTake return2
+        choose_rEnd:
+        ucontrol itemTake destination itemToTake 999
+        ucontrol move destX destY
+        jump ctrl_end always 0
+    ctrl_return_drop:
+        ulocate building core 0 0 cx cy 0 core
+        ucontrol itemDrop core 999
+        ucontrol move cx cy
+    ctrl_end:
+
+    # Reset stuff and loop back
+    set attempt 0
+    op add unitI unitI 1
+    op mul unitItemI unitItemStep unitI
+jump unit_loop lessThan unitI units
+jump start always 0
+
+# Idle (unflag n unset)
+inactive:
+    op mul counterJump unitI 3
+    op add @counter @counter counterJump
+        set 0 0
+        ubind unit1
+        jump inactive_select always 0
+        set unit1 0
+        ubind unit2
+        jump inactive_select always 0
+        set unit2 0
+        ubind unit3
+        jump inactive_select always 0
+        set unit3 0
+        ubind unit4
+        jump inactive_select always 0
+        set unit4 0
+        ubind unit5
+        jump inactive_select always 0
+        set unit5 0
+        ubind unit6
+        jump inactive_select always 0
+        set unit6 0
+        ubind unit7
+        jump inactive_select always 0
+        set unit7 0
+        ubind unit8
+        jump inactive_select always 0
+        set unit8 0
+        ubind unit9
+    inactive_select:
+
+    ulocate building core 0 0 cx cy 0 core
+    ucontrol move cx cy
+    ucontrol flag 0
+
+    op add unitI unitI 1
+jump inactive lessThan unitI units
+set unit9 0
+jump start always 0
+
+print "Supply Crew v2.0-B.1 by SBytes"
+print "Beta Version!"
+print "Bug Note: 1 Unit flare item selection is bugged. Somehow"

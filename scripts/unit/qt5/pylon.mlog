@@ -1,0 +1,23 @@
+read bit cell1 0
+write bit cell2 0
+
+read wait cell1 1
+read waitIn cell1 2
+op or wait wait waitIn
+write wait cell2 1
+
+read wait2a cell1 3
+read waitIn2a cell1 4
+op or wait2a wait2a waitIn2a
+op notEqual wait2a wait2a 0
+write wait2a cell2 3
+
+read wait2b cell1 5
+read waitIn2b cell1 6
+op or wait2b wait2b waitIn2b
+op notEqual wait2b wait2b 0
+write wait2b cell2 5
+end
+
+print "MDR Pylon vAlpha1 by SBytes"
+print "Modified for QT5 MD"

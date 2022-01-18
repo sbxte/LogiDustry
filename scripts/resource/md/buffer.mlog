@@ -1,0 +1,34 @@
+read bit cell1 0
+set i 0
+bit:
+    lookup item item i
+    op shl bSel 1 i
+    op and bReq bSel bit
+    jump unload_skip equal bReq 0
+        set needed item
+        jump unload always 0
+    unload_skip:
+    op add i i 1
+jump bit lessThan i 16
+
+write 0 cell1 2
+control enabled unloader1 0
+control enabled unloader2 0
+control enabled unloader3 0
+end
+
+unload:
+sensor cItem container1 needed
+op greaterThanEq wait cItem 80
+write wait cell1 2
+
+control config unloader1 needed
+control config unloader2 needed
+control config unloader3 needed
+control enabled unloader1 1
+control enabled unloader2 1
+control enabled unloader3 1
+
+end
+
+print "MDR Buffer vAlpha1 by SBytes"

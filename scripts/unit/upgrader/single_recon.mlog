@@ -1,0 +1,452 @@
+# Initialization
+print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]"
+printflush message1
+op mul flag @thisy @mapw
+op add flag flag @thisx
+set preSortUnit -1
+set preConType -1
+start:
+
+getlink constructor 2
+sensor conDead constructor @dead
+jump print_conDead equal conDead 1
+
+# Unbind
+sensor conProg constructor @progress
+jump unbind greaterThan conProg 0.1
+
+# Unit selection
+sensor sortUnit sorter1 @config
+
+# Tier check
+sensor conType constructor @type
+
+jump auto_sel_skip notEqual sortUnit preSortUnit
+jump auto_sel_skip notEqual conType preConType
+jump auto_sel_skip equal sortUnit 0
+jump auto_sel_skip equal conType 0
+    jump auto_sel_taxi equal taxiType null
+        jump taxi_ctrl always 0
+    auto_sel_taxi:
+        jump unit_ctrl always 0
+auto_sel_skip:
+
+set preSortUnit sortUnit
+set preConType conType
+
+# Tier 1
+jump tier_2 notEqual conType @additive-reconstructor
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,  = ,  = \n = ,  = "
+
+    # Sufficient items
+        # sensor conItem1 constructor @silicon
+        # op greaterThanEq conItemGood conItem1 40
+
+        # sensor conItem2 constructor @graphite
+        # op greaterThanEq conItem2_ conItem2 40
+        # op land conItemGood conItemGood conItem2_
+
+        # jump print_con1_item_skip equal conItemGood 1
+        #     print "\n\n[yellow]⚠ Insufficient items[]"
+        #     jump print_con1_item1_skip greaterThanEq conItem1 40
+        #         print "\n < 40"
+        #     print_con1_item1_skip:
+        #     jump print_con1_item_skip greaterThan conItem2 40
+        #         print "\n < 40"
+        #         jump _end always 0
+        # print_con1_item_skip:
+    printflush message1
+
+    jump _end equal sortUnit null
+
+    jump t1_dagger notEqual sortUnit @copper
+        set unitType @mega
+        set taxiType @dagger
+        jump taxi_ctrl always 0
+    t1_dagger:
+    jump t1_nova notEqual sortUnit @lead
+        set unitType @nova
+        set taxiType null
+        jump unit_ctrl always 0
+    t1_nova:
+    jump t1_crawler notEqual sortUnit @metaglass
+        set unitType @mega
+        set taxiType @crawler
+        jump taxi_ctrl always 0
+    t1_crawler:
+    jump t1_flare notEqual sortUnit @graphite
+        set unitType @flare
+        set taxiType null
+        jump unit_ctrl always 0
+    t1_flare:
+    jump t1_mono notEqual sortUnit @sand
+        set unitType @mono
+        set taxiType null
+        jump unit_ctrl always 0
+    t1_mono:
+    jump t1_risso notEqual sortUnit @coal
+        set unitType @mega
+        set taxiType @risso
+        jump taxi_ctrl always 0
+    t1_risso:
+    jump t1_retusa notEqual sortUnit @titanium
+        set unitType @mega
+        set taxiType @retusa
+        jump taxi_ctrl always 0
+    t1_retusa:
+jump _end always 0
+
+
+# Tier 2
+tier_2:
+jump tier_3 notEqual conType @multiplicative-reconstructor
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,  = ,  = \n = ,  = "
+
+    # sensor conItem1 constructor @silicon
+    # op greaterThanEq conItemGood conItem1 130
+
+    # sensor conItem2 constructor @titanium
+    # op greaterThanEq conItem2_ conItem2 80
+    # op land conItemGood conItemGood conItem2_
+
+    # sensor conItem3 constructor @metaglass
+    # op greaterThanEq conItem3_ conItem3 40
+    # op land conItemGood conItemGood conItem3_
+
+    # jump print_con2_item_skip equal conItemGood 1
+    #     print "\n\n[yellow]⚠ Insufficient items[]"
+    #     jump print_con2_item1_skip greaterThanEq conItem1 130
+    #         print "\n < 130"
+    #     print_con2_item1_skip:
+    #     jump print_con2_item2_skip greaterThan conItem2 80
+    #         print "\n < 80"
+    #     print_con2_item2_skip:
+    #     jump print_con2_item3_skip greaterThan conItem3 40
+    #         print "\n < 40"
+    #     print_con2_item3_skip:
+    #     jump _end always 0
+    # print_con2_item_skip:
+    printflush message1
+
+    jump _end equal sortUnit null
+
+    # Mace
+    jump t2_pulsar notEqual sortUnit @copper
+        set unitType @mega
+        set taxiType @mace
+        jump taxi_ctrl always 0
+    t2_pulsar:
+    jump t2_atrax notEqual sortUnit @lead
+        set unitType @pulsar
+        set taxiType null
+        jump unit_ctrl always 0
+    t2_atrax:
+    jump t2_horizon notEqual sortUnit @metaglass
+        set unitType @mega
+        set taxiType @atrax
+        jump taxi_ctrl always 0
+    t2_horizon:
+    jump t2_poly notEqual sortUnit @graphite
+        set unitType @horizon
+        set taxiType null
+        jump unit_ctrl always 0
+    t2_poly:
+    jump t2_minke notEqual sortUnit @sand
+        set unitType @poly
+        set taxiType null
+        jump unit_ctrl always 0
+    t2_minke:
+    jump t2_oxynoe notEqual sortUnit @coal
+        set unitType @mega
+        set taxiType @minke
+        jump taxi_ctrl always 0
+    t2_oxynoe:
+
+
+
+    jump _end always 0
+
+# Tier 3
+tier_3:
+jump tier_4 notEqual conType @exponential-reconstructor
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = ,  = ,  = "
+
+
+    # sensor conItem1 constructor @silicon
+    # op greaterThanEq conItemGood conItem1 850
+
+    # sensor conItem2 constructor @titanium
+    # op greaterThanEq conItem2_ conItem2 750
+    # op land conItemGood conItemGood conItem2_
+
+    # sensor conItem3 constructor @plastanium
+    # op greaterThanEq conItem3_ conItem3 650
+    # op land conItemGood conItemGood conItem3_
+
+    # jump print_con3_item_skip equal conItemGood 1
+    #     print "\n\n[yellow]⚠ Insufficient items[]"
+    #     jump print_con3_item1_skip greaterThanEq conItem1 850
+    #         print "\n < 850"
+    #     print_con3_item1_skip:
+    #     jump print_con3_item2_skip greaterThan conItem2 750
+    #         print "\n < 750"
+    #     print_con3_item2_skip:
+    #     jump print_con3_item3_skip greaterThan conItem3 650
+    #         print "\n < 650"
+    #     print_con3_item3_skip:
+    #     jump _end always 0
+    # print_con3_item_skip:
+    printflush message1
+
+    jump _end equal sortUnit null
+
+    # Units
+    jump t3_fortress notEqual sortUnit @copper
+        set unitType @mega
+        set taxiType @fortress
+        jump taxi_ctrl always 0
+    t3_fortress:
+    jump t3_quasar notEqual sortUnit @lead
+        set unitType @quasar
+        set taxiType null
+        jump unit_ctrl always 0
+    t3_quasar:
+    jump t3_spiroct notEqual sortUnit @metaglass
+        set unitType @quad
+        set taxiType @spiroct
+        jump taxi_ctrl always 0
+    t3_spiroct:
+    jump t3_zenith notEqual sortUnit @graphite
+        set unitType @zenith
+        set taxiType null
+        jump unit_ctrl always 0
+    t3_zenith:
+    jump t3_mega notEqual sortUnit @sand
+        set unitType @mega
+        set taxiType null
+        jump unit_ctrl always 0
+    t3_mega:
+    jump t3_bryde notEqual sortUnit @coal
+        set unitType @quad
+        set taxiType @bryde
+        jump taxi_ctrl always 0
+    t3_bryde:
+    jump t3_cyerce notEqual sortUnit @plastanium
+        set unitType @quad
+        set taxiType @oxynoe
+        jump taxi_ctrl always 0
+    t3_cyerce:
+
+jump _end always 0
+
+# Tier 4
+tier_4:
+jump tier_err notEqual conType @tetrative-reconstructor
+    # print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = ,  = "
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = "
+
+    # sensor conItem1 constructor @silicon
+    # op greaterThanEq conItemGood conItem1 1e3
+
+    # sensor conItem2 constructor @plastanium
+    # op greaterThanEq conItem2_ conItem2 600
+    # op land conItemGood conItemGood conItem2_
+
+    # sensor conItem3 constructor @surge-alloy
+    # op greaterThanEq conItem3_ conItem3 500
+    # op land conItemGood conItemGood conItem3_
+
+    # sensor conItem4 constructor @phase-fabric
+    # op greaterThanEq conItem4_ conItem4 400
+    # op land conItemGood conItemGood conItem4_
+
+    # jump print_con4_item_skip equal conItemGood 1
+    #     print "\n\n[yellow]⚠ Insufficient items[]"
+    #     jump print_con4_item1_skip greaterThanEq conItem1 1e3
+    #         print "\n < 1000"
+    #     print_con4_item1_skip:
+    #     jump print_con4_item2_skip greaterThan conItem2 600
+    #         print "\n < 600"
+    #     print_con4_item2_skip:
+    #     jump print_con4_item3_skip greaterThan conItem3 500
+    #         print "\n < 500"
+    #     print_con4_item3_skip:
+    #     jump print_con4_item4_skip greaterThan conItem4 400
+    #         print "\n < 400"
+    #     print_con4_item4_skip:
+    #     jump _end always 0
+    # print_con4_item_skip:
+    printflush message1
+
+    jump _end equal sortUnit null
+
+    # Units
+    jump t4_scepter notEqual sortUnit @copper
+        set unitType @quad
+        set taxiType @scepter
+        jump taxi_ctrl always 0
+    t4_scepter:
+    jump t4_vela notEqual sortUnit @lead
+        set unitType @vela
+        set taxiType null
+        jump unit_ctrl always 0
+    t4_vela:
+    jump t4_arkyid notEqual sortUnit @metaglass
+        set unitType @quad
+        set taxiType @arkyid
+        jump taxi_ctrl always 0
+    t4_arkyid:
+    jump t4_antumbra notEqual sortUnit @graphite
+        set unitType @antumbra
+        set taxiType null
+        jump unit_ctrl always 0
+    t4_antumbra:
+    jump t4_quad notEqual sortUnit @sand
+        set unitType @quad
+        set taxiType null
+        jump unit_ctrl always 0
+    t4_quad:
+    jump t4_sei notEqual sortUnit @coal
+        set unitType @oct
+        set taxiType @sei
+        jump taxi_ctrl always 0
+    t4_sei:
+
+jump _end always 0
+tier_err:
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[#ff]⚠ Reconstructor Tier Error"
+    printflush message1
+    jump start always 0
+
+
+# Regular control
+unit_ctrl:
+    sensor uType unit @type
+    jump unit_ctrl_bind notEqual uType unitType
+    sensor uFlag unit @flag
+    jump unit_ctrl_bind notEqual uFlag flag
+    sensor uDead unit @dead
+    jump unit_ctrl_bind_skip equal uDead 0
+        unit_ctrl_bind:
+            ubind unitType
+            sensor uFlag @unit @flag
+            jump unit_ctrl_bind notEqual uFlag 0
+        ucontrol flag flag 0
+        set unit @unit
+    unit_ctrl_bind_skip:
+
+    sensor conX constructor @x
+    sensor conY constructor @y
+    ucontrol move conX conY
+    ucontrol within conX conY 1.5 within
+    jump unit_ctrl_notWithin equal within 0
+        ucontrol boost 0
+        ucontrol payEnter
+    unit_ctrl_notWithin:
+    ucontrol boost 1
+jump _end always 0
+
+# Taxi control
+taxi_ctrl:
+    sensor uPayload unit @payloadType
+    jump taxi_ctrl_has_payload equal uPayload taxiType
+
+    sensor uType unit @type
+    jump taxi_ctrl_bind notEqual uType unitType
+    sensor uFlag unit @flag
+    jump taxi_ctrl_bind notEqual uFlag flag
+    sensor uDead unit @dead
+    jump taxi_ctrl_bind_skip equal uDead 0
+        taxi_ctrl_bind:
+            ubind unitType
+            sensor uFlag @unit @flag
+            jump taxi_ctrl_bind notEqual uFlag 0
+        set unit @unit
+        ucontrol flag flag 0
+    taxi_ctrl_bind_skip:
+
+    sensor tType taxi @type
+    jump taxi_ctrl_taxi_bind notEqual tType taxiType
+    sensor tFlag taxi @flag
+    jump taxi_ctrl_taxi_bind notEqual tFlag flag
+    sensor tDead taxi @dead
+    jump taxi_ctrl_taxi_bind_skip equal tDead 0
+        taxi_ctrl_taxi_bind:
+            ubind taxiType
+            sensor tFlag @unit @flag
+            jump taxi_ctrl_taxi_bind notEqual tFlag 0
+        set taxi @unit
+        ucontrol flag flag 0
+    taxi_ctrl_taxi_bind_skip:
+
+    sensor uPayload unit @payloadType
+    jump taxi_ctrl_take_payload equal uPayload null
+    jump taxi_ctrl_wrong_payload notEqual uPayload taxiType
+    jump taxi_ctrl_has_payload always 0
+        taxi_ctrl_take_payload:
+        ubind taxi
+        ucontrol stop
+        sensor taxiX taxi @x
+        sensor taxiY taxi @y
+        ubind unit
+        ucontrol move taxiX taxiY
+        ucontrol within taxiX taxiY 1 within
+        jump taxi_ctrl_end equal within 0
+            ucontrol payTake 1
+            jump taxi_ctrl_end always 0
+    taxi_ctrl_wrong_payload:
+        sensor taxiX taxi @x
+        sensor taxiY taxi @y
+        ubind unit
+        ucontrol move taxiX taxiY
+        ucontrol payDrop
+        jump taxi_ctrl_end always 0
+    taxi_ctrl_has_payload:
+        # jump taxi_ctrl_skip_calc_to equal hasCalcTo 1
+            sensor conX constructor @x
+            sensor conY constructor @y
+        #     sensor unitX unit @x
+        #     sensor unitY unit @y
+        #     op sub uDX conX unitX
+        #     op sub uDY conY unitY
+        #     op len uD uDX uDY
+        #     op div uDX uDX uD
+        #     op div uDY uDY uD
+        #     op add toX conX uDX
+        #     op add toY conY uDY
+        #     set hasCalcTo 1
+        # taxi_ctrl_skip_calc_to:
+        ubind unit
+        ucontrol move conX conY
+        ucontrol within conX conY 1.8 within
+        jump taxi_ctrl_end equal within 0
+            # set hasCalcTo 0
+            ucontrol payDrop
+    taxi_ctrl_end:
+
+
+# End
+_end:
+# printflush message1
+jump start always 0
+
+# Unbind
+unbind:
+    ubind unit
+    ucontrol flag 0 0
+    ubind taxi
+    ucontrol flag 0 0
+    set unit null
+    set taxi null
+jump start always 0
+
+# Print messages
+print_conDead:
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[#ff]⚠ No Reconstructor Linked"
+    printflush message1
+    jump start always 0
+
+jump start always 0
+
+# Credits
+print "All Tier Upgrader v1.0 by SBytes"

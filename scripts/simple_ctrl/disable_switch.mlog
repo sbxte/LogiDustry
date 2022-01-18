@@ -1,5 +1,7 @@
 sensor e switch1 @enabled
+loop:
 getlink b i
 control enabled b e
 op add i i 1
-op mod i i @links
+jump loop lessThan i @links
+set i 1

@@ -1,0 +1,46 @@
+set i 2
+set enable 0
+_thing1:
+getlink a i
+sensor ammo a @ammo
+sensor cap a @ammoCapacity
+op div percent ammo cap
+op lessThan filled percent .9
+op or enable enable filled
+op add i i 1
+jump _thing1 lessThan i @links
+jump _thing2 equal enable 1
+control enabled processor1 0
+sensor ph projector1 @phase-fabric
+op greaterThan enabled ph 3
+control enabled projector1 enabled 0
+end
+_thing2:
+control enabled processor1 1 0
+control enabled projector1 1 0
+op mul f @thisy @mapw
+op add f f @thisx
+sensor h @unit @health
+jump _thing3 lessThan h 0
+sensor tf @unit @flag
+jump _thing4 equal tf f
+_thing3:
+ubind @flare
+sensor ff @unit @flag
+jump _thing3 notEqual ff 0
+ucontrol flag f 0
+_thing4:
+sensor fi @unit @firstItem
+jump _thing5 equal fi @phase-fabric
+ulocate building core 0 @copper x y 0 b
+ucontrol move x y 0
+ucontrol itemDrop b 100
+jump _thing6 equal fi null
+ucontrol itemDrop @air 100
+_thing6:
+ucontrol itemTake b @phase-fabric 100
+end
+_thing5:
+ucontrol move @thisx @thisy 0
+ucontrol itemDrop projector1 100
+set Author "Gewi"

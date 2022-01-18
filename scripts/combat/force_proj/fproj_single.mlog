@@ -1,3 +1,2 @@
-getlink turret 0
-radar enemy any any distance turret 1 enemy
+radar enemy any any distance hail1 1 enemy
 control enabled projector1 enemy

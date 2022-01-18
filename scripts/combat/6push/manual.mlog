@@ -1,0 +1,10 @@
+sensor @counter switch1 @enabled
+radar player ally any distance @this 1 c
+sensor sh c @shooting
+sensor x c @shootX
+sensor y c @shootY
+set i 1
+getlink a i
+control shoot a x y sh 0
+op add i i 1
+jump 6 lessThan i @links

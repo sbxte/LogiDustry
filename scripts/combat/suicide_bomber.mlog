@@ -26,3 +26,6 @@ ucontrol itemTake core @pyratite 999
 sensor item @unit @firstItem
 jump 0 notEqual item 0
 ucontrol itemTake core @thorium 999
+jump 0 always 0
+
+print "Suicide Bomber Logic v1.0 by SBytes"

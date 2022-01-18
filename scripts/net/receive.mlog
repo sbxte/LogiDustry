@@ -1,0 +1,63 @@
+set FLAG_SIGN 0b100000
+start:
+
+search:
+    print "Searching..."
+    printflush message1
+    control config sorter1 null
+
+    ubind @flare
+    sensor uCtrl @unit @controlled
+    jump search notEqual uCtrl 1 # proc control pruning
+    sensor uFlag @unit @flag
+    jump search equal uFlag 0
+
+    sensor uProc @unit @controller
+    sensor uProcX uProc @x
+    sensor uProcY uProc @y
+
+    op mul uFlagPos uProcY @mapw
+    op add uFlagPos uFlagPos uProcX
+
+    op sub uFlagData uFlag uFlagPos
+    jump search lessThanEq uFlagData 0 # early exit for more pruning
+    op mul mapArea @mapw @maph
+    op div uFlagData uFlagData mapArea
+
+    op floor uFlagDataFloor uFlagData
+    jump search notEqual uFlagDataFloor uFlagData
+
+    # Extrapolate flag data
+    op not uFD_signMask 0
+    op shr uFD_signMask uFD_signMask 5
+    op shl uFD_signMask uFD_signMask 5
+    op and uFD_sign uFlagData uFD_signMask
+    op equal uFD_sign uFD_sign FLAG_SIGN
+jump search equal uFD_sign 0
+
+print "Found!"
+printflush message1
+
+listen:
+    sensor uDead @unit @dead
+    jump search equal uDead 1
+
+    sensor uFlag @unit @flag
+    jump search equal uFlag 0
+    op sub uFlagData uFlag uFlagPos
+    op div uFlagData uFlagData mapArea
+
+    jump search equal uFlagData 0
+    op floor uFlagDataFloor uFlagData
+    jump search notEqual uFlagData uFlagDataFloor
+
+    op and output uFlagData 0b011111
+    jump output_null_skip notEqual output 0
+        control config sorter1 null
+        jump listen always 0
+    output_null_skip:
+        op sub output output 1
+        lookup item outputItem output
+        control config sorter1 outputItem
+jump listen always 0
+
