@@ -1,31 +1,33 @@
-set unit @flare
-set units 1
+# set unit @flare
+# set units 1
 
-set item1 null
-set cap1 0
-set item2 null
-set cap2 0
-set item3 null
-set cap3 0
-set item4 null
-set cap4 0
+set minRes 2e3
+
+# set item1 null
+# set cap1 0
+# set item2 null
+# set cap2 0
+# set item3 null
+# set cap3 0
+# set item4 null
+# set cap4 0
 
 set return1 null
 set min1 0
 set return2 null
 set min2 0
 
-# set unit @flare
-# set units 4
+set unit @flare
+set units 8
 
-# set item1 @copper
-# set cap1 10
-# set item2 @lead
-# set cap2 10
-# set item3 @silicon
-# set cap3 10
-# set item4 @titanium
-# set cap4 10
+set item1 @copper
+set cap1 100
+set item2 @lead
+set cap2 100
+set item3 @silicon
+set cap3 100
+set item4 @titanium
+set cap4 100
 
 # set return1 @surge-alloy
 # set min1 0
@@ -33,9 +35,23 @@ set min2 0
 # set min2 0
 
 op div unitItemStep 1 units
+op div unitItemHalfStep unitItemStep 2
 
 op mul flag @thisy @mapw
 op add flag flag @thisx
+initCore:
+    ubind @flare
+    jump initCore_mono equal @unit null
+        ulocate building core 0 0 cx cy 0 core
+        ubind null
+        jump initCore_end always 0
+    initCore_mono:
+    ubind @mono
+    jump initCore equal @unit null
+        ulocate building core 0 0 cx cy 0 core
+        ubind null
+initCore_end:
+
 start:
 
 getlink destination 0
@@ -54,18 +70,39 @@ sensor have3 destination item3
 sensor have4 destination item4
 sensor haveR1 destination return1
 sensor haveR2 destination return2
+
 op sub need1 cap1 have1
 op sub need2 cap2 have2
 op sub need3 cap3 have3
 op sub need4 cap4 have4
 op sub needR1 haveR1 min1 # return item to core
 op sub needR2 haveR2 min2
+
 op max need1 0 need1
 op max need2 0 need2
 op max need3 0 need3
 op max need4 0 need4
 op max needR1 0 needR1
 op max needR2 0 needR2
+
+
+sensor coreHave1 core item1
+jump coreHave2 greaterThanEq coreHave1 minRes
+    set need1 0
+coreHave2:
+sensor coreHave2 core item2
+jump coreHave3 greaterThanEq coreHave2 minRes
+    set need2 0
+coreHave3:
+sensor coreHave3 core item3
+jump coreHave4 greaterThanEq coreHave3 minRes
+    set need3 0
+coreHave4:
+sensor coreHave4 core item4
+jump coreHaveEnd greaterThanEq coreHave4 minRes
+    set need4 0
+coreHaveEnd:
+
 op add needT need1 need2
 op add needT needT need3
 op add needT needT need4
@@ -89,7 +126,7 @@ op add needR2P needR2P needR1P
 
 
 set attempt 0
-set unitItemI 0
+set unitItemI unitItemHalfStep
 
 # Unit select
 unit_loop:
@@ -186,7 +223,8 @@ unit_loop:
         ucontrol move destX destY
         jump ctrl_end always 0
     ctrl_take:
-        jump ctrl_end equal needT 0
+        ulocate building core 0 0 cx cy 0 core
+        ucontrol itemDrop core 999
         jump choose_i2 greaterThan unitItemI need1P
             set itemToTake item1
             jump choose_end always 0
@@ -201,8 +239,6 @@ unit_loop:
         choose_i4:
             set itemToTake item4
         choose_end:
-        ulocate building core 0 0 cx cy 0 core
-        ucontrol itemDrop core 999
         ucontrol itemTake core itemToTake 999
         ucontrol move cx cy
         jump ctrl_end always 0
@@ -272,6 +308,6 @@ jump inactive lessThan unitI units
 set unit9 0
 jump start always 0
 
-print "Supply Crew v2.0-B.1 by SBytes"
+print "Supply Crew v2.0-B.2 by SBytes"
 print "Beta Version!"
 print "Bug Note: 1 Unit flare item selection is bugged. Somehow"
