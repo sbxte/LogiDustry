@@ -1,0 +1,112 @@
+set doneIndex 4
+set vDOX -176
+set vDOY -176
+read vODOX cell129 1
+read vODOY cell129 2
+read zoom cell129 3
+
+read enable cell129 0
+jump 0 equal enable 0
+read done cell129 doneIndex
+jump 0 equal done 1
+
+set linkI 0
+set dispCoordIndex 0
+set finishedCoordIndex 0
+
+
+iter1:
+    read enable cell129 0
+    jump 0 equal enable 0
+    getlink cell linkI
+    op idiv dispCoordX dispCoordIndex 176
+    op mod dispCoordY dispCoordIndex 176
+    op add dispCoordIndex dispCoordIndex 1
+    op add coordX dispCoordX vDOX
+    op add coordY dispCoordY vDOY
+    op div coordX coordX zoom
+    op div coordY coordY zoom
+    op sub coordX coordX vODOX
+    op sub coordY coordY vODOY
+    write coordX cell 1
+    write coordY cell 2
+    write 1 cell 0
+    write dispCoordX cell 4
+    write dispCoordY cell 5
+    write dispCoordIndex cell 6
+    op add linkI linkI 1
+jump iter1 lessThan linkI 128
+set linkI 0
+set dispCoordIndex 0
+
+loop:
+    read enable cell129 0
+    jump 0 equal enable 0
+    getlink cell linkI
+    read running cell 0
+    jump skip equal running 1
+        read step cell 3
+        read drawCoordX cell 4
+        read drawCoordY cell 5
+        jump drawBlack equal step 800
+            op mod drawStep step 8
+            step1:
+            jump step2 greaterThan drawStep 1
+                draw color 183 255 94 255
+                jump drawEnd always 0
+            step2:
+            jump step3 greaterThan drawStep 2
+                draw color 223 213 17 255
+                jump drawEnd always 0
+            step3:
+            jump step4 greaterThan drawStep 3
+                draw color 249 167 0 255
+                jump drawEnd always 0
+            step4:
+            jump step5 greaterThan drawStep 4
+                draw color 255 113 31 255
+                jump drawEnd always 0
+            step5:
+            jump step6 greaterThan drawStep 5
+                draw color 255 44 71 255
+                jump drawEnd always 0
+            step6:
+            jump step7 greaterThan drawStep 6
+                draw color 235 0 108 255
+                jump drawEnd always 0
+            step7:
+            jump step8 greaterThan drawStep 7
+                draw color 186 0 144 255
+                jump drawEnd always 0
+            step8:
+                draw color 104 0 171 255
+                jump drawEnd always 0
+        drawBlack:
+            draw color 0 0 0 255
+        drawEnd:
+        draw rect drawCoordX drawCoordY 1 1
+        drawflush display1
+
+        read cellCoordIndex cell 6
+        op max finishedCoordIndex finishedCoordIndex cellCoordIndex
+
+        jump skip greaterThanEq dispCoordIndex 30976
+            op idiv dispCoordX dispCoordIndex 176
+            op mod dispCoordY dispCoordIndex 176
+            op add dispCoordIndex dispCoordIndex 1
+            op add coordX dispCoordX vDOX
+            op add coordY dispCoordY vDOY
+            op sub coordX coordX vODOX
+            op sub coordY coordY vODOY
+            op div coordX coordX zoom
+            op div coordY coordY zoom
+            write coordX cell 1
+            write coordY cell 2
+            write 1 cell 0
+            write dispCoordX cell 4
+            write dispCoordY cell 5
+    skip:
+op add linkI linkI 1
+op mod linkI linkI 128
+jump loop lessThanEq finishedCoordIndex 30976
+write 1 cell129 doneIndex

@@ -1,0 +1,55 @@
+sensor dead unit @dead
+jump bind equal dead 1
+sensor controlled unit @controlled
+jump bind_end greaterThan controlled 1
+    bind:
+        # ubind @gamma
+        # jump bind_skip notEqual @unit null
+        # ubind @beta
+        # jump bind_skip notEqual @unit null
+        # ubind @alpha
+        # jump bind_skip notEqual @unit null
+        ubind @mega
+        sensor controlled @unit @controlled
+        jump bind_skip greaterThan controlled 1
+        ubind @poly
+        sensor controlled @unit @controlled
+        jump bind_skip greaterThan controlled 1
+        ubind @reign
+        sensor controlled @unit @controlled
+        jump bind_skip greaterThan controlled 1
+        ubind @corvus
+        sensor controlled @unit @controlled
+        jump bind_skip greaterThan controlled 1
+        ubind @oct
+        sensor controlled @unit @controlled
+        jump bind_skip greaterThan controlled 1
+        ubind @eclipse
+        sensor controlled @unit @controlled
+        jump bind_skip greaterThan controlled 1
+    jump bind always 0
+    bind_skip:
+    set unit @unit
+    sensor ourTeam @unit @team
+bind_end:
+write ourTeam cell2 0
+
+op add cellI2 cellIter 1
+read x cell1 cellIter
+read y cell1 cellI2
+op add addXY x y
+jump cell_continue equal addXY 0
+    ubind unit
+    ucontrol getBlock x y getType getBlock
+    jump cell_continue notEqual getType @air
+    jump cell_continue notEqual getType @solid
+    sensor getTeam getBlock @team
+    jump cell_continue equal getTeam ourTeam
+        write 0 cell1 cellIter
+        write 0 cell1 cellI2
+cell_continue:
+
+op add cellIter cellIter 2
+op mod cellIter cellIter 64
+
+end

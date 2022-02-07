@@ -1,0 +1,377 @@
+jump setupSkip strictEqual setup true
+    printflush message1
+    set unitType @flare
+    set unitSpeed 22.5
+    set requireUnits 1
+    set setup true
+    set printIter -2
+    set rangeSetup false
+    set fullLoops 1
+    op mul thisFlag @thisx 10000
+    op add thisFlag thisFlag @thisy
+setupSkip:
+
+jump domeCheck_end notEqual dome null
+    op add getlinkIter getlinkIter 1
+    op mod getlinkIter getlinkIter @links
+    getlink block getlinkIter
+    sensor temp block @type
+    jump domeCheck_end notEqual temp @overdrive-dome
+    set dome block
+    sensor domex dome @x
+    sensor domey dome @y
+domeCheck_end:
+
+sensor u1Dead unit1 @dead
+sensor u2Dead unit2 @dead
+op notEqual valid_1 u1Dead 1
+op notEqual valid_2 u2Dead 1
+op add flaggedUnits valid_1 valid_2
+
+jump LVcgGhmk equal valid_1 true
+    set unit1 null
+LVcgGhmk:
+jump dCROtSdK equal valid_2 true
+    set unit2 null
+dCROtSdK:
+
+op add printIter printIter 1
+op mod printIter printIter 10
+jump xHMDlhpP greaterThan printIter 0
+
+    print "[scarlet]"
+    sensor domeinvalid dome @dead
+    jump uyIhWesz equal domeinvalid false
+        set dome null
+        print "\nError: no dome connected."
+        jump oKWYFvPZ always 0
+    uyIhWesz:
+
+    sensor powerin dome @powerNetIn
+    sensor powerout dome @powerNetOut
+    op sub powernet powerin powerout
+    jump oKWYFvPZ greaterThan powernet 600
+        jump PhJDMTZb equal powerin 0
+            print "\nError: insufficient power."
+            jump oKWYFvPZ always 0
+        PhJDMTZb:
+        print "\nError: dome not powered."
+    oKWYFvPZ:
+
+    sensor coreinvalid core @dead
+    jump dWDBdSmM equal coreinvalid false
+        set rangeSetup false
+        jump VTriqhYU always 0
+    dWDBdSmM:
+
+    jump jfxYjHXk lessThan dist 550
+        print "\nWarning: dome is over 500 blocks"
+        print " from core. Uptime not guaranteed."
+    jfxYjHXk:
+
+    sensor coresili core @silicon
+    jump YJLGtMxD greaterThan coresili 500
+        jump aJMKsQpB equal coresili 0
+            print "\nWarning: low {silicon} in core."
+            jump YJLGtMxD always 0
+        aJMKsQpB:
+        print "\nError: no {silicon} in core."
+    YJLGtMxD:
+
+    sensor corephase core @phase-fabric
+    jump VTriqhYU greaterThan corephase 500
+        jump WKbCERtN equal corephase 0
+            print "\nWarning: low {phase} in core"
+            jump VTriqhYU always 0
+        WKbCERtN:
+        print "\nError: no {phase} in core."
+    VTriqhYU:
+
+    jump IMomqzex equal flaggedUnits 0
+        jump MuBeZtgh lessThanEq fullLoops 1
+            print "\nError: could not find a unit to "
+            print "flag."
+        MuBeZtgh:
+
+        set checkunit unit1
+        AzZUqRvY:
+            sensor flag checkunit @flag
+            jump nkJBVsOB strictEqual flag thisFlag
+                set unbindtick @tick
+                sensor unbindunit checkunit @type
+                jump bhisnXOM notEqual checkunit unit1
+                    set unit1 null
+                bhisnXOM:
+                jump QApkwZSo notEqual checkunit unit2
+                    set unit2 null
+                QApkwZSo:
+                end
+            nkJBVsOB:
+
+            sensor controller checkunit @controller
+            jump audUAphg equal controller @this
+                sensor controllerName controller @name
+                sensor controlled checkunit @controlled
+                jump dbKfpnoq notEqual controlled @ctrlProcessor
+                    sensor controllerx controller @x
+                    sensor controllery controller @y
+                    op floor controllerx controllerx 10
+                    op floor controllery controllery 10
+                    set procunit checkunit
+                    set proctick @tick
+                dbKfpnoq:
+
+                jump JHmFbXVv notEqual controlled @ctrlPlayer
+                    print "\nError: unit is being controlled "
+                    print "by "
+                    print controllerName
+                    print ".[scarlet]"
+                JHmFbXVv:
+
+                jump audUAphg notEqual controlled @ctrlFormation
+                    print "\nError: unit is being commanded "
+                    print "by "
+                    print controllerName
+                    print ".[scarlet]"
+            audUAphg:
+
+            jump IMomqzex notEqual checkunit unit1
+            jump IMomqzex strictEqual unit2 null
+                set checkunit unit2
+        jump AzZUqRvY always 0
+    IMomqzex:
+
+    op sub dropTicker @tick dropTick
+    jump qquTGMlg greaterThan dropTicker 300
+        print "\nAlert: "
+        print dropItems
+        print " "
+        print dropItem
+        print " was dropped."
+    qquTGMlg:
+
+    op sub unbindticker @tick unbindtick
+    jump ORNakIAB greaterThan unbindticker 300
+        print "\nError: "
+        print unbindunit
+        print " was unbound because its flag "
+        print "changed."
+    ORNakIAB:
+
+    op sub procticker @tick proctick
+    jump HDAtRokh greaterThan procticker 120
+        print "\nError: "
+        print procunit
+        print " is being controlled by "
+        print "a processor at: "
+        print controllerx
+        print ", "
+        print controllery
+        print "."
+    HDAtRokh:
+
+    printflush message1
+    print "[violet]Ultimate Dome Loader: Edit"
+    print "ion 6.0\n[lightgrey]By [blue]high"
+    print "[#f00]fire[blue]1[lightgrey]\n"
+    jump vtUQhMpN equal flaggedUnits requireUnits
+        jump TqyWzOCy equal fullLoops 0
+            print "\nAttempting to flag a "
+            jump lprqwiYa always 0
+        TqyWzOCy:
+            print "\nSearching for flagged "
+        lprqwiYa:
+
+        print unitType
+        print "."
+    vtUQhMpN:
+
+    jump QXXkccWM equal rangeSetup true
+        print "\nDetermining distance from core."
+    QXXkccWM:
+
+    jump ohPMihiH strictEqual unit1 null
+        sensor unit1x unit1 @x
+        sensor unit1y unit1 @y
+        op floor unit1x unit1x 10
+        op floor unit1y unit1y 10
+        print "\n"
+        print unit1
+        print " coordinates: "
+        print unit1x
+        print ", "
+        print unit1y
+        print "."
+    ohPMihiH:
+
+    jump xHMDlhpP strictEqual unit2 null
+        sensor unit2x unit2 @x
+        sensor unit2y unit2 @y
+        op floor unit2x unit2x 10
+        op floor unit2y unit2y 10
+        print "\n"
+        print unit2
+        print " coordinates: "
+        print unit2x
+        print ", "
+        print unit2y
+        print "."
+xHMDlhpP:
+
+jump opxGihhZ equal flaggedUnits requireUnits
+    ubind unitType
+    jump QTJLLcbJ strictEqual @unit null
+        jump DUbZCJDk notEqual firstunit null
+            set firstunit @unit
+            jump zdWoZyYH always 0
+        DUbZCJDk:
+        jump zdWoZyYH notEqual @unit firstunit
+    QTJLLcbJ:
+        set firstunit null
+        jump aYNQfMNs equal unitType @flare
+            jump icsJGAOI equal unitType @poly
+            jump LfEsZxcC equal unitType @mega
+            end
+        aYNQfMNs:
+            set unitType @poly
+            set unitSpeed 19.5
+            end
+        icsJGAOI:
+            set unitType @mega
+            set unitSpeed 18.75
+            end
+        LfEsZxcC:
+            set unitType @flare
+            set unitSpeed 22.5
+            op add fullLoops fullLoops 1
+            end
+    zdWoZyYH:
+
+    sensor unitflag @unit @flag
+    jump KxSOomaE strictEqual unitflag thisFlag
+        jump 0 equal fullLoops 0
+        jump 0 notEqual unitflag 0
+        sensor unitcontrolled @unit @controlled
+        jump 0 equal unitcontrolled @ctrlPlayer
+        jump 0 equal unitcontrolled @ctrlFormation
+    KxSOomaE:
+
+    jump 0 equal @unit unit1
+    jump 0 equal @unit unit2
+    ucontrol flag thisFlag @thisy 0 0 0
+    jump QYUsHQnY notEqual unit1 null
+        set unit1 @unit
+        end
+    QYUsHQnY:
+        set unit2 @unit
+        set fullLoops 0
+    end
+opxGihhZ:
+
+op add loopIter loopIter 1
+op mod loopIter loopIter flaggedUnits
+jump nfXajZxU notEqual loopIter 0
+    ubind unit1
+nfXajZxU:
+jump AnNHIomk notEqual loopIter 1
+    ubind unit2
+AnNHIomk:
+
+jump nzMvSaIP equal rangeSetup true
+    ucontrol approach @thisx @thisy 5
+    ucontrol within @thisx @thisy 7 bydome 0
+    jump 0 equal bydome 0
+        ulocate building core false @copper corex corey found core
+        op sub distx @thisx corex
+        op sub disty @thisy corey
+        op len dist distx disty
+        op div travelTime dist unitSpeed
+        op div extraItems travelTime 5
+        jump KhVLqGHW lessThan extraItems 2
+            set requireUnits 2
+        KhVLqGHW:
+        set rangeSetup true
+        end
+nzMvSaIP:
+
+jump sgWAulSp notEqual dome null
+    op mul temp @tick 1.5
+    op mod degree temp 360
+    jump nSIOnWQX strictEqual @unit unit1
+        op add degree degree 180
+    nSIOnWQX:
+    op sin sin degree 360
+    op cos cos degree 360
+    op mul diffx sin 5
+    op mul diffy cos 5
+    op add posx @thisx diffx
+    op add posy @thisy diffy
+    ucontrol move posx posy 5 0 0
+    end
+sgWAulSp:
+
+sensor unitItems @unit @totalItems
+sensor unitItem @unit @firstItem
+jump EnzJusgj greaterThan unitItems 0
+    ulocate building core false @copper corex corey found core
+    ucontrol approach corex corey 5 0 0
+    jump KtwXlDXX strictEqual flaggedUnits 1
+        jump IGwNnKZM equal @unit unit2
+            ucontrol itemTake core @silicon 1000 0 0
+            end
+        IGwNnKZM:
+        ucontrol itemTake core @phase-fabric 1000 0 0
+        end
+    KtwXlDXX:
+
+    sensor domesili dome @silicon
+    sensor domephase dome @phase-fabric
+    jump mHFHyOeH greaterThan domesili domephase
+        set take_item @silicon
+        op sub itemReq 10 domesili
+        jump fRfSlsFg always 0
+    mHFHyOeH:
+        set take_item @phase-fabric
+        op sub itemReq 10 domephase
+    fRfSlsFg:
+
+    op add itemReq itemReq extraItems
+    op add itemReq itemReq 0.5
+    op floor itemReq itemReq 0.5
+    op min itemReq 10 itemReq
+    jump 0 lessThanEq itemReq 3
+        ucontrol itemTake core take_item itemReq 0 0
+        end
+EnzJusgj:
+
+ucontrol approach domex domey 5 0 0
+ucontrol itemDrop dome 1000 0 0 0
+jump MFrYsMzW equal unitItem @silicon
+jump MFrYsMzW equal unitItem @phase-fabric
+    ucontrol itemDrop @air 1000 0 0 0
+MFrYsMzW:
+ucontrol within domex domey 6 bydome 0
+jump 0 equal bydome false
+
+jump GnyeYPXF equal flaggedUnits 2
+    sensor domeReq dome1 unitItem
+    op sub itemReq 10 domeReq
+    sensor unitItems @unit @totalItems
+    jump 0 lessThanEq unitItems itemReq
+
+    kvZYVcBi:
+    sensor controller @unit @controller
+    jump 0 notEqual controller @this
+    ucontrol itemDrop @air 1000 0 0 0
+    sensor temp @unit @totalItems
+    jump 0 notEqual unititems temp
+        set dropTick @tick
+        set dropItem unitItem
+        set dropItems unitItems
+GnyeYPXF:
+
+jump hgJQlJjh equal @unit unit2
+    jump kvZYVcBi notEqual unitItem @silicon
+    end
+hgJQlJjh:
+jump kvZYVcBi notEqual unitItem @phase-fabric

@@ -1,0 +1,354 @@
+set minRes 5e3
+set itemSelStep 0.15
+set itemSelAlpha 0.05
+set unloaderMin1 100
+set unloaderMin2 50
+set unloaderMin3 0
+print "--- Edit above ---"
+print "No touching stuff below unless you ABSOLUTELY know what you are doing :P"
+set unloaderMin unloaderMin1
+set unloader unloader1
+op max minRes minRes 0
+op max itemSelStep itemSelStep 0
+op min itemSelStep itemSelStep 1
+start:
+
+jump coreDead_skip equal minRes 0
+sensor cDead core @dead
+jump coreDead_skip equal cDead 0
+    coreDead:
+        ubind @mono
+        jump disable equal @unit null
+        ulocate building core 0 0 coreX coreY 0 core
+        jump coreDead equal core null
+coreDead_skip:
+
+
+
+
+# Item distribution request
+read needTotal cell1 16
+jump disable equal needTotal 0
+control enabled driver1 1
+
+jump itemSelP_skip notEqual unloader unloader1
+    read rCopper cell1 0
+    read rLead cell1 1
+    read rMeta cell1 2
+    read rGraph cell1 3
+    read rSand cell1 4
+    read rCoal cell1 5
+    read rTitan cell1 6
+    read rThor cell1 7
+    read rScrap cell1 8
+    read rSili cell1 9
+    read rPlast cell1 10
+    read rPhase cell1 11
+    read rSurge cell1 12
+    read rSpore cell1 13
+    read rBlast cell1 14
+    read rPyra cell1 15
+    read rTotal cell1 16
+    op div pCopper rCopper rTotal
+    sensor cCopper core @copper
+    jump cCopper greaterThan cCopper minRes
+        set pCopper 0
+    cCopper:
+    op div pLead rLead rTotal
+    sensor cLead core @lead
+    jump cLead greaterThan cLead minRes
+        set pLead 0
+    cLead:
+    op add pLead pLead pCopper
+    op div pMeta rMeta rTotal
+    sensor cMeta core @metaglass
+    jump cMeta greaterThan cMeta minRes
+        set pMeta 0
+    cMeta:
+    op add pMeta pMeta pLead
+    op div pGraph rGraph rTotal
+    sensor cGraph core @graphite
+    jump cGraph greaterThan cGraph minRes
+        set pGraph 0
+    cGraph:
+    op add pGraph pGraph pMeta
+    op div pSand rSand rTotal
+    sensor cSand core @sand
+    jump cSand greaterThan cSand minRes
+        set pSand 0
+    cSand:
+    op add pSand pSand pGraph
+    op div pCoal rCoal rTotal
+    sensor cCoal core @coal
+    jump cCoal greaterThan cCoal minRes
+        set pCoal 0
+    cCoal:
+    op add pCoal pCoal pSand
+    op div pTitan rTitan rTotal
+    sensor cTitan core @titanium
+    jump cTitan greaterThan cTitan minRes
+        set pTitan 0
+    cTitan:
+    op add pTitan pTitan pCoal
+    op div pThor rThor rTotal
+    sensor cThor core @thorium
+    jump cThor greaterThan cThor minRes
+        set pThor 0
+    cThor:
+    op add pThor pThor pTitan
+    op div pScrap rScrap rTotal
+    sensor cScrap core @scrap
+    jump cScrap greaterThan cScrap minRes
+        set pScrap 0
+    cScrap:
+    op add pScrap pScrap pThor
+    op div pSili rSili rTotal
+    sensor cSili core @silicon
+    jump cSili greaterThan cSili minRes
+        set pSili 0
+    cSili:
+    op add pSili pSili pScrap
+    op div pPlast rPlast rTotal
+    sensor cPlast core @plastanium
+    jump cPlast greaterThan cPlast minRes
+        set pPlast 0
+    cPlast:
+    op add pPlast pPlast pSili
+    op div pPhase rPhase rTotal
+    sensor cPhase core @phase-fabric
+    jump cPhase greaterThan cPhase minRes
+        set pPhase 0
+    cPhase:
+    op add pPhase pPhase pPlast
+    op div pSurge rSurge rTotal
+    sensor cSurge core @surge-alloy
+    jump cSurge greaterThan cSurge minRes
+        set pSurge 0
+    cSurge:
+    op add pSurge pSurge pPhase
+    op div pSpore rSpore rTotal
+    sensor cSpore core @spore-pod
+    jump cSpore greaterThan cSpore minRes
+        set pSpore 0
+    cSpore:
+    op add pSpore pSpore pSurge
+    op div pBlast rBlast rTotal
+    sensor cBlast core @blast-compound
+    jump cBlast greaterThan cBlast minRes
+        set pBlast 0
+    cBlast:
+    op add pBlast pBlast pSpore
+    op div pPyra rPyra rTotal
+    sensor cPyra core @pyra
+    jump cPyra greaterThan cPyra minRes
+        set pPyra 0
+    cPyra:
+    op add pPyra pPyra pBlast
+itemSelP_skip:
+
+# Item selection AAAAAAAAA
+jump itemSel_lead greaterThan itemSelIter pCopper
+    set unlConfig @copper
+    set amount rCopper
+    jump itemSel_end always 0
+itemSel_lead:
+jump itemSel_meta greaterThan itemSelIter pLead
+    set unlConfig @lead
+    set amount rLead
+    jump itemSel_end always 0
+itemSel_meta:
+jump itemSel_graph greaterThan itemSelIter pMeta
+    set unlConfig @metaglass
+    set amount rMeta
+    jump itemSel_end always 0
+itemSel_graph:
+jump itemSel_sand greaterThan itemSelIter pGraph
+    set unlConfig @graphite
+    set amount rGraph
+    jump itemSel_end always 0
+itemSel_sand:
+jump itemSel_coal greaterThan itemSelIter pSand
+    set unlConfig @sand
+    set amount rSand
+    jump itemSel_end always 0
+itemSel_coal:
+jump itemSel_titan greaterThan itemSelIter pCoal
+    set unlConfig @coal
+    set amount rCoal
+    jump itemSel_end always 0
+itemSel_titan:
+jump itemSel_thor greaterThan itemSelIter pTitan
+    set unlConfig @titanium
+    set amount rTitan
+    jump itemSel_end always 0
+itemSel_thor:
+jump itemSel_scrap greaterThan itemSelIter pThor
+    set unlConfig @thorium
+    set amount rThor
+    jump itemSel_end always 0
+itemSel_scrap:
+jump itemSel_sili greaterThan itemSelIter pScrap
+    set unlConfig @scrap
+    set amount rScrap
+    jump itemSel_end always 0
+itemSel_sili:
+jump itemSel_plast greaterThan itemSelIter pSili
+    set unlConfig @silicon
+    set amount rSili
+    jump itemSel_end always 0
+itemSel_plast:
+jump itemSel_phase greaterThan itemSelIter pPlast
+    set unlConfig @plastanium
+    set amount rPlast
+    jump itemSel_end always 0
+itemSel_phase:
+jump itemSel_surge greaterThan itemSelIter pPhase
+    set unlConfig @phase-fabric
+    set amount rPhase
+    jump itemSel_end always 0
+itemSel_surge:
+jump itemSel_spore greaterThan itemSelIter pSurge
+    set unlConfig @surge-alloy
+    set amount rSurge
+    jump itemSel_end always 0
+itemSel_spore:
+jump itemSel_blast greaterThan itemSelIter pSpore
+    set unlConfig @spore-pod
+    set amount rSpore
+    jump itemSel_end always 0
+itemSel_blast:
+jump itemSel_pyra greaterThan itemSelIter pBlast
+    set unlConfig @blast-compound
+    set amount rBlast
+    jump itemSel_end always 0
+itemSel_pyra:
+jump unlDisable greaterThan itemSelIter pPyra
+    set unlConfig @pyratite
+    set amount rPyra
+itemSel_end:
+
+control config unloader unlConfig
+
+
+jump unlDisable lessThan amount unloaderMin
+    control enabled unloader 1
+    jump unlEnable_end always 0
+unlDisable:
+    control enabled unloader 0
+unlEnable_end:
+
+
+jump unlSel_2 notEqual unloader unloader1
+    set unloader unloader2
+    set unloaderMin unloaderMin2
+    jump unlSel_end always 0
+unlSel_2:
+jump unlSel_3 notEqual unloader unloader2
+    set unloader unloader3
+    set unloaderMin unloaderMin3
+    jump unlSel_end always 0
+unlSel_3:
+    set unloader unloader1
+    set unloaderMin unloaderMin1
+unlSel_end:
+
+op add itemSelIter itemSelIter itemSelStep
+jump start lessThanEq itemSelIter 1
+op mod itemSelIter itemSelIter 1
+op max itemSelIter itemSelIter itemSelAlpha
+
+jump start always 0
+
+disable:
+    control enabled unloader1 0
+    control enabled unloader2 0
+    control enabled unloader3 0
+    control enabled driver1 0
+jump start always 0
+
+# set i 0
+# set most1N 0
+# set most2 null
+# set most2N 0
+# set most3 null
+# set most3N 0
+
+# # itemLoop:
+# #     read needAmount cell1 i
+# #     lookup item needItem i
+# #     sensor driverHas driver1 needItem
+# #     op sub needAmount needAmount driverHas
+# #     jump itemLoop_con lessThanEq needAmount 0
+
+# #     sensor coreHas core needItem
+# #     jump itemLoop_con lessThan coreHas minRes
+
+# #         jump needItem_2 lessThanEq needAmount most1N
+# #             set most3 most2
+# #             set most3N most2N
+# #             set most2 most1
+# #             set most2N most1N
+# #             set most1 needItem
+# #             set most1N needAmount
+# #             jump itemLoop_con always 0
+# #         needItem_2:
+# #         jump needItem_3 lessThanEq needAmount most2N
+# #             set most3 most2
+# #             set most3N most2N
+# #             set most2 needItem
+# #             set most2N needAmount
+# #             jump itemLoop_con always 0
+# #         needItem_3:
+# #         jump itemLoop_con lessThanEq needAmount most3N
+# #             set most3 needItem
+# #             set most3N needAmount
+# #     itemLoop_con:
+# #     op add i i 1
+# # jump itemLoop lessThan i @itemCount
+
+# # jump enable equal most1N 0
+# # set unl1_enable 1
+
+# # # Unloader cosupport
+# # jump needItem_mR2_end lessThan most2N unloaderMin
+# #     set unl2_enable 1
+
+# #     op sub dMost2N most1N most2N
+# #     jump needItem_mR2_end lessThan dMost2N unloaderHelpDMin
+# #         set most2 most1
+# # needItem_mR2_end:
+
+# # jump needItem_mR3_end lessThan most3N unloaderMin
+# #     set unl3_enable 1
+
+# #     op sub dMost3N most1N most3N
+# #     jump needItem_mR3_end lessThan dMost3N unloaderHelpDMin
+# #         set most3 most2
+# # needItem_mR3_end:
+
+# # Unloader configs
+# control config unloader1 most1
+# control config unloader2 most2
+# control config unloader3 most3
+
+### Enable unloaders
+# enable:
+#     control enabled unloader1 unl1_enable
+#     control enabled unloader2 unl2_enable
+#     control enabled unloader3 unl3_enable
+#     control enabled driver1 unl1_enable
+# jump start always 0
+
+
+# Credits
+print "MDRelay Core v2.2 by SBytes"
+print "Changelog:"
+print "- Fixed Core selecting pyra when no other res are needed"
+print "- Minor itemSelStep change"
+
+# print "Changelog (compared to v1)"
+# print "- Reworked item request protocol"
+# print "- Yeeted intermediary buffer"
+# print "- Reworked item type distribution"
+# print "- SPEED"
+# print "- Better anti-overshoot"

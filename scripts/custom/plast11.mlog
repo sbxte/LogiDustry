@@ -1,0 +1,106 @@
+# print "[#8da1e3]11 plast core (90)\n[white]Designed by [lightgray]qwertynoob"
+# print "[#8da1e3]11 plast core (90)\n[white]Designed by [lightgray]qwertynoob\n[sky]Resource Management by [green]SBytes"
+
+start:
+print "[#8da1e3]11 plast core (90)\n[white]Designed by [lightgray]qwertynoob\n\n[sky]Resource Management by [green]SBytes"
+
+sensor coreDead core @dead
+jump coreSkip equal coreDead 0
+    coreLocate:
+        ubind @mono
+        jump print_noMono equal @unit null
+        sensor flag @unit @flag
+        jump coreLocate notEqual flag 0
+    ulocate building core 0 0 0 0 0 core
+coreSkip:
+sensor cap core @itemCapacity
+
+set compressor_enable 1
+set pod_enable 1
+
+sensor titanium core @titanium
+op div titan% titanium cap
+jump titan_end greaterThan titan% 0.05
+    op idiv titanF titan% 1e-4
+    op div titanF titanF 1e2
+    print "\n[#fff]⚠ Low [white] []"
+    print titanF
+    print "% < 5% in core"
+
+    set compressor_enable 0
+    # set pod_enable 0
+titan_end:
+
+# Power
+sensor netStore node1 @powerNetStored
+sensor netCap node1 @powerNetCapacity
+op div netStore% netStore netCap
+jump power_end greaterThan netStore% 0.33
+    op idiv netStoreF netStore% 1e-4
+    op div netStoreF netStoreF 1e2
+    print "\n[#fff]⚠ Low [white] []"
+    print netStoreF
+    print "% < 33%"
+
+    set compressor_enable 0
+    set pod_enable 0
+power_end:
+
+
+# Phase
+sensor phase core @phase-fabric
+jump phase_enable greaterThanEq phase 50
+    print "\n[#fff]⚠ Low [white] []"
+    print phase
+    print " < 50 in core\nDisabled [white] []OD unloading"
+
+    control config sorter1 null
+    jump phase_end always 0
+phase_enable:
+    control config sorter1 @phase-fabric
+phase_end:
+
+# Compressor 9 (balancing)
+sensor c9_titanium compressor9 @titanium
+op greaterThanEq c9_unl_good c9_titanium 8
+control enabled unloader1 c9_unl_good
+
+
+# Enable disable stuff
+control enabled projector1 pod_enable
+jump compressor_enable equal compressor_enable 1
+    control enabled compressor1 0
+    control enabled compressor2 0
+    control enabled compressor3 0
+    control enabled compressor4 0
+    control enabled compressor5 0
+    control enabled compressor6 0
+    control enabled compressor7 0
+    control enabled compressor8 0
+    control enabled compressor9 0
+    control enabled compressor10 0
+    control enabled compressor11 0
+    set cache_compEnabled 0
+    jump compressor_end always 0
+compressor_enable:
+    jump compressor_end equal cache_compEnabled 1
+    control enabled compressor1 1
+    control enabled compressor2 1
+    control enabled compressor3 1
+    control enabled compressor4 1
+    control enabled compressor5 1
+    control enabled compressor6 1
+    control enabled compressor7 1
+    control enabled compressor8 1
+    control enabled compressor9 1
+    control enabled compressor10 1
+    control enabled compressor11 1
+    set cache_compEnabled 1
+compressor_end:
+
+printflush message1
+jump start always 0
+
+print_noMono:
+    print "\n[#ff] No mono detected"
+    printflush message1

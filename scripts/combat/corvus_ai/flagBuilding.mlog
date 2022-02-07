@@ -1,0 +1,31 @@
+op mul mapArea @mapw @maph
+
+start:
+ubind @corvus
+sensor flag @unit @flag
+jump 0 notEqual flag 0
+
+sensor unitX @unit @x
+sensor unitY @unit @y
+cell_loop:
+    op add cellI2 cellIter 1
+    read targetX cell1 cellIter
+    read targetY cell1 cellI2
+    op sub dx targetX unitX
+    op sub dy targetY unitY
+    op len dist dx dy
+    jump target lessThan dist 60
+    op add cellIter cellIter 2
+jump cell_loop lessThan cellIter 64
+set cellIter 0
+jump start always 0
+
+target:
+    op mul flag mapArea cellIter
+    op mul flagC targetY @mapw
+    op add flagC flagC targetX
+    op add flag flag flagC
+    op add flag flag 10
+    ucontrol flag flag
+jump start always 0
+

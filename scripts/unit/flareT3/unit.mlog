@@ -1,0 +1,512 @@
+jump 0 equal cell1 0
+jump 0 equal container1 0
+# jump 0 equal factory1 0
+# jump 0 equal reconstructor1 0
+# jump 0 equal reconstructor2 0
+sensor containerX container1 @x
+sensor containerY container1 @y
+
+op mul thisFlag @thisy @mapw
+op add thisFlag thisFlag @thisx
+start:
+read enable cell1 0
+jump disable equal enable 0
+
+
+
+read itemSiliconN cell1 1
+read itemLeadN cell1 2
+read itemGraphiteN cell1 3
+read itemCoalN cell1 4
+read itemTitaniumN cell1 5
+read itemMetaglassN cell1 6
+read itemPhaseN cell1 7
+read itemTotalN cell1 13
+
+
+
+unit1:
+    ubind unit1
+    jump unit1_bind equal @unit null
+    sensor unitFlag @unit @flag
+    jump unit1_bind notEqual unitFlag thisFlag
+    sensor unitCtrld @unit @controlled
+    jump unit1_bind_skip lessThanEq unitCtrld 1
+        unit1_bind:
+            ubind @flare
+            jump unit1_end equal @unit null
+            sensor unitFlag @unit @flag
+            jump unit1_bind notEqual unitFlag 0
+        ucontrol flag thisFlag
+        set unit1 @unit
+
+        unit1_bind_clearItem:
+            ulocate building core 0 0 coreX coreY 0 core
+            ucontrol itemDrop core 999
+            ucontrol approach coreX coreY 7
+            sensor unitItem @unit @firstItem
+        jump unit1_bind_clearItem notEqual unitItem null
+    unit1_bind_skip:
+
+    jump unit1_idle equal itemTotalN 0
+    sensor unitItem @unit @firstItem
+    jump unit1_takeItem equal unitItem null
+    jump unit1_itemSel_titanium notEqual unitItem @silicon
+        jump unit1_idle equal itemSiliconN 0
+        jump unit1_dropItem always 0
+    unit1_itemSel_titanium:
+    jump unit1_itemSel_metaglass notEqual unitItem @titanium
+        jump unit1_idle equal itemTitaniumN 0
+        jump unit1_dropItem always 0
+    unit1_itemSel_metaglass:
+    jump unit1_itemSel_graphite notEqual unitItem @metaglass
+        jump unit1_idle equal itemMetaglassN 0
+        jump unit1_dropItem always 0
+    unit1_itemSel_graphite:
+    jump unit1_itemSel_lead notEqual unitItem @graphite
+        jump unit1_idle equal itemGraphiteN 0
+        jump unit1_dropItem always 0
+    unit1_itemSel_lead:
+    jump unit1_itemSel_coal notEqual unitItem @lead
+        jump unit1_idle equal itemLeadN 0
+        jump unit1_dropItem always 0
+    unit1_itemSel_coal:
+    jump unit1_itemSel_phase notEqual unitItem @coal
+        jump unit1_idle equal itemCoalN 0
+        jump unit1_dropItem always 0
+    unit1_itemSel_phase:
+        jump unit1_idle equal itemPhaseN 0
+        jump unit1_dropItem always 0
+
+    unit1_takeItem:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol within coreX coreY 8 within
+        jump unit1_notWithin equal within 0
+            read counterJump cell1 8
+            op add @counter @counter counterJump
+                set itemToTake @silicon
+                jump unit1_takeItem_selEnd always 0
+                set itemToTake @lead
+                jump unit1_takeItem_selEnd always 0
+                set itemToTake @graphite
+                jump unit1_takeItem_selEnd always 0
+                set itemToTake @coal
+                jump unit1_takeItem_selEnd always 0
+                set itemToTake @titanium
+                jump unit1_takeItem_selEnd always 0
+                set itemToTake @metaglass
+                jump unit1_takeItem_selEnd always 0
+                set itemToTake @phase-fabric
+            unit1_takeItem_selEnd:
+            ucontrol itemTake core itemToTake 999
+            ucontrol approach containerX containerY 6
+            jump unit1_ctrl_end always 0
+        unit1_notWithin:
+        ucontrol approach coreX coreY 7
+        jump unit1_ctrl_end always 0
+    unit1_dropItem:
+        ucontrol itemDrop container1 999
+        ucontrol approach containerX containerY 6
+        ucontrol within containerX containerY 7 within
+        jump unit1_ctrl_end equal within 0
+            ucontrol approach coreX coreY 7
+            jump unit1_ctrl_end always 0
+    unit1_idle:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol itemDrop core 999
+        ucontrol approach coreX coreY 7
+    unit1_ctrl_end:
+unit1_end:
+
+unit2:
+    ubind unit2
+    jump unit2_bind equal @unit null
+    sensor unitFlag @unit @flag
+    jump unit2_bind notEqual unitFlag thisFlag
+    sensor unitCtrld @unit @controlled
+    jump unit2_bind_skip lessThanEq unitCtrld 1
+        unit2_bind:
+            ubind @flare
+            jump unit2_end equal @unit null
+            sensor unitFlag @unit @flag
+            jump unit2_bind notEqual unitFlag 0
+        ucontrol flag thisFlag
+        set unit2 @unit
+
+        unit2_bind_clearItem:
+            ulocate building core 0 0 coreX coreY 0 core
+            ucontrol itemDrop core 999
+            ucontrol approach coreX coreY 7
+            sensor unitItem @unit @firstItem
+        jump unit2_bind_clearItem notEqual unitItem null
+    unit2_bind_skip:
+
+    jump unit2_idle equal itemTotalN 0
+    sensor unitItem @unit @firstItem
+    jump unit2_takeItem equal unitItem null
+    jump unit2_itemSel_titanium notEqual unitItem @silicon
+        jump unit2_idle equal itemSiliconN 0
+        jump unit2_dropItem always 0
+    unit2_itemSel_titanium:
+    jump unit2_itemSel_metaglass notEqual unitItem @titanium
+        jump unit2_idle equal itemTitaniumN 0
+        jump unit2_dropItem always 0
+    unit2_itemSel_metaglass:
+    jump unit2_itemSel_graphite notEqual unitItem @metaglass
+        jump unit2_idle equal itemMetaglassN 0
+        jump unit2_dropItem always 0
+    unit2_itemSel_graphite:
+    jump unit2_itemSel_lead notEqual unitItem @graphite
+        jump unit2_idle equal itemGraphiteN 0
+        jump unit2_dropItem always 0
+    unit2_itemSel_lead:
+    jump unit2_itemSel_coal notEqual unitItem @lead
+        jump unit2_idle equal itemLeadN 0
+        jump unit2_dropItem always 0
+    unit2_itemSel_coal:
+    jump unit2_itemSel_phase notEqual unitItem @coal
+        jump unit2_idle equal itemCoalN 0
+        jump unit2_dropItem always 0
+    unit2_itemSel_phase:
+        jump unit2_idle equal itemPhaseN 0
+        jump unit2_dropItem always 0
+
+    unit2_takeItem:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol within coreX coreY 8 within
+        jump unit2_notWithin equal within 0
+            read counterJump cell1 9
+            op add @counter @counter counterJump
+                set itemToTake @silicon
+                jump unit2_takeItem_selEnd always 0
+                set itemToTake @lead
+                jump unit2_takeItem_selEnd always 0
+                set itemToTake @graphite
+                jump unit2_takeItem_selEnd always 0
+                set itemToTake @coal
+                jump unit2_takeItem_selEnd always 0
+                set itemToTake @titanium
+                jump unit2_takeItem_selEnd always 0
+                set itemToTake @metaglass
+                jump unit2_takeItem_selEnd always 0
+                set itemToTake @phase-fabric
+            unit2_takeItem_selEnd:
+            ucontrol itemTake core itemToTake 999
+            ucontrol approach containerX containerY 6
+            jump unit2_ctrl_end always 0
+        unit2_notWithin:
+        ucontrol approach coreX coreY 7
+        jump unit2_ctrl_end always 0
+    unit2_dropItem:
+        ucontrol itemDrop container1 999
+        ucontrol approach containerX containerY 6
+        ucontrol within containerX containerY 7 within
+        jump unit2_ctrl_end equal within 0
+            ucontrol approach coreX coreY 7
+            jump unit2_ctrl_end always 0
+    unit2_idle:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol itemDrop core 999
+        ucontrol approach coreX coreY 7
+    unit2_ctrl_end:
+unit2_end:
+
+unit3:
+    ubind unit3
+    jump unit3_bind equal @unit null
+    sensor unitFlag @unit @flag
+    jump unit3_bind notEqual unitFlag thisFlag
+    sensor unitCtrld @unit @controlled
+    jump unit3_bind_skip lessThanEq unitCtrld 1
+        unit3_bind:
+            ubind @flare
+            jump unit3_end equal @unit null
+            sensor unitFlag @unit @flag
+            jump unit3_bind notEqual unitFlag 0
+        ucontrol flag thisFlag
+        set unit3 @unit
+
+        unit3_bind_clearItem:
+            ulocate building core 0 0 coreX coreY 0 core
+            ucontrol approach coreX coreY 7
+            sensor unitItem @unit @firstItem
+        jump unit3_bind_clearItem notEqual unitItem null
+    unit3_bind_skip:
+
+    jump unit3_idle equal itemTotalN 0
+    sensor unitItem @unit @firstItem
+    jump unit3_takeItem equal unitItem null
+    jump unit3_itemSel_titanium notEqual unitItem @silicon
+        jump unit3_idle equal itemSiliconN 0
+        jump unit3_dropItem always 0
+    unit3_itemSel_titanium:
+    jump unit3_itemSel_metaglass notEqual unitItem @titanium
+        jump unit3_idle equal itemTitaniumN 0
+        jump unit3_dropItem always 0
+    unit3_itemSel_metaglass:
+    jump unit3_itemSel_graphite notEqual unitItem @metaglass
+        jump unit3_idle equal itemMetaglassN 0
+        jump unit3_dropItem always 0
+    unit3_itemSel_graphite:
+    jump unit3_itemSel_lead notEqual unitItem @graphite
+        jump unit3_idle equal itemGraphiteN 0
+        jump unit3_dropItem always 0
+    unit3_itemSel_lead:
+    jump unit3_itemSel_coal notEqual unitItem @lead
+        jump unit3_idle equal itemLeadN 0
+        jump unit3_dropItem always 0
+    unit3_itemSel_coal:
+    jump unit3_itemSel_phase notEqual unitItem @coal
+        jump unit3_idle equal itemCoalN 0
+        jump unit3_dropItem always 0
+    unit3_itemSel_phase:
+        jump unit3_idle equal itemPhaseN 0
+        jump unit3_dropItem always 0
+
+    unit3_takeItem:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol within coreX coreY 8 within
+        jump unit3_notWithin equal within 0
+            read counterJump cell1 10
+            op add @counter @counter counterJump
+                set itemToTake @silicon
+                jump unit3_takeItem_selEnd always 0
+                set itemToTake @lead
+                jump unit3_takeItem_selEnd always 0
+                set itemToTake @graphite
+                jump unit3_takeItem_selEnd always 0
+                set itemToTake @coal
+                jump unit3_takeItem_selEnd always 0
+                set itemToTake @titanium
+                jump unit3_takeItem_selEnd always 0
+                set itemToTake @metaglass
+                jump unit3_takeItem_selEnd always 0
+                set itemToTake @phase-fabric
+            unit3_takeItem_selEnd:
+            ucontrol itemTake core itemToTake 999
+            ucontrol approach containerX containerY 6
+            jump unit3_ctrl_end always 0
+        unit3_notWithin:
+        ucontrol approach coreX coreY 7
+        jump unit3_ctrl_end always 0
+    unit3_dropItem:
+        ucontrol itemDrop container1 999
+        ucontrol approach containerX containerY 6
+        ucontrol within containerX containerY 7 within
+        jump unit3_ctrl_end equal within 0
+            ucontrol approach coreX coreY 7
+            jump unit3_ctrl_end always 0
+    unit3_idle:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol itemDrop core 999
+        ucontrol approach coreX coreY 7
+    unit3_ctrl_end:
+unit3_end:
+
+unit4:
+    ubind unit4
+    jump unit4_bind equal @unit null
+    sensor unitFlag @unit @flag
+    jump unit4_bind notEqual unitFlag thisFlag
+    sensor unitCtrld @unit @controlled
+    jump unit4_bind_skip lessThanEq unitCtrld 1
+        unit4_bind:
+            ubind @flare
+            jump unit4_end equal @unit null
+            sensor unitFlag @unit @flag
+            jump unit4_bind notEqual unitFlag 0
+        ucontrol flag thisFlag
+        set unit4 @unit
+
+        unit4_bind_clearItem:
+            ulocate building core 0 0 coreX coreY 0 core
+            ucontrol approach coreX coreY 7
+            sensor unitItem @unit @firstItem
+        jump unit4_bind_clearItem notEqual unitItem null
+    unit4_bind_skip:
+
+    jump unit4_idle equal itemTotalN 0
+    sensor unitItem @unit @firstItem
+    jump unit4_takeItem equal unitItem null
+    jump unit4_itemSel_titanium notEqual unitItem @silicon
+        jump unit4_idle equal itemSiliconN 0
+        jump unit4_dropItem always 0
+    unit4_itemSel_titanium:
+    jump unit4_itemSel_metaglass notEqual unitItem @titanium
+        jump unit4_idle equal itemTitaniumN 0
+        jump unit4_dropItem always 0
+    unit4_itemSel_metaglass:
+    jump unit4_itemSel_graphite notEqual unitItem @metaglass
+        jump unit4_idle equal itemMetaglassN 0
+        jump unit4_dropItem always 0
+    unit4_itemSel_graphite:
+    jump unit4_itemSel_lead notEqual unitItem @graphite
+        jump unit4_idle equal itemGraphiteN 0
+        jump unit4_dropItem always 0
+    unit4_itemSel_lead:
+    jump unit4_itemSel_coal notEqual unitItem @lead
+        jump unit4_idle equal itemLeadN 0
+        jump unit4_dropItem always 0
+    unit4_itemSel_coal:
+    jump unit4_itemSel_phase notEqual unitItem @coal
+        jump unit4_idle equal itemCoalN 0
+        jump unit4_dropItem always 0
+    unit4_itemSel_phase:
+        jump unit4_idle equal itemPhaseN 0
+        jump unit4_dropItem always 0
+
+    unit4_takeItem:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol within coreX coreY 8 within
+        jump unit4_notWithin equal within 0
+            read counterJump cell1 11
+            op add @counter @counter counterJump
+                set itemToTake @silicon
+                jump unit4_takeItem_selEnd always 0
+                set itemToTake @lead
+                jump unit4_takeItem_selEnd always 0
+                set itemToTake @graphite
+                jump unit4_takeItem_selEnd always 0
+                set itemToTake @coal
+                jump unit4_takeItem_selEnd always 0
+                set itemToTake @titanium
+                jump unit4_takeItem_selEnd always 0
+                set itemToTake @metaglass
+                jump unit4_takeItem_selEnd always 0
+                set itemToTake @phase-fabric
+            unit4_takeItem_selEnd:
+            ucontrol itemTake core itemToTake 999
+            ucontrol approach containerX containerY 6
+            jump unit4_ctrl_end always 0
+        unit4_notWithin:
+        ucontrol approach coreX coreY 7
+        jump unit4_ctrl_end always 0
+    unit4_dropItem:
+        ucontrol itemDrop container1 999
+        ucontrol approach containerX containerY 6
+        ucontrol within containerX containerY 7 within
+        jump unit4_ctrl_end equal within 0
+            ucontrol approach coreX coreY 7
+            jump unit4_ctrl_end always 0
+    unit4_idle:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol itemDrop core 999
+        ucontrol approach coreX coreY 7
+    unit4_ctrl_end:
+unit4_end:
+
+unit5:
+    ubind unit5
+    jump unit5_bind equal @unit null
+    sensor unitFlag @unit @flag
+    jump unit5_bind notEqual unitFlag thisFlag
+    sensor unitCtrld @unit @controlled
+    jump unit5_bind_skip lessThanEq unitCtrld 1
+        unit5_bind:
+            ubind @flare
+            jump unit5_end equal @unit null
+            sensor unitFlag @unit @flag
+            jump unit5_bind notEqual unitFlag 0
+        ucontrol flag thisFlag
+        set unit5 @unit
+
+        unit5_bind_clearItem:
+            ulocate building core 0 0 coreX coreY 0 core
+            ucontrol itemDrop core 999
+            ucontrol approach coreX coreY 7
+            sensor unitItem @unit @firstItem
+        jump unit5_bind_clearItem notEqual unitItem null
+    unit5_bind_skip:
+
+    jump unit5_idle equal itemTotalN 0
+    sensor unitItem @unit @firstItem
+    jump unit5_takeItem equal unitItem null
+    jump unit5_itemSel_lead notEqual unitItem @silicon
+        jump unit5_idle equal itemSiliconN 0
+        jump unit5_dropItem always 0
+    unit5_itemSel_lead:
+    jump unit5_itemSel_graphite notEqual unitItem @lead
+        jump unit5_idle equal itemLeadN 0
+        jump unit5_dropItem always 0
+    unit5_itemSel_graphite:
+    jump unit5_itemSel_coal notEqual unitItem @graphite
+        jump unit5_idle equal itemGraphiteN 0
+        jump unit5_dropItem always 0
+    unit5_itemSel_coal:
+    jump unit5_itemSel_titanium notEqual unitItem @coal
+        jump unit5_idle equal itemCoalN 0
+        jump unit5_dropItem always 0
+    unit5_itemSel_titanium:
+    jump unit5_itemSel_metaglass notEqual unitItem @titanium
+        jump unit5_idle equal itemTitaniumN 0
+        jump unit5_dropItem always 0
+    unit5_itemSel_metaglass:
+    jump unit5_itemSel_phase notEqual unitItem @metaglass
+        jump unit5_idle equal itemMetaglassN 0
+        jump unit5_dropItem always 0
+    unit5_itemSel_phase:
+        jump unit5_idle equal itemPhaseN 0
+        jump unit5_dropItem always 0
+
+    unit5_takeItem:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol within coreX coreY 8 within
+        jump unit5_notWithin equal within 0
+            read counterJump cell1 12
+            op add @counter @counter counterJump
+                set itemToTake @silicon
+                jump unit5_takeItem_selEnd always 0
+                set itemToTake @lead
+                jump unit5_takeItem_selEnd always 0
+                set itemToTake @graphite
+                jump unit5_takeItem_selEnd always 0
+                set itemToTake @coal
+                jump unit5_takeItem_selEnd always 0
+                set itemToTake @titanium
+                jump unit5_takeItem_selEnd always 0
+                set itemToTake @metaglass
+                jump unit5_takeItem_selEnd always 0
+                set itemToTake @phase-fabric
+            unit5_takeItem_selEnd:
+            ucontrol itemTake core itemToTake 999
+            ucontrol approach containerX containerY 6
+            jump start always 0
+        unit5_notWithin:
+        ucontrol approach coreX coreY 7
+        jump start always 0
+    unit5_dropItem:
+        ucontrol itemDrop container1 999
+        ucontrol approach containerX containerY 6
+        ucontrol within containerX containerY 7 within
+        jump start equal within 0
+            ucontrol approach coreX coreY 7
+            jump start always 0
+    unit5_idle:
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol itemDrop core 999
+        ucontrol approach coreX coreY 7
+        jump start always 0
+    unit5_ctrl_end:
+unit5_end:
+
+jump start always 0
+
+disable:
+    ubind unit1
+    ucontrol flag 0
+    set unit1 null
+    ubind unit2
+    ucontrol flag 0
+    set unit2 null
+    ubind unit3
+    ucontrol flag 0
+    set unit3 null
+    ubind unit4
+    ucontrol flag 0
+    set unit4 null
+    ubind unit5
+    ucontrol flag 0
+    set unit5 null
+jump start always 0
+
+

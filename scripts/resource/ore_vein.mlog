@@ -1,0 +1,41 @@
+set ore @lead
+set unit @poly
+op mul flag @thisy @mapw
+op add flag flag @thisx
+
+set locGoX @thisx
+set locGoY @thisy
+
+start:
+
+sensor u1Dead unit1 @dead
+jump u1_skip equal u1Dead 0
+    u1_bind:
+    ubind unit
+    sensor uBFlag @unit @flag
+    jump u1_bind notEqual uBFlag 0
+    ucontrol flag flag
+    set unit1 @unit
+u1_skip:
+
+sensor u2Dead unit2 @dead
+jump u2_skip equal u2Dead 0
+    u2_bind:
+    ubind unit
+    sensor uBFlag @unit @flag
+    jump u2_bind notEqual uBFlag 0
+    ucontrol flag flag
+    set unit2 @unit
+u2_skip:
+
+ubind unit1
+ucontrol move locGoX locGoY
+ucontrol within locGoX locGoY 2 within
+jump start equal within 0
+ulocate ore core 0 ore oreX oreY 0 0
+# u1Locate_skip:
+
+ubind unit2
+ucontrol move oreX oreY
+ucontrol build oreX oreY @router
+jump start always 0

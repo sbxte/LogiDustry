@@ -1,1 +1,12 @@
-# Hyper Scope
+ubind @corvus
+sensor health @unit @health
+jump deflag greaterThanEq health 15e3
+    ucontrol flag 1
+    ulocate building repair 0 0 repairX repairY repairFound repair
+    ucontrol approach repairX repairY 10
+end
+
+deflag:
+sensor flag @unit @flag
+jump 0 notEqual flag 1
+ucontrol flag 0

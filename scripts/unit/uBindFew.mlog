@@ -1,0 +1,237 @@
+# uBindFew 2.02   -By Nester# 9557
+### THIS IS NESTER'S WORK, NOT MINE
+
+# Data precashing and configs
+jump cashed equal dataCashed true
+# Select constants
+set unitMax 0 # Select unit maximum.
+set ignore_flags false # Take over already flagged units.
+set flagID_override false # Manual flagID override.
+set flagID 123 # Set manual flagID.
+
+jump skip_auto_flagID equal flagID_override true
+    # FlagID key generation
+    op floor procX @thisx 0
+    op floor procY @thisy 0
+    op mul flagID @mapw procY
+    op add flagID flagID procX
+skip_auto_flagID:
+
+# Define update message function
+op add func(updateMessage) @counter 1
+jump skip_printData always 0
+# Print out varibles
+print "[lightgray]uBindFew 2.02\nBy Nester# 9557\n\n[orange]"
+print unitType
+print "\n[stat]"
+print flagID
+print "\n[green] "
+print unitsFlagged
+print "/"
+print unitMax
+# Has an error occurred?
+    jump noError equal errorIn null
+    op add errorOut @counter 1
+    set @counter errorIn
+    noError:
+printflush message1
+set @counter returnTo
+skip_printData:
+
+# Define units' constants
+set returnTo @counter
+ubind changeThis # Select unit type and sensors.
+# Optional sensors
+sensor unitCapacity @unit @itemCapacity
+sensor ammoCapacity @unit @ammoCapacity
+sensor maxHealth @unit @maxHealth
+sensor unitSize @unit @size
+sensor unitRange @unit @range
+sensor allyTeam @unit @team
+
+# UnitType error
+sensor unitType @unit @type
+jump unitData_defined notEqual unitType null
+set unitsFlagged 0
+# Update message
+    op add errorIn @counter 1
+    set @counter func(updateMessage)
+jump unitType_error equal unitType null
+# Error = False
+    set errorIn null
+    set @counter errorOut
+unitType_error:
+# Error = True
+    print "\n[red]⚠Cannot bind selected unit type!"
+    set @counter errorOut
+unitData_defined:
+set dataCashed true
+cashed:
+
+# Unit counter
+bind_new_unit:
+ubind unitType
+
+# Unit counter results processor
+# If bound unit is unitAlpha: Run unitAlpha's code
+jump not_unitAlpha notEqual @unit unitAlpha
+# Skip unit count correction if the new unit count is same as the current one
+    jump skip_printTimeout notEqual unitsFlagged unitsCounted
+    jump resetUC lessThan @time reprintTickWait
+    skip_printTimeout:
+# Unit counter miscounts See https://github.com/Anuken/Mindustry/issues/4896
+# Try matching current unit count with the previous one
+    jump curr_prev_count_match equal prevCount unitsCounted
+    # Mismatch
+    op add miscounts miscounts 1
+    set prevCount unitsCounted
+    jump resetUC always 0 0
+    # Match
+    curr_prev_count_match:
+    op idiv miscounts miscounts 1.5
+    # Cannot count units error
+    jump no_miscounts equal miscounts 0
+    op add errorIn @counter 1
+    jump resetUC&reprint always 0 0
+    jump UCU_error notEqual miscounts 0
+    # Error = False
+    set errorIn null
+    set @counter errorOut
+    UCU_error:
+    # Error = True
+    print "\n[red]⚠Cannot count units! Unit counter error value: "
+    print miscounts
+    set @counter errorOut
+    no_miscounts:
+op add reprintTickWait @time 10000
+# Accept unit count results
+set unitsFlagged unitsCounted
+# UnitMax error
+    jump resetUC&reprint greaterThan unitMax 0
+    jump resetUC&reprint greaterThan unitsFlagged 0
+    op add errorIn @counter 1
+    jump resetUC&reprint always 0 0
+    jump unitMax_error lessThanEq unitMax 0
+    # Error = False
+    set errorIn null
+    set @counter errorOut
+    unitMax_error:
+    # Error = True
+    print "\n[red]⚠Cannot bind "
+    print unitMax 0
+    print " units Configure unitMax!"
+    set returnTo 0
+    set @counter errorOut
+resetUC&reprint:
+# Update message
+    op add returnTo @counter 1
+    set @counter func(updateMessage)
+resetUC:
+set unitsCounted 0
+not_unitAlpha:
+
+# Check if unitAlpha is dead
+sensor deadUnitAlpha unitAlpha @dead
+jump unitAlpha_alive equal deadUnitAlpha false
+# All units are dead error
+# Check if bound unit is dead
+    jump unit_alive notEqual @unit null
+    # Try checking other units
+    op add unitDead unitDead 1
+    jump bind_new_unit lessThan unitDead 3
+set unitsFlagged 0
+set returnTo 0
+op add errorIn @counter 1
+set @counter func(updateMessage)
+jump units_dead_error equal @unit null
+# Error = False
+    set errorIn null
+    set @counter errorOut
+units_dead_error:
+# Error = True
+    print "\n[red]⚠Cannot bind a unit: All "
+    print unitType
+    print " type units are dead!"
+    set @counter errorOut
+unit_alive:
+set unitDead 0
+set unitAlpha @unit
+set unitsCounted 0
+unitAlpha_alive:
+
+# Unit state checker
+sensor flag @unit @flag
+jump IDFlagged_unit equal flag flagID
+# Try to flag bound unit
+# Don't flag bound unit if
+# There is no controlled unit lack
+    jump bind_new_unit greaterThanEq unitsFlagged unitMax
+# It is controlled already
+    sensor controlled @unit @controlled
+    jump bind_new_unit notEqual controlled false
+# Unit counter hasn's given out a result yet
+    jump bind_new_unit strictEqual unitsFlagged null
+# Take over flagged units parameter
+    jump unit_flagless equal ignore_flags true
+# Free Flagged Unit error
+    jump unit_flagless equal flag 0
+    # Error cooldown
+    jump bind_new_unit lessThan @time FFU_errorCD
+    op add FFU_errorCD @time 30000
+    # Get bound unit's position
+    sensor FFUX @unit @x
+    sensor FFUY @unit @y
+    op add FFUX FFUX 0.5
+    op add FFUY FFUY 0.5
+    op floor FFUX FFUX 0
+    op floor FFUY FFUY 0
+    # Update message
+    op add returnTo @counter 2
+    op add errorIn @counter 2
+    set @counter func(updateMessage)
+    jump bind_new_unit always 0 0
+    jump no_FFU_error greaterThanEq @time FFU_errorCD
+    jump FFU_error lessThan unitsFlagged unitMax
+    no_FFU_error:
+    # Error = False
+    set errorIn null
+    set @counter errorOut
+    FFU_error:
+    # Error = True
+    print "\n[red]⚠Cannot bind a free "
+    print unitType
+    print "\n[magenta]@"
+    print FFUX
+    print ", "
+    print FFUY
+    print "[] set their flag to 0!"
+    set @counter errorOut
+    unit_flagless:
+# Flag bound unit
+ucontrol flag flagID
+op add unitsFlagged unitsFlagged 1
+# Update message
+    op add returnTo @counter 1
+    set @counter func(updateMessage)
+IDFlagged_unit:
+
+# Try to deflag bound unit
+# Don't deflag if
+# There is no controlled unit surplus
+    jump keep_flag lessThanEq unitsFlagged unitMax
+# The unit counter hasn's given out a result yet
+    jump keep_flag strictEqual unitsFlagged null
+# Deflag bound unit
+ucontrol flag 0
+op sub unitsFlagged unitsFlagged 1
+# Update message
+    op add returnTo @counter 1
+    set @counter func(updateMessage)
+jump bind_new_unit always 0 0
+keep_flag:
+
+# Count bound unit
+op add unitsCounted unitsCounted 1
+
+# Your unit control code
+ucontrol approach @thisx @thisy 7

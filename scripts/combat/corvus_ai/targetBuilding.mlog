@@ -1,0 +1,43 @@
+op mul mapArea @mapw @maph
+read ourTeam cell2 0
+jump 0 equal ourTeam 0
+start:
+ubind @corvus
+sensor flag @unit @flag
+jump 0 lessThan flag 10
+
+op sub encodedTarget flag 10
+op mod targetX encodedTarget @mapw
+op mod targetY encodedTarget mapArea
+op sub targetY targetY targetX
+op div targetY targetY @mapw
+op idiv cellIndex encodedTarget mapArea
+
+op add cellIndex2 cellIndex 1
+read cellTX cell1 cellIndex
+read cellTY cell1 cellIndex2
+
+jump stop notEqual cellTX targetX
+jump stop notEqual cellTY targetY
+
+ucontrol getBlock targetX targetY getType getBlock
+jump target equal getType null
+jump cleanCell equal getType @air
+jump cleanCell equal getType @solid
+sensor blockTeam getBlock @team
+jump cleanCell equal blockTeam ourTeam
+    target:
+    ucontrol approach targetX targetY 55
+    op mod shootTimer @time 5e3
+    op lessThanEq shootTimerGood shootTimer 1e3
+    ucontrol target targetX targetY shootTimerGood
+jump start always 0
+
+cleanCell:
+    write 0 cell1 cellIndex
+    write 0 cell1 cellIndex2
+stop:
+    ucontrol flag 0
+jump start always 0
+
+

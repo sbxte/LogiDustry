@@ -1,0 +1,15 @@
+set bit 0
+set i 0
+readLoop:
+    lookup item item i
+    read request cell2 i
+    op max request request 0
+    write request cell1 i
+    op add i i 1
+jump readLoop lessThan i @itemCount
+write 0xffff cell1 19
+write 120 cell1 17
+write 200 cell1 20
+end
+
+print "MDRelay Converter A v2.0-A1 by SBytes"

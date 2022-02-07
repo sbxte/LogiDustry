@@ -1,0 +1,25 @@
+set zoom 1.8
+set offX 1
+set offY 0
+print "-- Edit above --"
+sensor enable switch1 @enabled
+write enable cell1 0
+write enable cell2 0
+
+write offX cell1 1
+write offY cell1 2
+write offX cell2 1
+write offY cell2 2
+
+op mul rZoom zoom 88
+write rZoom cell1 3
+write rZoom cell2 3
+
+jump skipReenable equal enable 0
+jump skipReenable equal prevEnable 1
+    write 0 cell1 4
+    write 0 cell1 5
+    write 0 cell2 6
+    write 0 cell2 7
+skipReenable:
+set prevEnable enable

@@ -1,0 +1,23 @@
+read status cell1 0
+jump 0 equal status 0
+set step 0
+read OA cell1 1
+read OB cell1 2
+set a 0
+set b 0
+loop:
+    op pow calc_A2 a 2
+    op pow calc_B2 b 2
+    op mul b a b
+    op mul b 2
+    op sub a calc_A2 calc_B2
+    op add a a OA
+    op add b b OB
+    op len dist a b
+    op add step step 1
+jump loopEnd greaterThanEq step 800
+jump loop lessThan dist 2
+loopEnd:
+
+write step cell1 3
+write 0 cell1 0

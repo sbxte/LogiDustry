@@ -1,0 +1,27 @@
+ubind @zenith
+sensor flag @unit @flag
+jump 0 notEqual flag 0
+
+
+sensor item @unit @firstItem
+jump take_item equal item 0
+    sensor ctrl arc1 @controlled
+    jump move_arc notEqual ctrl 0
+        ulocate building core 0 0 cx cy 0 0
+        ucontrol approach cx cy 20
+        end
+    move_arc:
+        sensor mx arc1 @shootX
+        sensor my arc1 @shootY
+        ucontrol targetp @unit 1
+        ucontrol move mx my
+    end
+
+take_item:
+ulocate building core 0 0 cx cy 0 core
+ucontrol move cx cy
+sensor itemTake sorter1 @config
+ucontrol itemTake core itemTake 999
+jump 0 always 0
+
+print "Suicide Bomber Logic (ItemSel) v1.0 by SBytes"

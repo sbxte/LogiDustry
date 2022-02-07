@@ -1,0 +1,9 @@
+sensor @counter switch1 @enabled
+lookup unit unit i
+ubind unit
+sensor controlled @unit @controlled
+jump skip equal controlled 1
+ucontrol flag 0
+skip:
+op add i i 1
+op mod i i @unitCount

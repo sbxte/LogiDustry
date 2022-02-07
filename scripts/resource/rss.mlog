@@ -1,210 +1,182 @@
-### Static variables
-set minPow% 33
-set minRes% 25
-set maxCapRes 1e5
-set maxCapPow 15e5
-set linkCoreByUnit? true
-set ignoreMinResValue 0
-
-
-### User variables
-    op shl cop 0 0
-    op shl lea 0 1
-    op shl met 0 2
-    op shl gra 0 3
-    op shl san 0 4
-    op shl coa 0 5
-    op shl tit 0 6
-    op shl tho 0 7
-    op shl scr 0 8
-    op shl sil 0 9
-    op shl pla 0 10
-    op shl pha 0 11
-    op shl sur 0 12
-    op shl spo 0 13
-    op shl bla 0 14
-    op shl pyi 0 15
-
-### Edit freeze
-__edit_freeze:
-jump __edit_freeze notEqual "end of edit" 0
-
-### Merge user variables
-    op add bit cop lea
-    op add bit bit met
-    op add bit bit gra
-    op add bit bit san
-    op add bit bit coa
-    op add bit bit tit
-    op add bit bit tho
-    op add bit bit scr
-    op add bit bit sil
-    op add bit bit pla
-    op add bit bit pha
-    op add bit bit sur
-    op add bit bit spo
-    op add bit bit bla
-    op add bit bit pyi
-
-op equal lMax linkCoreByUnit? 0
-
-## The start (so we dont have to reinitialize the whole thing)
-__start:
-
+set min%ResPow 33
+set min%ResItem 25
+set maxCapResPower 1500000
+set maxCapResItem 10000
+set setLinkCoreByUnit true
+op add MinInteractLink 0 3
+op add valIgnoreMinResItemFac 0 0
+op shl  false 0
+op shl  false 1
+op shl  false 2
+op shl  false 3
+op shl  false 4
+op shl  false 5
+op shl  false 6
+op shl  false 7
+op shl  false 8
+op shl  false 9
+op shl  false 10
+op shl  false 11
+op shl  false 12
+op shl  false 13
+op shl  false 14
+op shl  false 15
 getlink message 0
-sensor mType message @type
-jump 0 notEqual mType @message
 getlink node 1
+print "-- Edit Above --"
+edit:
+jump edit notEqual "set true to run" true
+op add bitSI  
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op add bitSI bitSI 
+op equal linkMin setLinkCoreByUnit 0
+op div minDecResPow min%ResPow 100
+op div minDecResItem min%ResItem 100
+op add linkMin MinInteractLink linkMin
+op add valIgnoreMinResItemFac valIgnoreMinResItemFac linkMin
 
+start:
+op sub __et @time __pt
+set __pt @time
+sensor mType message @type
+jump start notEqual mType @message
 
-### Dead check
-
-# Node
 sensor nDead node @dead
-jump _skipNodeDeadCheck equal nDead false
-    _printNoLinkedNode:
-        print "[slate]Resources & Power Management\n[sky]By Username\n[green]Modified by SBytes\n\n[#ff]Error: None Linked Power Node\n\n[white]Link power node first\n\nnode : "
-        print node
-        printflush message
-    jump __start always
-
-_skipNodeDeadCheck:
-
-# Storage
-sensor sDead storage @dead
-jump _powerCheck equal sDead false
-
-    jump _getLinkStorage equal linkCoreByUnit? false
-        ubind @mono
-        ulocate building core 0 0 0 0 0 storage
-
-    jump _getLinkStorage_skip always
-        _getLinkStorage:
-            getlink storage 2
-
-    _getLinkStorage_skip:
-
-    print "[slate]Resources & Power Management\n[sky]By Username\n[green]Modified by SBytes\n\n[#ff]Error: None Linked Storage\n\n[white]Create mono for auto link into core storage OR Link storage after link power node. & configure 'linkCoreByUnit?'\n\nstorage : "
-    print storage
+jump nodeAlive equal nDead false
+    print "[slate]Resources Management\n[sky]By Username\n\n[#ff]Error: None Linked Power Node\n\n[white]Link power node first\n\nnode : "
+    print node
     printflush message
-jump __start always
+    jump start always 0
+nodeAlive:
 
+sensor sDead bStorage @dead
+jump storageAlive equal sDead false
+    jump storageGet_link equal setLinkCoreByUnit false
+        ubind @mono
+        ulocate building core 0 0 0 0 0
+        jump storageGet_end always 0 0
+    storageGet_link:
+        getlink bStorage 2
+    storageGet_end:
+    print "[slate]Resources Management\n[sky]By Username\n\n[#ff]Error: None Linked Storage[white]\n\nCreate mono for auto link into core storage OR Link storage after link power node. & configure 'setLinkCoreByUnit'\n\nstorage : "
+    print bStorage
+    printflush message
+    jump start always 0
+storageAlive:
 
+sensor npCap node @powerNetCapacity
+sensor npStor node @powerNetStored
+op min npCap npCap maxCapResPower
+op div npStor npStor npCap
+jump npstor_minDecResPow greaterThan npStor minDecResPow
+    set enableBuildings 0
+    op idiv npStor npStor 1e-10
+    op div npStor npStor 1e8
+    print "[slate]Resources Management\n[sky]By Username\n\n[#ff]⚠Warning: Low Stored Power[white]\n\n%  \n"
+    print min%ResPow
+    print " >=\n"
+    print npStor
+    print "\n"
+    jump storagePrint_end always 0 0
+npstor_minDecResPow:
 
-### Power check
-_powerCheck:
-    sensor npCap node @powerNetCapacity
-    sensor npStore node @powerNetStored
-    op min npCap npCap maxCapPow
-    op div npStore npStore npCap
-    op idiv npStore npStore 0.000001
-    op div npStore npStore 10000
-    jump _rscCheck greaterThan npStore minPow%
-        set Enable 0
-        print "[slate]Resources & Power Management\n[sky]By Username\n[green]Modified by SBytes\n\n[#ff]⚠Warning: Low Stored Power[white]\n\n"
-        print npStore
-        print "% \n"
-    jump _printStorageNode always 0
+sensor sCap bStorage @itemCapacity
+op min sCap sCap maxCapResItem
+set enableBuildings @links
+set count 0
+itemPrint_loop:
+    op shl bitSIEnable 1 count
+    op and bitSIEnable bitSI bitSIEnable
+    jump itemPrint_con equal bitSIEnable 0
 
+    lookup item itemType count
+    sensor iVal bStorage itemType
+    op div iVal iVal sCap
+    jump itemPrint_con greaterThan iVal minDecResItem
 
+    op idiv iVal iVal 1e-6
+    op div iVal iVal 1e4
+    jump something2 equal enableBuildings valIgnoreMinResItemFac
+        set enableBuildings valIgnoreMinResItemFac
+        print "[slate]Resources Management\n[sky]By Username\n\n[#ff]⚠Warning: Low Resources[white]\n\n% item stored\n"
+        print min%ResItem
+        print " >=\n"
+    something2:
+    print iVal
+    op mul counterPItem count 2
+    op add @counter counterPItem @counter
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+        jump itemPrint_con always 0 0
+        print "\n"
+    itemPrint_con:
+    op add count count 1
+jump itemPrint_loop lessThan count @itemCount
 
-### Resource check
-_rscCheck:
-    sensor sCap storage @itemCapacity
-    set Enable @links
-    op min sCap sCap maxCapRes
+jump storagePrint_end notEqual enableBuildings @links
+    print "[slate]Resources Management\n[sky]By Username\n\n[#00ff]All Requirements Are Met[white]\n\nstorage:"
+    print bStorage
+    print "\nnode: "
+    print node
+storagePrint_end:
 
-    # Resource check loop
-    _rscCheckLoop:
-        op shl bEna 1 i
-        op and bEna bit bEna
-        jump _rscCheckLoopInc equal bEna 0
+jump something3 equal skipLoop @links
+set count linkMin
+something4:
+    getlink buildings count
+    op greaterThan enable enableBuildings count
+    control enabled buildings enable 0 0 0
+    op add count count 1
+jump something4 lessThan count @links
+something3:
 
-        # Lookup
-        lookup item item i
-        sensor iVal storage item
-
-        # Skip if enough resources
-        op div iVal iVal sCap
-        op idiv iVal iVal 0.0001
-        op div iVal iVal 100
-        jump _rscCheckLoopInc greaterThan iVal minRes%
-
-        # Enable ignoreMinResValue ??
-        # jump _skipPrintLowRscTitle equal Enable ignoreMinResValue
-        jump _skipPrintLowRscTitle equal Enable ignoreMinResValue
-
-            set Enable ignoreMinResValue
-
-            print "[slate]Resources & Power Management\n[sky]By Username\n[green]Modified by SBytes\n\n[#ff]⚠Warning: Low Resources\n\n[#ffff] MinRes: "
-            print minRes%
-            print "%[white]\n"
-
-        _skipPrintLowRscTitle:
-        print iVal
-
-        op mul jump i 2
-        op add @counter jump @counter
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-            jump _rscCheckLoopInc always 0
-            print "% \n"
-
-        _rscCheckLoopInc:
-        op add i i 1
-    jump _rscCheckLoop lessThan i @itemCount
-
-    # all requirements are met??
-    jump _printStorageNode notEqual Enable @links
-    print "[slate]Resources & Power Management\n[sky]By Username\n[green]Modified by SBytes\n\n[#00ff]All Requirements Are Met\n\n[white]"
-    # print "[slate]Resources & Power Management\n[sky]By Username\n\n[#00ff]All Requirements Are Met\n\n[white]"
-
-
-    _printStorageNode:
-        print "\nstorage: "
-        print storage
-        print "\nnode: "
-        print node
-        op add i 2 lMax
-        op add Enable Enable i
-
-    _enableLinks:
-        getlink b i
-        op greaterThan e Enable i
-        control enabled b e 0 0 0
-        op add i i 1
-        jump _enableLinks lessThan i @links
-        set i 0
-        printflush message1
-        getlink node 1
-        sensor nDead node @dead
-        jump _printNoLinkedNode equal nDead true
-
-jump __start always 0
+set skipLoop enableBuildings
+sensor p bStorage @phase-fabric
+op greaterThan p p 50
+jump something5 equal p true
+    print "\n[#fff]⚠ []low  < 50, disabled "
+something5:
+op land p p enableBuildings
+control enabled dome1 p 0 0 0
+printflush message1
+jump storageAlive always 0 0
+set "Resource_Saver_by" "Username"

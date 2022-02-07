@@ -11,6 +11,7 @@ with open(FILE_NAME, "r") as inFile:
         if re.search(JUMP_REGEX, line):
             jumps[re.search(JUMP_REGEX, line).group(1)] = ''.join(random.choices(string.ascii_lowercase + string.ascii_uppercase, k=8))
 
+
 with open ("output.txt", "w") as outFile:
     with open(FILE_NAME, "r") as inFile:
         for line in inFile:

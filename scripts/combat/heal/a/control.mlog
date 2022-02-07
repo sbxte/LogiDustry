@@ -1,0 +1,120 @@
+# DT
+    # op sub _dt @time _pt
+    # set _pt @time
+    # print _dt
+    # printflush message1
+
+# Phase
+start:
+sensor config unloader2 @config
+jump sh_activate equal config @phase-fabric
+
+# Radar
+radar enemy any any distance hail1 1 enemy
+jump sh_skip equal enemy 0
+    sh_activate:
+
+    # OD
+    control enabled projector3 1
+
+    op mul counterJump counterJump 19
+    op add @counter @counter counterJump
+
+    # Shield 1
+    sensor dead projector1 @dead
+    jump sh1_skip equal dead 1
+    jump sh1_notCurrent notEqual currentI 0
+        # Max heat (phase)
+        set maxHeat 200
+        sensor phase projector1 @phase-fabric
+        jump sh1_noPhase equal phase 0
+            op add maxHeat maxHeat 200
+        sh1_noPhase:
+
+        # Heat check
+        sensor heat projector1 @heat
+        jump sh1_goodHeat lessThan heat maxHeat
+            set currentI 1
+            jump mend always 0
+        sh1_goodHeat:
+
+        # Enable
+        control enabled projector1 1
+        control enabled projector2 0
+        # set OD_enable 1
+        jump mend always 0
+    sh1_notCurrent:
+        sensor heat projector1 @heat
+        jump sh1_skip greaterThan heat 10
+            set currentI 0
+            jump mend always 0
+    sh1_skip:
+
+    # Shield 2
+    sensor dead projector2 @dead
+    jump sh2_skip equal dead 1
+    jump sh2_notCurrent notEqual currentI 1
+        # Max heat (phase)
+        set maxHeat 200
+        sensor phase projector2 @phase-fabric
+        jump sh2_noPhase equal phase 0
+            op add maxHeat maxHeat 200
+        sh2_noPhase:
+
+        # Heat check
+        sensor heat projector2 @heat
+        jump sh2_goodHeat lessThan heat maxHeat
+            set currentI 0
+            jump mend always 0
+        sh2_goodHeat:
+
+        # Enable
+        control enabled projector1 0
+        control enabled projector2 1
+        # set OD_enable 1
+        jump mend always 0
+    sh2_notCurrent:
+        sensor heat projector2 @heat
+        jump sh2_skip greaterThan heat 10
+            set currentI 0
+            jump mend always 0
+    sh2_skip:
+sh_skip:
+control enabled projector1 0
+control enabled projector2 0
+
+mend:
+set mend_enable 0
+    mend_loop:
+        getlink mendTarget mendIter
+        sensor mtHealth mendTarget @health
+        sensor mtMHealth mendTarget @maxHealth
+        jump mend_activate_skip equal mtHealth mtMHealth
+            set mend_enable 1
+        mend_activate_skip:
+
+        # jump overdriveRepair_skip equal OD_enable 1
+        # radar ally any any distance mendTarget 1 ally
+        # jump overdriveRepair_skip equal ally null
+        #     set OD_enable 1
+        # overdriveRepair_skip:
+
+        op add mendIter mendIter 1
+    jump mend_loop lessThan mendIter @links
+
+    set mendIter 0
+
+    # control enabled projector3 OD_enable
+    control enabled projector4 mend_enable
+    control enabled projector5 mend_enable
+    control enabled projector6 mend_enable
+    control enabled projector7 mend_enable
+
+set OD_enable 0
+end
+print "Frontline Healing v1.2"
+print "By Yo & SBytes"
+print "Usage instructions: "
+print "- Set left most unloader to phase to force shields to activate at all times."
+print "- Set right most unloader to phase to disable flare phase delivery."
+print "- Link 2x2 processor to additional buildings which need to be scanned for mending."

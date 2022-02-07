@@ -1,0 +1,123 @@
+print "[purple]Hyper[cyan]Scope [sky]vAlpha2\n[green]by SBytes\n\n[slate]The Ultimate Corvus Attack AI\n>[#ff] Alpha testing! Use with caution!"
+printflush message1
+sensor disable switch1 @enabled
+jump disabled equal disable 1
+jump enable_skip equal enabled 1
+    control enabled processor1 1
+    control enabled processor2 1
+    control enabled processor3 1
+    control enabled processor4 1
+    control enabled processor5 1
+    control enabled processor6 1
+    control enabled processor7 1
+    control enabled processor8 1
+    control enabled processor9 1
+    control enabled processor10 1
+    set enabled 1
+enable_skip:
+
+set countTotal 0
+set countPathing 0
+set countHealing 0
+set countTargettingBuilding 0
+set countTargettingUnit 0
+set countPlayer 0
+set countTargets 0
+count_anchor:
+ubind @corvus
+sensor controlled @unit @controlled
+jump count_anchor greaterThan controlled 1
+set countAnchor @unit
+count_loop:
+    sensor countAnchorDead countAnchor @dead
+    jump count_loop_end equal countAnchorDead 1
+    ubind @corvus
+    sensor controlled @unit @controlled
+    jump count_player greaterThan controlled 1
+    sensor flag @unit @flag
+    jump count_healing equal flag 1
+    jump count_targetting_unit equal flag 2
+    jump count_targetting_building greaterThan flag 10
+        op add countPathing countPathing 1
+        jump count_continue always 0
+    count_healing:
+        op add countHealing countHealing 1
+        jump count_continue always 0
+    count_targetting_building:
+        op add countTargettingBuilding countTargettingBuilding 1
+        jump count_continue always 0
+    count_targetting_unit:
+        op add countTargettingUnit countTargettingUnit 1
+        jump count_continue always 0
+    count_player:
+        op add countPlayer countPlayer 1
+    count_continue:
+    op add countTotal countTotal 1
+jump count_loop notEqual countAnchor @unit
+count_loop_end:
+
+count_targets:
+    op add cellI2 cellIter 1
+    read cellTX cell1 cellIter
+    jump count_targets_inc notEqual cellTX 0
+    read cellTY cell1 cellI2
+    jump count_targets_con equal cellTY 0
+        count_targets_inc:
+        op add countTargets countTargets 1
+    count_targets_con:
+    op add cellIter cellIter 2
+jump count_targets lessThan cellIter 64
+set cellIter 0
+
+print "Total: "
+print countTotal
+print "\nPlayers Controlled: "
+print countPlayer
+print "\nPathing: "
+print countPathing
+print "\nHealing: "
+print countHealing
+print "\nTargetting Building: "
+print countTargettingBuilding
+print "\nTarget Buildings: "
+print countTargets
+print "\nTargetting Unit: "
+print countTargettingUnit
+printflush message2
+
+end
+
+disabled:
+print "[magenta]Disabled"
+printflush message2
+control enabled processor1 0
+control enabled processor2 0
+control enabled processor3 0
+control enabled processor4 0
+control enabled processor5 0
+control enabled processor6 0
+control enabled processor7 0
+control enabled processor8 0
+control enabled processor9 0
+control enabled processor10 0
+set enabled 0
+
+
+ubind @corvus
+set anchorUnit @unit
+disable_unitLoop:
+    sensor anchorUnitDead anchorUnit @dead
+    jump disable_unitLoop_end equal anchorUnitDead 1
+    ubind @corvus
+    ucontrol flag 0
+jump disable_unitLoop notEqual @unit anchorUnit
+disable_unitLoop_end:
+
+disable_cellLoop:
+    write 0 cell1 cellIter
+    write 0 cell2 cellIter
+    write 0 cell3 cellIter
+    write 0 cell4 cellIter
+    op add cellIter cellIter 1
+jump disable_cellLoop lessThan cellIter 64
+set cellIter 0

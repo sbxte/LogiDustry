@@ -1,0 +1,20 @@
+print "[sky]Item Bit Printer v1.0[green]\nby SBytes[white]"
+read bit cell1 0
+loop:
+    lookup item item i
+    op shl bSel 1 i
+    op and bEn bit bSel
+    op notEqual bEnF bEn 0
+    print "\n"
+    print item
+    print " "
+    print bEnF
+    print " "
+    print bEn
+    op add i i 1
+jump loop lessThan i @itemCount
+set i 0
+printflush message1
+end
+
+print "Item Bit printer v1.0 by SBytes"

@@ -1,0 +1,162 @@
+sensor coreDead core @dead
+jump coreDead_skip equal coreDead 0
+    coreDead:
+        ubind @flare
+        jump coreDead_locate notEqual @unit null
+        ubind @mono
+        jump coreDead equal @unit null
+    coreDead_locate:
+    ulocate building core 0 0 0 0 0 core
+coreDead_skip:
+
+set disable 0
+set statusGood 1
+
+sensor coreCap core @itemCapacity
+op div minRes coreCap 4
+op min minRes minRes 2e3
+
+printflush message1
+print "[gray]PyraCore XXII v.1\n[sky]By Username\n\n[sky]Resource Manager [green]by SBytes"
+
+res_lead:
+sensor coreLead core @lead
+jump res_lead_end greaterThan coreLead minRes
+    set disable 1
+    op div coreLead% coreLead coreCap
+    op idiv coreLead% coreLead% 1e-4
+    op div coreLead% coreLead% 1e2
+    print "\n[#fff]⚠ Low [white] []"
+    print coreLead%
+    print "% < 25% in core"
+res_lead_end:
+
+res_sand:
+sensor coreSand core @sand
+jump res_sand_end greaterThan coreSand minRes
+    set disable 1
+    op div coreSand% coreSand coreCap
+    op idiv coreSand% coreSand% 1e-4
+    op div coreSand% coreSand% 1e2
+    print "\n[#fff]⚠ Low [white] []"
+    print coreSand%
+    print "% < 25% in core"
+res_sand_end:
+
+res_coal:
+sensor coreCoal core @coal
+jump res_coal_end greaterThan coreCoal minRes
+    set disable 1
+    op div coreCoal% coreCoal coreCap
+    op idiv coreCoal% coreCoal% 1e-4
+    op div coreCoal% coreCoal% 1e2
+    print "\n[#fff]⚠ Low [white] []"
+    print coreCoal%
+    print "% < 25% in core"
+res_coal_end:
+
+
+res_power:
+sensor powerNetCap node1 @powerNetCapacity
+sensor powerNetStored node1 @powerNetStored
+op div powerNetStored% powerNetStored powerNetCap
+jump res_power_end greaterThan powerNetStored% 0.33
+    set disable 1
+    op idiv powerNetStoredF powerNetStored% 1e-4
+    op div powerNetStoredF powerNetStoredF 1e2
+    print "\n[#fff]⚠ Low  [white] []"
+    print powerNetStoredF
+    print "% < 33%"
+res_power_end:
+
+jump disable equal disable 1
+
+sensor sand conveyor1 @sand
+jump ctrl_lead greaterThan sand 0
+    set unloaderConfig @sand
+    jump ctrl_slc_end always 0
+ctrl_lead:
+sensor lead conveyor1 @lead
+jump ctrl_coal greaterThan lead 0
+    set unloaderConfig @lead
+    jump ctrl_slc_end always 0
+ctrl_coal:
+set unloaderConfig @coal
+ctrl_slc_end:
+control config unloader1 unloaderConfig
+control config unloader2 unloaderConfig
+control config unloader3 unloaderConfig
+
+# ctrl_items:
+sensor totalItems conveyor1 @totalItems
+op lessThan totalItemsGood totalItems 10
+control enabled unloader1 totalItemsGood
+control enabled unloader2 totalItemsGood
+control enabled unloader3 totalItemsGood
+
+sensor pyratite mixer1 @pyratite
+jump ctrl_pyra_set lessThanEq pyratite 5
+    control config sorter1 null
+    jump ctrl_pyra_end always 0
+ctrl_pyra_set:
+control config sorter1 @pyratite
+ctrl_pyra_end:
+
+jump 0 equal cachedEnable 1
+    control enabled unloader1 1
+    control enabled unloader2 1
+    control enabled unloader3 1
+    control enabled unloader4 1
+    control enabled unloader5 1
+    control enabled unloader6 1
+    control enabled mixer1 1
+    control enabled mixer2 1
+    control enabled mixer3 1
+    control enabled mixer4 1
+    control enabled mixer5 1
+    control enabled mixer5 1
+    control enabled mixer6 1
+    control enabled mixer7 1
+    control enabled mixer8 1
+    control enabled mixer9 1
+    control enabled mixer10 1
+    control enabled mixer11 1
+    control enabled mixer12 1
+    control enabled mixer13 1
+    control enabled mixer14 1
+    control enabled mixer15 1
+    control enabled mixer16 1
+    control enabled mixer17 1
+    control enabled mixer18 1
+    set cachedEnable 1
+end
+disable:
+    op sub timeSinceLastDisable @time lastDisabled
+    jump 0 lessThan timeSinceLastDisable 4e3
+    set lastDisabled @time
+    control enabled unloader1 0
+    control enabled unloader2 0
+    control enabled unloader3 0
+    control enabled unloader4 0
+    control enabled unloader5 0
+    control enabled unloader6 0
+    control enabled mixer1 0
+    control enabled mixer2 0
+    control enabled mixer3 0
+    control enabled mixer4 0
+    control enabled mixer5 0
+    control enabled mixer5 0
+    control enabled mixer6 0
+    control enabled mixer7 0
+    control enabled mixer8 0
+    control enabled mixer9 0
+    control enabled mixer10 0
+    control enabled mixer11 0
+    control enabled mixer12 0
+    control enabled mixer13 0
+    control enabled mixer14 0
+    control enabled mixer15 0
+    control enabled mixer16 0
+    control enabled mixer17 0
+    control enabled mixer18 0
+    set cachedEnable 0

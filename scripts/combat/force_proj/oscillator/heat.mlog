@@ -1,0 +1,104 @@
+set warmHeat 300
+set overHeat 700
+sensor phase projector1 @phase-fabric
+jump phase_skip equal phase 0
+    set warmHeat 600
+    set overHeat 1100
+phase_skip:
+# op sub warmHeat warmHeat adjustWarmHeat
+
+# jump heatCalc_skip lessThan heat1 pHeat
+#     op sub dHeat heat1 pHeat
+#     op sub heatETime @time heatPTime
+#     op div rHeat dHeat heatETime
+#     jump heatCalc_skip lessThan rHeat 0.24
+#     op sub adjustWarmHeatC rHeat 0.24
+#     op min adjustWarmHeatC adjustWarmHeatC 1
+#     op mul adjustWarmHeatC adjustWarmHeatC 300
+#     op max adjustWarmHeat adjustWarmHeat adjustWarmHeatC
+# heatCalc_skip:
+# sensor pHeat projector1 @heat
+# set heatPTime @time
+
+# op sub AWH_eTime @time AWH_pTime
+# jump adjWH_reset_skip lessThan AWH_eTime 10e3
+#     set AWH_pTime @time
+#     set adjustWarmHeat 0
+# adjWH_reset_skip:
+
+jump sh1_dead equal projector1 null
+sensor heat1 projector1 @heat
+jump sh1_overheat equal overheat1 1
+jump sh1_overheat greaterThan heat1 overHeat
+    jump sh1_warm greaterThan heat1 warmHeat
+    jump sh1_good lessThanEq heat1 50
+    jump sh1_end always 0
+    sh1_warm:
+        set status1 1
+        jump sh1_end always 0
+    sh1_good:
+        set status1 0
+        jump sh1_end always 0
+sh1_overheat:
+    set status1 1
+    set overheat1 1
+    jump sh1_end greaterThan heat1 0
+        set status1 0
+        set overheat1 0
+        jump sh1_end always 0
+sh1_dead:
+    set status1 1
+sh1_end:
+
+jump sh2_dead equal projector2 null
+sensor heat2 projector2 @heat
+jump sh2_overheat equal overheat2 1
+jump sh2_overheat greaterThan heat2 overHeat
+    jump sh2_warm greaterThan heat2 warmHeat
+    jump sh2_good lessThanEq heat2 50
+    jump sh2_end always 0
+    sh2_warm:
+        set status2 1
+        jump sh2_end always 0
+    sh2_good:
+        set status2 0
+        jump sh2_end always 0
+sh2_overheat:
+    set status2 1
+    set overheat2 1
+    jump sh2_end greaterThan heat2 0
+        set status2 0
+        set overheat2 0
+        jump sh2_end always 0
+sh2_dead:
+    set status2 1
+sh2_end:
+
+
+jump sh3_dead equal projector3 null
+sensor heat3 projector3 @heat
+jump sh3_overheat equal overheat3 1
+jump sh3_overheat greaterThan heat3 overHeat
+    jump sh3_warm greaterThan heat3 warmHeat
+    jump sh3_good lessThanEq heat3 50
+    jump sh3_end always 0
+    sh3_warm:
+        set status3 1
+        jump sh3_end always 0
+    sh3_good:
+        set status3 0
+        jump sh3_end always 0
+sh3_overheat:
+    set status3 1
+    set overheat3 1
+    jump sh3_end greaterThan heat3 0
+        set status3 0
+        set overheat3 0
+        jump sh3_end always 0
+sh3_dead:
+    set status3 1
+sh3_end:
+
+write status1 cell1 1
+write status2 cell1 2
+write status3 cell1 3

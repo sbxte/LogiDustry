@@ -1,0 +1,448 @@
+set minRes 2e3
+print "-- Edit above --"
+op mul thisFlag @thisy @mapw
+op add thisFlag thisFlag @thisx
+op div itemSelStep 1 5
+
+setup_start:
+jump setup_start equal cell1 null
+jump setup_start equal factory1 null
+jump setup_start equal reconstructor1 null
+jump setup_start equal reconstructor2 null
+jump setup_start equal container1 null
+jump setup_start equal switch1 null
+
+# setup_dist:
+#     sensor dead @unit @dead
+#     jump setup_dist_bind_skip equal dead 0
+#         setup_dist_bind:
+#             ubind @flare
+#             jump setup_dist_bind equal @unit null
+#             sensor flag @unit @flag
+#             jump setup_dist_bind notEqual flag 0
+#         ucontrol flag thisFlag
+#     setup_dist_bind_skip:
+#     ucontrol within @thisx @thisy 1 within
+#     ucontrol move @thisx @thisy
+# jump setup_dist equal within 0
+# ulocate building core 0 0 coreX coreY 0 0
+# op sub units_distX coreX @thisx
+# op sub units_distY coreY @thisy
+# op len units_dist units_distX units_distY
+# ucontrol move coreX coreY
+# ucontrol flag 0
+# ubind null
+
+
+start:
+
+sensor config1 factory1 @config
+jump setup_factory1 notEqual config1 cachedConfig1
+sensor config2 factory2 @config
+jump setup_factory2 notEqual config2 cachedConfig2
+
+sensor enable switch1 @enabled
+write enable cell1 0
+jump disable equal enable 0
+
+sensor coreDead core @dead
+jump coreDead_skip equal coreDead 0
+    coreDead:
+    ubind @mono
+    jump coreDead equal @unit null
+    ulocate building core 0 0 coreX coreY 0 core
+coreDead_skip:
+
+
+sensor ODswitch switch2 @enabled
+sensor PODswitch switch3 @enabled
+op or ODenable ODswitch PODswitch
+op mul phaseC PODswitch 50
+control enabled projector1 ODenable
+
+sensor phaseH container1 @phase-fabric
+op sub phaseN phaseC phaseH
+op max phaseN phaseN 0
+set totalN phaseN
+
+
+
+
+set siliconH 0
+# set graphiteH 0
+set coalH 0
+set leadH 0
+set titaniumH 0
+set metaglassH 0
+
+
+set @counter factory1Sensor
+factory1SensorReturn:
+set @counter factory2Sensor
+factory2SensorReturn:
+
+
+
+
+
+# Check each recon
+sensor siliconH_ reconstructor1 @silicon
+op add siliconH siliconH siliconH_
+sensor graphiteH reconstructor1 @graphite
+
+sensor siliconH_ reconstructor2 @silicon
+op add siliconH siliconH siliconH_
+sensor titaniumH_ reconstructor2 @titanium
+op add titaniumH titaniumH titaniumH_
+sensor metaglassH_ reconstructor2 @metaglass
+op add metaglassH metaglassH metaglassH_
+
+sensor siliconH_ reconstructor3 @silicon
+op add siliconH siliconH siliconH_
+sensor graphiteH_ reconstructor3 @graphite
+op add graphiteH graphiteH graphiteH_
+
+sensor siliconH_ reconstructor4 @silicon
+op add siliconH siliconH siliconH_
+sensor titaniumH_ reconstructor4 @titanium
+op add titaniumH titaniumH titaniumH_
+sensor metaglassH_ reconstructor4 @metaglass
+op add metaglassH metaglassH metaglassH_
+
+
+sensor siliconH_ container1 @silicon
+op add siliconH siliconH siliconH_
+sensor leadH_ container1 @lead
+op add leadH leadH_
+sensor graphiteH_ container1 @graphite
+op add graphiteH graphiteH graphiteH_
+sensor coalH_ container1 @coal
+op add coalH coalH coalH_
+sensor titaniumH_ container1 @titanium
+op add titaniumH titaniumH titaniumH_
+sensor metaglassH_ container1 @metaglass
+op add metaglassH metaglassH metaglassH_
+
+
+op sub siliconN siliconC siliconH
+op sub leadN leadC leadH
+op sub graphiteN graphiteC graphiteH
+op sub coalN coalC coalH
+op sub titaniumN titaniumC titaniumH
+op sub metaglassN metaglassC metaglassH
+
+op max siliconN siliconN 0
+op max leadN leadN 0
+op max graphiteN graphiteN 0
+op max coalN coalN 0
+op max titaniumN titaniumN 0
+op max metaglassN metaglassN 0
+
+jump minRes_end lessThanEq minRes 0
+    sensor coreSilicon core @silicon
+    jump minRes_lead greaterThan coreSilicon minRes
+        set siliconN 0
+    minRes_lead:
+    sensor coreLead core @lead
+    jump minRes_graphite greaterThan coreLead minRes
+        set leadN 0
+    minRes_graphite:
+    sensor coreGraphite core @graphite
+    jump minRes_coal greaterThan coreGraphite minRes
+        set graphiteN 0
+    minRes_coal:
+    sensor coreCoal core @coal
+    jump minRes_titanium greaterThan coreCoal minRes
+        set coalN 0
+    minRes_titanium:
+    sensor coreTitanium core @titanium
+    jump minRes_metaglass greaterThan coreTitanium minRes
+        set titaniumN 0
+    minRes_metaglass:
+    sensor coreMetaglass core @metaglass
+    jump minRes_end greaterThan coreMetaglass minRes
+        set metaglassN 0
+minRes_end:
+
+
+
+op add totalN totalN siliconN
+op add totalN totalN leadN
+op add totalN totalN graphiteN
+op add totalN totalN coalN
+op add totalN totalN titaniumN
+op add totalN totalN metaglassN
+
+
+
+
+op add siliconC siliconC siliconC_
+op add leadC leadC leadC_
+op add graphiteC graphiteC graphiteC_
+op add coalC coalC coalC_
+op add titaniumC titaniumC titaniumC_
+op add metaglassC metaglassC metaglassC_
+
+
+
+
+op div siliconP siliconN totalN
+op div leadP leadN totalN
+op add leadP leadP siliconP
+op div graphiteP graphiteN totalN
+op add graphiteP graphiteP leadP
+op div coalP coalN totalN
+op add coalP coalP graphiteP
+op div titaniumP titaniumN totalN
+op add titaniumP titaniumP graphiteP
+op div metaglassP metaglassN totalN
+op add metaglassP metaglassP titaniumP
+op div phaseP phaseN totalN
+op add phaseP phaseP metaglassP
+# set metaglassP 1
+
+write siliconN cell1 1
+write leadN cell1 2
+write graphiteN cell1 3
+write coalN cell1 4
+write titaniumN cell1 5
+write metaglassN cell1 6
+write phaseN cell1 7
+write totalN cell1 13
+
+
+
+
+set cellIter 8
+itemSelIter_loop:
+    jump itemSel_lead greaterThanEq itemSelIter siliconP
+        write 0 cell1 cellIter
+        jump itemSel_continue always 0
+    itemSel_lead:
+    jump itemSel_graphite greaterThanEq itemSelIter leadP
+        write 2 cell1 cellIter
+        jump itemSel_continue always 0
+    itemSel_graphite:
+    jump itemSel_coal greaterThanEq itemSelIter graphiteP
+        write 4 cell1 cellIter
+        jump itemSel_continue always 0
+    itemSel_coal:
+    jump itemSel_titanium greaterThanEq itemSelIter coalP
+        write 6 cell1 cellIter
+        jump itemSel_continue always 0
+    itemSel_titanium:
+    jump itemSel_metaglass greaterThanEq itemSelIter titaniumP
+        write 8 cell1 cellIter
+        jump itemSel_continue always 0
+    itemSel_metaglass:
+    jump itemSel_phase greaterThanEq itemSelIter metaglassP
+        write 10 cell1 cellIter
+        jump itemSel_continue always 0
+    itemSel_phase:
+        write 12 cell1 cellIter
+    itemSel_continue:
+    op add itemSelIter itemSelIter itemSelStep
+    op mod itemSelIter itemSelIter 1
+    op add cellIter cellIter 1
+jump itemSelIter_loop lessThan cellIter 13
+
+jump start always 0
+
+
+
+setup_factory1:
+
+sensor config1 factory1 @config
+jump start equal config1 null
+set cachedConfig1 config1
+
+jump cfg1_dagger equal config1 @dagger
+jump cfg1_nova equal config1 @nova
+jump cfg1_crawler equal config1 @crawler
+jump cfg1_flare equal config1 @flare
+jump cfg1_mono equal config1 @mono
+jump cfg1_risso equal config1 @risso
+jump cfg1_retusa equal config1 @retusa
+cfg1_dagger:
+    op add factory1Sensor @counter 3
+    set siliconC1 60
+    set leadC1 40
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        sensor leadH factory1 @lead
+        jump factory1SensorReturn always 0
+cfg1_crawler:
+    op add factory1Sensor @counter 3
+    set siliconC1 60
+    set coalC1 20
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        sensor coalH factory1 @coal
+        jump factory1SensorReturn always 0
+cfg1_nova:
+    op add factory1Sensor @counter 4
+    set siliconC1 60
+    set leadC1 40
+    set titaniumC1 40
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        sensor leadH factory1 @lead
+        sensor titaniumH factory1 @titanium
+        jump factory1SensorReturn always 0
+cfg1_flare:
+    op add factory1Sensor @counter 2
+    set siliconC1 60
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        jump factory1SensorReturn always 0
+cfg1_mono:
+    op add factory1Sensor @counter 3
+    set siliconC1 60
+    set leadC1 30
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        sensor leadH factory1 @lead
+        jump factory1SensorReturn always 0
+cfg1_risso:
+    op add factory1Sensor @counter 3
+    set siliconC1 40
+    set metaglassC1 70
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        sensor metaglassH factory1 @metaglass
+        jump factory1SensorReturn always 0
+cfg1_retusa:
+    op add factory1Sensor @counter 7
+    set siliconC1 40
+    set metaglassC1 70
+    set titaniumC1 40
+    jump cfg1_end always 0
+        sensor siliconH factory1 @silicon
+        sensor metaglassH factory1 @metaglass
+        sensor titaniumH factory1 @titanium
+        jump factory1SensorReturn always 0
+cfg1_end:
+op add siliconC siliconC1 siliconC2
+op add leadC leadC1 leadC2
+# op add graphiteC graphiteC1 graphiteC2
+op add coalC coalC1 coalC2
+op add titaniumC titaniumC1 titaniumC2
+op add metaglassC metaglassC1 metaglassC2
+
+op add siliconC siliconC 680 # 80 + 130 + (150)
+op add leadC leadC 50 # (50)
+op add graphiteC graphiteC 160 # 40
+op add coalC coalC 50 # (50)
+op add titaniumC titaniumC 365 # 80 + (45)
+op add metaglassC metaglassC 230 # 40 + (70)
+jump start always 0
+
+setup_factory2:
+
+sensor config2 factory2 @config
+jump start equal config2 null
+set cachedConfig2 config2
+
+jump cfg2_dagger equal config2 @dagger
+jump cfg2_nova equal config2 @nova
+jump cfg2_crawler equal config2 @crawler
+jump cfg2_flare equal config2 @flare
+jump cfg2_mono equal config2 @mono
+jump cfg2_risso equal config2 @risso
+jump cfg2_retusa equal config2 @retusa
+cfg2_dagger:
+    op add factory2Sensor @counter 3
+    set siliconC2 60
+    set leadC2 40
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        sensor leadH_ factory2 @lead
+        jump factory2SensorReturn always 0
+cfg2_crawler:
+    op add factory2Sensor @counter 3
+    set siliconC2 60
+    set coalC2 20
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        op add siliconH siliconH siliconH_
+        sensor coalH_ factory2 @coal
+        op add coalH coalH coalH_
+        jump factory2SensorReturn always 0
+cfg2_nova:
+    op add factory2Sensor @counter 4
+    set siliconC2 60
+    set leadC2 40
+    set titaniumC2 40
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        op add siliconH siliconH siliconH_
+        sensor leadH_ factory2 @lead
+        op add leadH leadH leadH_
+        sensor titaniumH_ factory2 @titanium
+        op add titaniumH titaniumH titaniumH_
+        jump factory2SensorReturn always 0
+cfg2_flare:
+    op add factory2Sensor @counter 2
+    set siliconC2 60
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        op add siliconH siliconH siliconH_
+        jump factory2SensorReturn always 0
+cfg2_mono:
+    op add factory2Sensor @counter 3
+    set siliconC2 60
+    set leadC2 30
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        op add siliconH siliconH siliconH_
+        sensor leadH_ factory2 @lead
+        op add leadH leadH leadH_
+        jump factory2SensorReturn always 0
+cfg2_risso:
+    op add factory2Sensor @counter 3
+    set siliconC2 40
+    set metaglassC2 70
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        op add siliconH siliconH siliconH_
+        sensor metaglassH_ factory2 @metaglass
+        op add metaglassH metaglassH metaglassH_
+        jump factory2SensorReturn always 0
+cfg2_retusa:
+    op add factory2Sensor @counter 7
+    set siliconC2 40
+    set metaglassC2 70
+    set titaniumC2 40
+    jump cfg2_end always 0
+        sensor siliconH_ factory2 @silicon
+        op add siliconH siliconH siliconH_
+        sensor metaglassH_ factory2 @metaglass
+        op add metaglassH metaglassH metaglassH_
+        sensor titaniumH_ factory2 @titanium
+        op add titaniumH titaniumH titaniumH_
+        jump factory2SensorReturn always 0
+cfg2_end:
+op add siliconC siliconC1 siliconC2
+op add leadC leadC1 leadC2
+# op add graphiteC graphiteC1 graphiteC2
+op add coalC coalC1 coalC2
+op add titaniumC titaniumC1 titaniumC2
+op add metaglassC metaglassC1 metaglassC2
+
+op add siliconC siliconC 680 # 80 + 130 + (150)
+op add leadC leadC 50 # (50)
+op add graphiteC graphiteC 160 # 40
+op add coalC coalC 50 # (50)
+op add titaniumC titaniumC 365 # 80 + (45)
+op add metaglassC metaglassC 230 # 40 + (70)
+jump start always 0
+
+disable:
+    control enabled projector1 0
+    control enabled factory1 0
+    control enabled factory2 0
+    control enabled reconstructor1 0
+    control enabled reconstructor2 0
+    control enabled reconstructor3 0
+    control enabled reconstructor4 0
+jump start always 0

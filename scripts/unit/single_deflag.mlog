@@ -1,7 +1,59 @@
-ubind @flare
-sensor flag @unit @flag
-jump 0 equal flag 0
-sensor ctrl @unit @ctrl
-jump 0 equal ctrl 1
+sensor enabled switch1 @enabled
+jump disabled equal enabled 0
 
+# Bind unit
+lookup unit utype i
+ubind utype
+
+# Flag and proc checks
+sensor flag @unit @flag
+jump skipDeflag equal flag 0
+
+sensor ctrl @unit @controlled
+jump skipDeflag equal ctrl 1
+
+# Deflag
 ucontrol flag 0
+
+# Memory
+read m cell1 i
+op add m m 1
+write m cell1 i
+
+skipDeflag:
+
+op add i i 1
+op mod i i @unitCount
+
+op sub ETprint @time PTprint
+jump 0 lessThan ETprint 5e3
+    print "[sky]Unit Deflagger v1.2[]\nby [green]SBytes[]"
+
+    printLoop:
+        read m cell1 i
+        jump skip equal m 0
+            jump printSkipTitle equal print_hasTitle 1
+                print "\n\n[lime]Deflagged[]"
+                set print_hasTitle 1
+            printSkipTitle:
+            lookup unit u i
+            print ",\n"
+            print m
+            print " "
+            print u
+        skip:
+        op add i i 1
+    jump printLoop lessThan i @unitCount
+    set i 0
+    set print_hasTitle 0
+    printflush message1
+end
+
+disabled:
+print "\n\n[red]Disabled"
+printflush message1
+end
+
+print "Unit Deflagger v1.2"
+print "by SBytes"
+print "Micro Version (merge proc)"

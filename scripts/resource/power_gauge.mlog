@@ -1,0 +1,100 @@
+sensor netIn node1 @powerNetIn
+sensor netOut node1 @powerNetOut
+sensor netCap node1 @powerNetCapacity
+sensor netStore node1 @powerNetStored
+op sub net netIn netOut
+op div netRatio netIn netOut
+op floor netF net
+op floor netInF netIn
+op floor netOutF netOut
+op idiv netRatioF netRatio 1e-2
+op div netRatioF netRatioF 1e2
+
+print "[yellow] [sky]Power Gauge v0-B.2\n[green]by SBytes\n\n[white]In Out          [#00ff]"
+print netInF
+print " [#ff]"
+print netOutF
+print "\n[white]Delta Ratio "
+print netF
+print " [slate]"
+print netRatioF
+print "\n[white]Stored Cap [royal]"
+
+
+jump batS_k lessThan netStore 1e3
+    jump batS_m lessThan netStore 1e6
+        op div netStoreF netStore 1e6
+        op idiv netStoreF netStoreF 1e-1
+        op div netStoreF netStoreF 1e1
+        print netStoreF
+        print "m [navy] "
+        jump batS_end always 0
+    batS_m:
+    op div netStoreF netStore 1e3
+    op idiv netStoreF netStoreF 1e-1
+    op div netStoreF netStoreF 1e1
+    print netStoreF
+    print "k [navy] "
+    jump batS_end always 0
+batS_k:
+print netStore
+print " [navy] "
+batS_end:
+
+jump batC_k lessThan netCap 1e3
+    jump batC_m lessThan netCap 1e6
+        op div netCapF netCap 1e6
+        op idiv netCapF netCapF 1e-1
+        op div netCapF netCapF 1e1
+        print netCapF
+        print "m [magenta]\n[white]Timeleft      [royal]"
+        jump batC_end always 0
+    batC_m:
+    op div netCapF netCap 1e3
+    op idiv netCapF netCapF 1e-1
+    op div netCapF netCapF 1e1
+    print netCapF
+    print "k [magenta]\n[white]Timeleft      [royal]"
+    jump batC_end always 0
+batC_k:
+print netCap
+print " [magenta]\n[white]Timeleft      [royal]"
+batC_end:
+
+jump time_end equal net 0
+jump time_neg lessThan net 0
+    op sub need netCap netStore
+    op idiv time need net
+    jump time_pnskip always 0
+time_neg:
+    op idiv time netStore net
+time_pnskip:
+
+op abs timeS time 0
+jump time_m lessThan timeS 60
+    jump time_h lessThan timeS 3600
+        op idiv timeH timeS 3600
+        print timeH
+        print "h "
+        op mod timeM timeS 3600
+        print timeM
+        print "m "
+        op mod timeS timeS 60
+        print timeS
+        print "s"
+        jump time_end always 0
+    time_h:
+    op idiv timeM timeS 60
+    print timeM
+    print "m "
+    op mod timeS timeS 60
+    print timeS
+    print "s"
+    jump time_end always 0
+time_m:
+    print timeS
+    print "s"
+time_end:
+printflush message1
+end
+print "Power Gauge v0-B.2 by SBytes"

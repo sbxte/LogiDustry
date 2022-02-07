@@ -8,6 +8,10 @@
 sensor config unloader1 @config
 jump activate equal config @phase-fabric
 
+# Damage
+read damaged cell1 0
+jump activate equal damaged 1
+
 # Radar
 radar enemy any any distance hail1 1 enemy
 jump skip equal enemy 0
@@ -16,15 +20,17 @@ jump skip equal enemy 0
     # OD
     control enabled projector4 1
 
-    op mul counterJump counterJump 19
+    op mul counterJump counterJump 22
     op add @counter @counter counterJump
 
     # Shield 1
+    sh1:
     sensor dead projector1 @dead
     jump sh1_skip equal dead 1
     jump sh1_notCurrent notEqual currentI 0
+        activate_0:
         # Max heat (phase)
-        set maxHeat 200
+        set maxHeat 240
         sensor phase projector1 @phase-fabric
         jump sh1_noPhase equal phase 0
             op add maxHeat maxHeat 200
@@ -33,28 +39,34 @@ jump skip equal enemy 0
         # Heat check
         sensor heat projector1 @heat
         jump sh1_goodHeat lessThan heat maxHeat
+            op add swapAttempt swapAttempt 1
             set currentI 1
-            end
+            jump sh2 always 0
         sh1_goodHeat:
 
         # Enable
+        set currentShield
         control enabled projector1 1
         control enabled projector2 0
         control enabled projector3 0
+        set swapAttempt 0
         end
     sh1_notCurrent:
         sensor heat projector1 @heat
+        op add swapAttempt swapAttempt 1
         jump sh1_skip greaterThan heat 10
             set currentI 0
-            end
+            jump activate_0 always 0
     sh1_skip:
 
     # Shield 2
+    sh2:
     sensor dead projector2 @dead
     jump sh2_skip equal dead 1
     jump sh2_notCurrent notEqual currentI 1
+        activate_1:
         # Max heat (phase)
-        set maxHeat 200
+        set maxHeat 240
         sensor phase projector2 @phase-fabric
         jump sh2_noPhase equal phase 0
             op add maxHeat maxHeat 200
@@ -63,28 +75,34 @@ jump skip equal enemy 0
         # Heat check
         sensor heat projector2 @heat
         jump sh2_goodHeat lessThan heat maxHeat
+            op add swapAttempt swapAttempt 1
             set currentI 2
-            end
+            jump sh3 always 0
         sh2_goodHeat:
 
         # Enable
-        control enabled projector1 0
         control enabled projector2 1
         control enabled projector3 0
+        control enabled projector1 0
+        set swapAttempt 0
         end
     sh2_notCurrent:
         sensor heat projector2 @heat
+        op add swapAttempt swapAttempt 1
         jump sh2_skip greaterThan heat 10
             set currentI 1
-            end
+            jump activate_1 always 0
     sh2_skip:
 
     # Shield 3
+    sh3:
     sensor dead projector3 @dead
     jump 0 equal dead 1
     jump sh3_notCurrent notEqual currentI 2
+        activate_2:
+
         # Max heat (phase)
-        set maxHeat 200
+        set maxHeat 240
         sensor phase projector3 @phase-fabric
         jump sh3_noPhase equal phase 0
             op add maxHeat maxHeat 200
@@ -94,20 +112,30 @@ jump skip equal enemy 0
         sensor heat projector3 @heat
         jump sh3_goodHeat lessThan heat maxHeat
             set currentI 0
-            end
+            op add swapAttempt swapAttempt 1
+            jump sh1 always 0
         sh3_goodHeat:
 
         # Enable
+        control enabled projector3 1
         control enabled projector1 0
         control enabled projector2 0
-        control enabled projector3 1
+        set swapAttempt 0
         end
     sh3_notCurrent:
         sensor heat projector3 @heat
-        jump 0 greaterThan heat 10
+        op add swapAttempt swapAttempt 1
+        jump sh3_skip greaterThan heat 10
             set currentI 2
-            end
-    # sh3_nC_end:
+            jump activate_2 always 0
+    sh3_skip:
+
+
+    jump activate lessThan swapAttempt 2
+        control enabled projector1 0
+        control enabled projector2 0
+        control enabled projector3 0
+    jump activate always 0
 skip:
 control enabled projector4 0
 control enabled projector1 0

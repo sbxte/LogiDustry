@@ -1,0 +1,187 @@
+start:
+
+# Total items
+read iNeededTotal cell1 16
+
+# Received
+write 1 cell1 18
+write 1 cell1 22
+
+# Unloader threshold
+read unloaderThreshold cell1 25
+
+
+### Mode
+jump mode_bgBuffering equal iNeededTotal 0
+
+### Mode A
+
+### Buffer item max
+read bItemMax cell1 17
+set bIM_thisBit 0
+bIM_loop:
+    lookup item bIM_item bIM_I
+    sensor bIM_stored container1 bIM_item
+    jump bIM_cont greaterThan bIM_stored bItemMax
+        op shl bIM_bSel 1 bIM_I
+        op add bIM_thisBit bIM_thisBit bIM_bSel
+    bIM_cont:
+    op add bIM_I bIM_I 1
+jump bIM_loop lessThan bIM_I @itemCount
+set bIM_I 0
+write bIM_thisBit cell1 19
+
+# Most needed item based distribution
+
+read bIM_nextBit cell1 20
+set bIM_itemReqI 0
+set bIM_mostReq(1N) 0
+set bIM_mostReq(2) null
+set bIM_mostReq(2N) 0
+set bIM_mostReq(3) null
+set bIM_mostReq(3N) 0
+
+bIM_itemLoop:
+    lookup item bIM_itemReq bIM_itemReqI
+    op shl bIM_iReqSel 1 bIM_itemReqI
+    op and bIM_iReqEna bIM_nextBit bIM_iReqSel
+    jump bIM_itemLoop_con equal bIM_iReqEna 0
+        read bIM_itemReqN cell1 bIM_itemReqI
+        jump bIM_itemReq_2 lessThanEq bIM_itemReqN bIM_mostReq(1N)
+            set bIM_mostReq(3) bIM_mostReq(2)
+            set bIM_mostReq(3N) bIM_mostReq(2N)
+            set bIM_mostReq(2) bIM_mostReq(1)
+            set bIM_mostReq(2N) bIM_mostReq(1N)
+            set bIM_mostReq(1) bIM_itemReq
+            set bIM_mostReq(1N) bIM_itemReqN
+            jump bIM_itemLoop_con always 0
+        bIM_itemReq_2:
+        jump bIM_itemReq_3 lessThanEq bIM_itemReqN bIM_mostReq(2N)
+            set bIM_mostReq(3) bIM_mostReq(2)
+            set bIM_mostReq(3N) bIM_mostReq(2N)
+            set bIM_mostReq(2) bIM_itemReq
+            set bIM_mostReq(2N) bIM_itemReqN
+            jump bIM_itemLoop_con always 0
+        bIM_itemReq_3:
+        jump bIM_itemLoop_con lessThanEq bIM_itemReqN bIM_mostReq(3N)
+            set bIM_mostReq(3) bIM_itemReq
+            set bIM_mostReq(3N) bIM_itemReqN
+    bIM_itemLoop_con:
+    op add bIM_itemReqI bIM_itemReqI 1
+jump bIM_itemLoop lessThan bIM_itemReqI @itemCount
+
+jump mode_disable equal bIM_mostReq(1N) 0
+
+jump bIM_itemReq_mR2 equal bIM_mostReq(2N) 0
+op sub bIM_itemReq_dMR2 bIM_mostReq(1N) bIM_mostReq(2N)
+jump bIM_itemReq_mR2_end lessThan bIM_itemReq_dMR2 unloaderThreshold
+    bIM_itemReq_mR2:
+    set bIM_mostReq(2) bIM_mostReq(1)
+bIM_itemReq_mR2_end:
+
+jump bIM_itemReq_mR3 equal bIM_mostReq(3N) 0
+op sub bIM_itemReq_dMR3 bIM_mostReq(1N) bIM_mostReq(3N)
+jump bIM_itemReq_mR3_end lessThan bIM_itemReq_dMR3 unloaderThreshold
+    bIM_itemReq_mR3:
+    set bIM_mostReq(3) bIM_mostReq(1)
+bIM_itemReq_mR3_end:
+
+# unloader
+control config unloader1 bIM_mostReq(1)
+control config unloader2 bIM_mostReq(2)
+control config unloader3 bIM_mostReq(3)
+
+jump start equal cachedUnloaderEnable 1
+    control enabled unloader1 1
+    control enabled unloader2 1
+    control enabled unloader3 1
+    set cachedUnloaderEnable 1
+jump start always 0
+
+
+
+
+### Background buffer
+mode_bgBuffering:
+
+read bgBuffThresh cell1 21
+set bgB_thisBit 0
+bgB_TB_loop:
+    lookup item bgB_TB_item bgB_TB_itemI
+    sensor bgB_TB_stored container1 bgB_TB_item
+    jump bgB_iCont greaterThan bgB_TB_stored bgBuffThresh
+        op shl bgB_TB_bSel 1 bgB_TB_itemI
+        op add bgB_thisBit bgB_thisBit bgB_TB_bSel
+    bgB_iCont:
+    op add bgB_TB_itemI bgB_TB_itemI 1
+jump bgB_TB_loop lessThan bgB_TB_itemI @itemCount
+set bgB_TB_itemI 0
+write bgB_thisBit cell1 23
+
+
+
+read bgB_NB_nextBit cell1 24
+set bgB_NB_itemReqI 0
+set bgB_NB_mostReq(1N) 0
+set bgB_NB_mostReq(2) null
+set bgB_NB_mostReq(2N) 0
+set bgB_NB_mostReq(3) null
+set bgB_NB_mostReq(3N) 0
+
+set bgB_NB_unl1 0
+set bgB_NB_unl2 0
+set bgB_NB_unl3 0
+
+bgB_NB_itemLoop:
+    lookup item bgB_NB_itemReq bgB_NB_itemReqI
+    op shl bgB_NB_iReqSel 1 bgB_NB_itemReqI
+    op and bgB_NB_iReqEna bgB_NB_nextBit bgB_NB_iReqSel
+
+    jump bgB_NB_itemLoop_con equal bgB_NB_iReqEna 0
+
+    sensor cItem core bgB_NB_itemReq
+    jump bgB_NB_itemLoop_con lessThan cItem minRes
+        op mul counterJump bgB_NB_unlI 5
+        op add @counter @counter counterJump
+            control config unloader1 bgB_NB_itemReq
+            set bgB_NB_unl1 1
+            op add bgB_NB_unlI bgB_NB_unlI 1
+            op mod bgB_NB_unlI bgB_NB_unlI 3
+            jump bgB_NB_itemLoop_con always 0
+
+            control config unloader2 bgB_NB_itemReq
+            set bgB_NB_unl2 1
+            op add bgB_NB_unlI bgB_NB_unlI 1
+            op mod bgB_NB_unlI bgB_NB_unlI 3
+            jump bgB_NB_itemLoop_con always 0
+
+            control config unloader3 bgB_NB_itemReq
+            op add bgB_NB_unlI bgB_NB_unlI 1
+            op mod bgB_NB_unlI bgB_NB_unlI 3
+            set bgB_NB_unl3 1
+    bgB_NB_itemLoop_con:
+    op add bgB_NB_itemReqI bgB_NB_itemReqI 1
+
+jump bgB_NB_itemLoop lessThan bgB_NB_itemReqI @itemCount
+
+# unloader
+control enabled unloader1 bgB_NB_unl2
+control enabled unloader2 bgB_NB_unl2
+control enabled unloader3 bgB_NB_unl3
+
+jump start always 0
+
+
+
+### Mode disable
+mode_disable:
+    control enabled unloader1 0
+    control enabled unloader2 0
+    control enabled unloader3 0
+    set cachedUnloaderEnable 0
+jump start always 0
+
+
+jump start always 0
+print "MDRelay Chain v2.0-A1 by SBytes"
+print "Alpha testing"

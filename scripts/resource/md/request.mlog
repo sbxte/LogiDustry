@@ -1,127 +1,147 @@
+set copper 0
+set lead 0
+set metaglass 0
+set graphite 0
+set sand 0
+set coal 0
+set titanium 0
+set thorium 0
+set scrap 0
+set silicon 0
+set plastanium 0
+set phase 0
+set surge 0
+set spore 0
+set blast 0
+set pyratite 0
 # set copper 0
-# set lead 0
-# set metaglass 0
-# set graphite 0
+# set lead 100
+# set metaglass 300
+# set graphite 300
 # set sand 0
-# set coal 0
-# set titanium 0
+# set coal 100
+# set titanium 500
 # set thorium 0
 # set scrap 0
-# set silicon 0
-# set plastanium 0
-# set phase 0
-# set surge 0
+# set silicon 500
+# set plastanium 500
+# set phase 300
+# set surge 500
 # set spore 0
 # set blast 0
 # set pyratite 0
-# set done 0
-set copper 800
-set lead 800
-set metaglass 800
-set graphite 800
-set sand 800
-set coal 800
-set titanium 800
-set thorium 800
-set scrap 800
-set silicon 800
-set plastanium 800
-set phase 800
-set surge 800
-set spore 800
-set blast 800
-set pyratite 800
-set done 1
+
+set done true
+
+
 _edit:
 jump _edit equal done 0
+print "--Edit above --"
+print "No touching stuff below unless you ABSOLUTELY know what you are doing :P"
+
+
 
 start:
-getlink cell 0
 jump start equal cell1 0
 getlink storage 1
 jump start equal storage 0
 
+# Constant mem cell values
+write unloaderThreshold cell1 17
+
+# Item Request
+    # copper lead metaglass graphite sand coal titanium thorium scrap silicon plastanium phase surge spore blast pyratite
 sensor sCopper storage @copper
-op lessThan gCopper sCopper copper
-op shl bit gCopper 0
+op sub rCopper copper sCopper
+op max rCopper rCopper 0
+write rCopper cell1 0
 
 sensor sLead storage @lead
-op lessThan gLead sLead lead
-op shl bit_ gLead 1
-op add bit bit bit_
+op sub rLead lead sLead
+op max rLead rLead 0
+write rLead cell1 1
 
 sensor sMetaglass storage @metaglass
-op lessThan gMetaglass sMetaglass metaglass
-op shl bit_ gMetaglass 2
-op add bit bit bit_
+op sub rMetaglass metaglass sMetaglass
+op max rMetaglass rMetaglass 0
+write rMetaglass cell1 2
 
 sensor sGraphite storage @graphite
-op lessThan gGraphite sGraphite graphite
-op shl bit_ gGraphite 3
-op add bit bit bit_
+op sub rGraphite graphite sGraphite
+op max rGraphite rGraphite 0
+write rGraphite cell1 3
 
 sensor sSand storage @sand
-op lessThan gSand sSand sand
-op shl bit_ gSand 4
-op add bit bit bit_
+op sub rSand sand sSand
+op max rSand rSand 0
+write rSand cell1 4
 
 sensor sCoal storage @coal
-op lessThan gCoal sCoal coal
-op shl bit_ gCoal 5
-op add bit bit bit_
+op sub rCoal coal sCoal
+op max rCoal rCoal 0
+write rCoal cell1 5
 
 sensor sTitanium storage @titanium
-op lessThan gTitanium sTitanium titanium
-op shl bit_ gTitanium 6
-op add bit bit bit_
+op sub rTitanium titanium sTitanium
+op max rTitanium rTitanium 0
+write rTitanium cell1 6
 
 sensor sThorium storage @thorium
-op lessThan gThorium sThorium thorium
-op shl bit_ gThorium 7
-op add bit bit bit_
+op sub rThorium thorium sThorium
+op max rThorium rThorium 0
+write rThorium cell1 7
 
 sensor sScrap storage @scrap
-op lessThan gScrap sScrap scrap
-op shl bit_ gScrap 8
-op add bit bit bit_
+op sub rScrap scrap sScrap
+op max rScrap rScrap 0
+write rScrap cell1 8
 
 sensor sSilicon storage @silicon
-op lessThan gSilicon sSilicon silicon
-op shl bit_ gSilicon 9
-op add bit bit bit_
+op sub rSilicon silicon sSilicon
+op max rSilicon rSilicon 0
+write rSilicon cell1 9
 
 sensor sPlastanium storage @plastanium
-op lessThan gPlastanium sPlastanium plastanium
-op shl bit_ gPlastanium 10
-op add bit bit bit_
+op sub rPlastanium plastanium sPlastanium
+op max rPlastanium rPlastanium 0
+write rPlastanium cell1 10
 
 sensor sPhase storage @phase-fabric
-op lessThan gPhase sPhase phase
-op shl bit_ gPhase 11
-op add bit bit bit_
+op sub rPhase phase sPhase
+op max rPhase rPhase 0
+write rPhase cell1 11
 
 sensor sSurge storage @surge-alloy
-op lessThan gSurge sSurge surge
-op shl bit_ gSurge 12
-op add bit bit bit_
+op sub rSurge surge sSurge
+op max rSurge rSurge 0
+write rSurge cell1 12
 
 sensor sSpore storage @spore-pod
-op lessThan gSpore sSpore spore
-op shl bit_ gSpore 13
-op add bit bit bit_
+op sub rSpore spore sSpore
+op max rSpore rSpore 0
+write rSpore cell1 13
 
 sensor sBlast storage @blast-compound
-op lessThan gBlast sBlast blast
-op shl bit_ gBlast 14
-op add bit bit bit_
+op sub rBlast blast sBlast
+op max rBlast rBlast 0
+write rBlast cell1 14
 
-sensor sPyra storage @pyratite
-op lessThan gPyra sPyra pyratite
-op shl bit_ gPyra 15
-op add bit bit bit_
+sensor sPyratite storage @pyratite
+op sub rPyratite pyratite sPyratite
+op max rPyratite rPyratite 0
+write rPyratite cell1 15
 
-write bit cell 0
 
 jump start always 0
 
-print "MDR Request vAlpha1 by SBytes"
+print "MDRelay Request v2.2 by SBytes"
+print "Changelog:"
+print "- Fixed Core selecting pyra when no other res are needed"
+print "- Minor itemSelStep change"
+
+# print "Changelog (compared to v1)"
+# print "- Reworked item request protocol"
+# print "- Yeeted intermediary buffer"
+# print "- Reworked item type distribution"
+# print "- SPEED"
+# print "- Better anti-overshoot"

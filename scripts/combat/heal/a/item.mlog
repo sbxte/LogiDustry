@@ -1,0 +1,317 @@
+set unit @flare
+set unitSpeed 22.5
+set unitInventorySize 20
+set itemMax 100
+set itemMin 10
+print "-- Edit above --"
+print "When unit is changed, input new unit speed and inventory size"
+print "Otherwise distance calculation will fail."
+jump 0 equal container1 null
+sensor containerX container1 @x
+sensor containerY container1 @y
+op mul thisFlag @thisy @mapw
+op add thisFlag thisFlag @thisx
+op mul coreDistConst unitSpeed unitInventorySize
+op div coreDistConst coreDistConst 2.18
+printflush message1
+
+start:
+sensor config unloader1 @config
+jump disable equal config @phase-fabric
+
+sensor phase container1 @phase-fabric
+jump itemMax_skip lessThan phase itemMax
+    itemMax:
+    set cachedItemMaxDisable 1
+    jump disable always 0
+itemMax_skip:
+jump itemMin_skip equal cachedItemMaxDisable 0
+    jump start greaterThan phase itemMin
+    set cachedItemMaxDisable 0
+itemMin_skip:
+
+stage1:
+    sensor config unloader1 @config
+    jump disable equal config @phase-fabric
+
+    print "[sky]Frontline Healing v1.2\n[]By [red]Yo[] & [green]SBytes[]\n\n- Set left most  to  to force enable .\n- Set right most  to  to disable  delivery.\n- Link  to blocks needing scanning for mending."
+    printflush message1
+
+    ubind unit1
+    jump stage1_bind equal unit1 null
+    sensor unit1_flag @unit @flag
+    jump stage1_bind notEqual unit1_flag thisFlag
+    sensor unit1_ctrld @unit @controlled
+    jump stage1_bind_skip lessThanEq unit1_ctrld 1
+        stage1_bind:
+            ubind unit
+            sensor unit1_flag @unit @flag
+            jump stage1_bind notEqual unit1_flag 0
+            sensor unit1_ctrld @unit @controlled
+            jump stage1_bind greaterThan unit1_ctrld 1
+        set unit1 @unit
+    stage1_bind_skip:
+    ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+    sensor unitItem @unit @firstItem
+    jump stage1_drop notEqual unitItem null
+        jump calcCoreDist equal stage1_dropping 1
+        ulocate building core 0 0 coreX coreY 0 core
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        jump stage1 always 0
+    stage1_drop:
+        set stage1_dropping 1
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+        jump stage1 always 0
+
+calcCoreDist:
+    set cachedCore core
+    op sub coreDistX coreX containerX
+    op sub coreDistY coreY containerY
+    op len coreDist coreDistX coreDistY
+    op div unitsRequired coreDist 206.422
+    op ceil unitsRequired unitsRequired 0
+    jump units1 lessThanEq unitsRequired 1
+    jump units2 equal unitsRequired 2
+    jump units3 always 0
+
+
+units1:
+    sensor config unloader1 @config
+    jump disable equal config @phase-fabric
+    sensor phase container1 @phase-fabric
+    jump itemMax greaterThan phase itemMax
+
+    print "[sky]Frontline Healing v1.2\n[]By [red]Yo[] & [green]SBytes[]\n\n- Set left most  to  to force enable .\n- Set right most  to  to disable  delivery.\n- Link  to blocks needing scanning for mending."
+    printflush message1
+    ubind unit1
+    jump u1_bind1 equal @unit null
+    sensor unit1_flag @unit @flag
+    jump u1_bind1 notEqual unit1_flag thisFlag
+    sensor unit1_ctrld @unit @controlled
+    jump u1_bind1_skip lessThanEq unit1_ctrld 1
+        u1_bind1:
+            ubind unit
+            sensor unit1_flag @unit @flag
+            jump u1_bind1 notEqual unit1_flag 0
+            sensor unit1_ctrld @unit @controlled
+            jump u1_bind1 greaterThan unit1_ctrld 1
+        ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+        set unit1 @unit
+    u1_bind1_skip:
+
+    sensor unit1_item @unit @firstItem
+    jump u1_c1_drop equal unit1_item @phase-fabric
+        ulocate building core 0 0 coreX coreY 0 core
+        jump calcCoreDist notEqual core cachedCore
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        jump units1 always 0
+    u1_c1_drop:
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+jump units1 always 0
+
+
+units2:
+    sensor config unloader1 @config
+    jump disable equal config @phase-fabric
+    sensor phase container1 @phase-fabric
+    jump itemMax greaterThan phase itemMax
+
+    print "[sky]Frontline Healing v1.2\n[]By [red]Yo[] & [green]SBytes[]\n\n- Set left most  to  to force enable .\n- Set right most  to  to disable  delivery.\n- Link  to blocks needing scanning for mending."
+    printflush message1
+    ubind unit1
+    jump u2_bind1 equal @unit null
+    sensor unit1_flag @unit @flag
+    jump u2_bind1 notEqual unit1_flag thisFlag
+    sensor unit1_ctrld @unit @controlled
+    jump u2_bind1_skip lessThanEq unit1_ctrld 1
+        u2_bind1:
+            ubind unit
+            sensor unit1_flag @unit @flag
+            jump u2_bind1 notEqual unit1_flag 0
+            sensor unit1_ctrld @unit @controlled
+            jump u2_bind1 greaterThan unit1_ctrld 1
+        ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+        set unit1 @unit
+    u2_bind1_skip:
+
+    sensor unit1_item @unit @firstItem
+    jump u2_c1_drop equal unit1_item @phase-fabric
+        ulocate building core 0 0 coreX coreY 0 core
+        jump calcCoreDist notEqual core cachedCore
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        jump u2_c1_end always 0
+    u2_c1_drop:
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+    u2_c1_end:
+
+    ubind unit2
+    jump u2_bind2 equal @unit null
+    sensor unit2_flag @unit @flag
+    jump u2_bind2 notEqual unit2_flag thisFlag
+    sensor unit2_ctrld @unit @controlled
+    jump u2_bind2_skip lessThanEq unit2_ctrld 1
+        u2_bind2:
+            ubind unit
+            sensor unit2_flag @unit @flag
+            jump u2_bind2 notEqual unit2_flag 0
+            sensor unit2_ctrld @unit @controlled
+            jump u2_bind2 greaterThan unit2_ctrld 1
+        ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+        set unit2 @unit
+    u2_bind2_skip:
+
+    sensor unit2_item @unit @firstItem
+    jump u2_c2_drop equal unit2_item @phase-fabric
+        ulocate building core 0 0 coreX coreY 0 core
+        jump calcCoreDist notEqual core cachedCore
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        jump units2 always 0
+    u2_c2_drop:
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+jump units2 always 0
+
+units3:
+    sensor config unloader1 @config
+    jump disable equal config @phase-fabric
+    sensor phase container1 @phase-fabric
+    jump itemMax greaterThan phase itemMax
+
+    print "[sky]Frontline Healing v1.2\n[]By [red]Yo[] & [green]SBytes[]\n\n- Set left most  to  to force enable .\n- Set right most  to  to disable  delivery.\n- Link  to blocks needing scanning for mending."
+    printflush message1
+    ubind unit1
+    jump u3_bind1 equal @unit null
+    sensor unit1_flag @unit @flag
+    jump u3_bind1 notEqual unit1_flag thisFlag
+    sensor unit1_ctrld @unit @controlled
+    jump u3_bind1_skip lessThanEq unit1_ctrld 1
+        u3_bind1:
+            ubind unit
+            sensor unit1_flag @unit @flag
+            jump u3_bind1 notEqual unit1_flag 0
+            sensor unit1_ctrld @unit @controlled
+            jump u3_bind1 greaterThan unit1_ctrld 1
+        ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+        set unit1 @unit
+    u3_bind1_skip:
+
+    sensor unit1_item @unit @firstItem
+    jump u3_c1_drop equal unit1_item @phase-fabric
+        ulocate building core 0 0 coreX coreY 0 core
+        jump calcCoreDist notEqual core cachedCore
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        jump u3_c1_end always 0
+    u3_c1_drop:
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+    u3_c1_end:
+
+    ubind unit2
+    jump u3_bind2 equal @unit null
+    sensor unit2_flag @unit @flag
+    jump u3_bind2 notEqual unit2_flag thisFlag
+    sensor unit2_ctrld @unit @controlled
+    jump u3_bind2_skip lessThanEq unit2_ctrld 1
+        u3_bind2:
+            ubind unit
+            sensor unit2_flag @unit @flag
+            jump u3_bind2 notEqual unit2_flag 0
+            sensor unit2_ctrld @unit @controlled
+            jump u3_bind2 greaterThan unit2_ctrld 1
+        ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+        set unit2 @unit
+    u3_bind2_skip:
+
+    sensor unit2_item @unit @firstItem
+    jump u3_c2_drop equal unit2_item @phase-fabric
+        ulocate building core 0 0 coreX coreY 0 core
+        jump calcCoreDist notEqual core cachedCore
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        jump u3_c2_end always 0
+    u3_c2_drop:
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+    u3_c2_end:
+
+    ubind unit3
+    jump u3_bind3 equal @unit null
+    sensor unit3_flag @unit @flag
+    jump u3_bind3 notEqual unit3_flag thisFlag
+    sensor unit3_ctrld @unit @controlled
+    jump u3_bind3_skip lessThanEq unit3_ctrld 1
+        u3_bind3:
+            ubind unit
+            sensor unit3_flag @unit @flag
+            jump u3_bind3 notEqual unit3_flag 0
+            sensor unit3_ctrld @unit @controlled
+            jump u3_bind3 greaterThan unit3_ctrld 1
+        ucontrol flag thisFlag 0 0 madeByYo&SBytes madeByYo&SBytes
+        set unit3 @unit
+    u3_bind3_skip:
+
+    sensor unit3_item @unit @firstItem
+    jump u3_c3_drop equal unit3_item @phase-fabric
+        ulocate building core 0 0 coreX coreY 0 core
+        jump calcCoreDist notEqual core cachedCore
+        ucontrol itemTake core @phase-fabric 999
+        ucontrol boost 1
+        ucontrol approach coreX coreY 5 madeByYo&SBytes madeByYo&SBytes
+        # jump u3_c1_end always 0
+        jump units2 always 0
+    u3_c3_drop:
+        ucontrol itemDrop container1 999
+        ucontrol boost 1
+        ucontrol approach containerX containerY 5 madeByYo&SBytes madeByYo&SBytes
+    # u3_c1_end:
+jump units3 always 0
+
+disable:
+    # print "[sky]Frontline Healing v1.2\n[]By [red]Yo[] & [green]SBytes[]\n\n[magenta] Phase Delivery Disabled"
+    print "[sky]Frontline Healing v1.2\n[]By [red]Yo[] & [green]SBytes[]\n\n[magenta] Phase Delivery Disabled[]\n\n- Set left most  to  to force enable .\n- Set right most  to  to disable  delivery.\n- Link  to blocks needing scanning for mending."
+    printflush message1
+
+
+    ubind unit1
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol flag 0
+    ucontrol move coreX coreY
+    set unit1 null
+    ubind unit2
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol flag 0
+    ucontrol move coreX coreY
+    set unit2 null
+    ubind unit3
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol flag 0
+    ucontrol move coreX coreY
+    set unit3 null
+jump start always 0
+
+print "Frontline Healing v1.2"
+print "By Yo & SBytes"
+print "Usage instructions: "
+print "- Set left most unloader to phase to force shields to activate at all times."
+print "- Set right most unloader to phase to disable flare phase delivery."
+print "- Link 2x2 processor to additional buildings which need to be scanned for mending."

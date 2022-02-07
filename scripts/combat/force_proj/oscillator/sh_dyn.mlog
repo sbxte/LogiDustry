@@ -1,8 +1,8 @@
 # DT
-    op sub _dt @time _pt
-    set _pt @time
-    print _dt
-    printflush message1
+    # op sub _dt @time _pt
+    # set _pt @time
+    # print _dt
+    # printflush message1
 
 # Manual override
 sensor config unloader1 @config

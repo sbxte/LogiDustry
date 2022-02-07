@@ -1,0 +1,5 @@
+ubind @corvus
+sensor flag @unit @flag
+jump 0 notEqual flag 0
+ucontrol pathfind
+ucontrol targetp @unit 0

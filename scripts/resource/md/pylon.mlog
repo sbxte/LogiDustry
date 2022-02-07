@@ -1,11 +1,158 @@
-read bit cell1 0
-write bit cell2 0
+print "No touching stuff below unless you ABSOLUTELY know what you are doing :P"
 
-read wait cell1 1
-read waitIn cell1 2
-op or wait wait waitIn
-write wait cell2 1
+start:
 
-end
+jump zero equal cell2 0
 
-print "MDR Pylon vAlpha1 by SBytes"
+read copper cell2 0
+read lead cell2 1
+read meta cell2 2
+read graph cell2 3
+read sand cell2 4
+read coal cell2 5
+read titan cell2 6
+read thor cell2 7
+read scrap cell2 8
+read sili cell2 9
+read plast cell2 10
+read phase cell2 11
+read surge cell2 12
+read spore cell2 13
+read blast cell2 14
+read pyra cell2 15
+
+# Loop through all
+jump loop_end equal @links 2
+set i 2
+loop:
+    getlink driver i
+    sensor dCopper driver @copper
+    sensor dLead driver @lead
+    sensor dMeta driver @metaglass
+    sensor dGraph driver @graphite
+    sensor dSand driver @sand
+    sensor dCoal driver @coal
+    sensor dTitan driver @titanium
+    sensor dThor driver @thorium
+    sensor dScrap driver @scrap
+    sensor dSili driver @silicon
+    sensor dPlast driver @plastanium
+    sensor dPhase driver @phase-fabric
+    sensor dSurge driver @surge-alloy
+    sensor dSpore driver @spore-pod
+    sensor dBlast driver @blast-compound
+    sensor dPyra driver @pyratite
+
+    op sub copper copper dCopper
+    op sub lead lead dLead
+    op sub meta meta dMeta
+    op sub graph graph dGraph
+    op sub sand sand dSand
+    op sub coal coal dCoal
+    op sub titan titan dTitan
+    op sub thor thor dThor
+    op sub scrap scrap dScrap
+    op sub sili sili dSili
+    op sub plast plast dPlast
+    op sub phase phase dPhase
+    op sub surge surge dSurge
+    op sub spore spore dSpore
+    op sub blast blast dBlast
+    op sub pyra pyra dPyra
+
+    op add i i 1
+jump loop lessThan i @links
+loop_end:
+
+op max copper copper 0
+op max lead lead 0
+op max meta meta 0
+op max graph graph 0
+op max sand sand 0
+op max coal coal 0
+op max titan titan 0
+op max thor thor 0
+op max scrap scrap 0
+op max sili sili 0
+op max plast plast 0
+op max phase phase 0
+op max surge surge 0
+op max spore spore 0
+op max blast blast 0
+op max pyra pyra 0
+
+set total 0
+write copper cell1 0
+op add total total copper
+write lead cell1 1
+op add total total lead
+write meta cell1 2
+op add total total meta
+write graph cell1 3
+op add total total graph
+write sand cell1 4
+op add total total sand
+write coal cell1 5
+op add total total coal
+write titan cell1 6
+op add total total titan
+write thor cell1 7
+op add total total thor
+write scrap cell1 8
+op add total total scrap
+write sili cell1 9
+op add total total sili
+write plast cell1 10
+op add total total plast
+write phase cell1 11
+op add total total phase
+write surge cell1 12
+op add total total surge
+write spore cell1 13
+op add total total spore
+write blast cell1 14
+op add total total blast
+write pyra cell1 15
+op add total total pyra
+write total cell1 16
+
+jump start always 0
+
+zero:
+    write 0 cell1 0
+    write 0 cell1 1
+    write 0 cell1 2
+    write 0 cell1 3
+    write 0 cell1 4
+    write 0 cell1 5
+    write 0 cell1 6
+    write 0 cell1 7
+    write 0 cell1 8
+    write 0 cell1 9
+    write 0 cell1 10
+    write 0 cell1 11
+    write 0 cell1 12
+    write 0 cell1 13
+    write 0 cell1 14
+    write 0 cell1 15
+    write 0 cell1 16
+jump start always 0
+
+print "MDRelay Pylon v2.2 by SBytes"
+print "Changelog:"
+print "- Fixed Core selecting pyra when no other res are needed"
+print "- Minor itemSelStep change"
+
+# print "Changelog (compared to v1)"
+# print "- Reworked item request protocol"
+# print "- Yeeted intermediary buffer"
+# print "- Reworked item type distribution"
+# print "- SPEED"
+# print "- Better anti-overshoot"
+
+# If total item req < 50
+# Data format
+# 0 - 15 : Item Requests
+# 16 total IReqOut
+# 17 Unloader threshold
+

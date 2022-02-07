@@ -1,53 +1,50 @@
-# DT
-    # op sub _dt @time _pt
-    # set _pt @time
-    # print _dt
-    # printflush message1
+set normalMaxHeat 200
+set phaseMaxHeat 400
+start:
+
+# Phase
+sensor unloader unloader1 @config
+jump activate equal unloader @phase-fabric
+
+# Damage
+read damaged cell1 0
+jump activate equal damaged 1
 
 # Radar
-sensor config unloader1 @config
-jump activate equal config @phase-fabric
-
 radar enemy any any distance hail1 1 enemy
-jump skip equal enemy 0
+jump disable equal enemy null
     activate:
+    control enabled projector4 1
 
-    getlink proj i
-
-    set maxHeat 200
-    sensor phase proj @phase-fabric
-    jump phase equal phase 0
-        op add maxHeat maxHeat 200
-    phase:
-
-    sensor heat proj @heat
-    jump heat lessThan heat maxHeat
-        op add i i 1
-        op mod i i 3
-        end
-    heat:
-
-    op mul counterJump i 4
-    op add @counter @counter counterJump
+    read sh1_status cell1 1
+    jump sh1_end equal sh1_status 1
         control enabled projector1 1
         control enabled projector2 0
         control enabled projector3 0
-        jump asdf always 0
-        control enabled projector1 0
+        jump start always 0
+    sh1_end:
+
+    read sh2_status cell1 2
+    jump sh2_end equal sh2_status 1
         control enabled projector2 1
         control enabled projector3 0
-        jump asdf always 0
+        control enabled projector1 0
+        jump start always 0
+    sh2_end:
+
+    read sh3_status cell1 3
+    jump disable equal sh3_status 1
+        control enabled projector3 1
         control enabled projector1 0
         control enabled projector2 0
-        control enabled projector3 1
-    asdf:
-    control enabled projector4 1
-    end
-skip:
+        jump start always 0
+disable:
 control enabled projector1 0
 control enabled projector2 0
 control enabled projector3 0
 control enabled projector4 0
-end
+
+jump start always 0
+
 print "Original by Cirro"
-print "Rewrite by SBytes"
+print "Improvement by SBytes"

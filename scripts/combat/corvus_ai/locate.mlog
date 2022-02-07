@@ -1,0 +1,90 @@
+ubind @corvus
+jump 0 equal @unit null
+wait 0.01
+
+ulocate building turret 1 0 enemyTurretX enemyTurretY enemyTurretFound enemyTurret
+ulocate building core 1 0 enemyCoreX enemyCoreY enemyCoreFound enemyCore
+ulocate building factory 1 0 enemyFactoryX enemyFactoryY enemyFactoryFound enemyFactory
+
+set cell_appendCore 1
+set cell_appendTurret enemyTurretFound
+set cell_appendFactory enemyFactoryFound
+
+cell_loop:
+    op add cellI2 cellIter 1
+    read x cell1 cellIter
+    read y cell1 cellI2
+    op add addXY x y
+    jump cell_continue equal addXY 0
+        jump cell_turretSkip equal cell_appendTurret 0
+            op sub dx x enemyTurretX
+            op sub dy y enemyTurretY
+            op len dist dx dy
+            jump cell_turretSkip greaterThan dist 20
+                set cell_appendTurret 0
+        cell_turretSkip:
+
+        jump cell_coreSkip equal cell_appendCore 0
+            op sub dx x enemyCoreX
+            op sub dy y enemyCoreY
+            op len dist dx dy
+            jump cell_coreSkip greaterThan dist 20
+                set cell_appendCore 0
+        cell_coreSkip:
+
+        jump cell_factorySkip equal cell_appendFactory 0
+            op sub dx x enemyFactoryX
+            op sub dy y enemyFactoryY
+            op len dist dx dy
+            jump cell_factorySkip greaterThan dist 20
+                set cell_appendFactory 0
+        cell_factorySkip:
+    cell_continue:
+    op add cellIter cellIter 2
+jump cell_loop lessThan cellIter 64
+set cellIter 0
+
+jump cell_append equal cell_appendCore 1
+jump cell_append equal cell_appendTurret 1
+jump cell_append equal cell_appendFactory 1
+end
+
+cell_append:
+
+cell_appendLoop:
+    op add cellI2 cellIter 1
+    read x cell1 cellIter
+    read y cell1 cellI2
+    op add addXY x y
+    jump cell_append_continue notEqual addXY 0
+        jump cell_append_skipTurret equal cell_appendTurret 0
+            op floor enemyTurretX enemyTurretX 0
+            op floor enemyTurretY enemyTurretY 0
+            write enemyTurretX cell1 cellIter
+            write enemyTurretY cell1 cellI2
+            set cell_appendTurret 0
+            jump cell_append_continue always 0
+        cell_append_skipTurret:
+
+        jump cell_append_skipCore equal cell_appendCore 0
+            op floor enemyCoreX enemyCoreX 0
+            op floor enemyCoreY enemyCoreY 0
+            write enemyCoreX cell1 cellIter
+            write enemyCoreY cell1 cellI2
+            set cell_appendCore 0
+            jump cell_append_continue always 0
+        cell_append_skipCore:
+
+        jump cell_append_end equal cell_appendFactory 0
+            op floor enemyFactoryX enemyFactoryX 0
+            op floor enemyFactoryY enemyFactoryY 0
+            write enemyFactoryX cell1 cellIter
+            write enemyFactoryY cell1 cellI2
+            set cell_appendFactory 0
+
+    cell_append_continue:
+    op add cellIter cellIter 2
+jump cell_appendLoop lessThan cellIter 64
+cell_append_end:
+set cellIter 0
+end

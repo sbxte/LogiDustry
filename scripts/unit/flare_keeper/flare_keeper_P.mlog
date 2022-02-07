@@ -1,0 +1,24 @@
+sensor @counter switch1 @enabled
+
+ubind @flare
+sensor flag @unit @flag
+jump deflag notEqual flag 0
+
+ulocate building core 0 0 cx cy 0 core
+sensor item @unit @firstItem
+jump hasItems notEqual item null
+    ucontrol approach cx cy 15
+    end
+hasItems:
+ucontrol itemDrop core 999
+ucontrol move cx cy
+end
+
+deflag:
+sensor controlled @unit @controlled
+jump 0 equal controlled 1
+ucontrol flag 0
+end
+
+print "Silenced Flare Keeper v1.0 by SBytes"
+print "Flare keeper without the diagnostics"
