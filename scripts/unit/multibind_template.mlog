@@ -1,0 +1,58 @@
+set unitType @flare
+set unitAmount 5
+print "-- Edit above --"
+op mul thisFlag @thisx @maph
+op add thisFlag thisFlag @thisy
+start:
+
+# Bind a unit from the array
+op mul counterJump unitIndex 2
+op add @counter @counter counterJump
+    ubind unitRef1
+    jump unitSel_end always 0
+    ubind unitRef2
+    jump unitSel_end always 0
+    ubind unitRef3
+    jump unitSel_end always 0
+    ubind unitRef4
+    jump unitSel_end always 0
+    ubind unitRef5
+    jump unitSel_end always 0
+    ubind unitRef6
+unitSel_end:
+
+# Unit checks, rebind if required
+jump bind equal @unit null
+sensor unitFlag @unit @flag
+jump bind notEqual unitFlag thisFlag
+sensor unitCtrld @unit @controlled
+jump bind_end lessThanEq unitCtrld 1
+    bind:
+        ubind unitType
+        jump bind equal @unit null
+        sensor unitFlag @unit @flag
+        jump bind notEqual flag 0
+    ucontrol flag thisFlag
+
+    # Store the unit into the array
+    op add @counter @counter counterJump
+        set unitRef1 @unit
+        jump unitSet_end always 0
+        set unitRef2 @unit
+        jump unitSet_end always 0
+        set unitRef3 @unit
+        jump unitSet_end always 0
+        set unitRef4 @unit
+        jump unitSet_end always 0
+        set unitRef5 @unit
+        jump unitSet_end always 0
+        set unitRef6 @unit
+    unitSet_end:
+bind_end:
+
+# Control stuff
+ucontrol approach @thisx @thisy 5
+
+op add unitIndex unitIndex 1
+op add unitIndex unitIndex unitAmount
+jump start always 0
