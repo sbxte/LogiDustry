@@ -42,7 +42,6 @@ sensor config2 factory2 @config
 jump setup_factory2 notEqual config2 cachedConfig2
 
 sensor enable switch1 @enabled
-write enable cell1 0
 jump disable equal enable 0
 
 sensor coreDead core @dead
@@ -211,6 +210,15 @@ write phaseN cell1 7
 write totalN cell1 13
 
 
+jump unbindTimer_skip greaterThan totalN 0
+jump unbindTimer_skip equal totalNwas0 0
+    op sub unbindTimer @time unbindTimerStart
+    jump unbind greaterThanEq unbindTimer 8e3
+    jump start always 0
+unbindTimer_skip:
+op equal totalNwas0 totalN 0
+set unbindTimerStart @time
+write 1 cell1 0
 
 
 set cellIter 8
@@ -324,17 +332,16 @@ cfg1_retusa:
 cfg1_end:
 op add siliconC siliconC1 siliconC2
 op add leadC leadC1 leadC2
-# op add graphiteC graphiteC1 graphiteC2
 op add coalC coalC1 coalC2
 op add titaniumC titaniumC1 titaniumC2
 op add metaglassC metaglassC1 metaglassC2
 
-op add siliconC siliconC 680 # 80 + 130 + (150)
+op add siliconC siliconC 830 # 80 + 260 + (150)
 op add leadC leadC 50 # (50)
-op add graphiteC graphiteC 160 # 40
+set graphiteC 240 # 80 + (80)
 op add coalC coalC 50 # (50)
-op add titaniumC titaniumC 365 # 80 + (45)
-op add metaglassC metaglassC 230 # 40 + (70)
+op add titaniumC titaniumC 420 # 160 + (100)
+op add metaglassC metaglassC 260 # 80 + (100)
 jump start always 0
 
 setup_factory2:
@@ -424,20 +431,22 @@ cfg2_retusa:
 cfg2_end:
 op add siliconC siliconC1 siliconC2
 op add leadC leadC1 leadC2
-# op add graphiteC graphiteC1 graphiteC2
 op add coalC coalC1 coalC2
 op add titaniumC titaniumC1 titaniumC2
 op add metaglassC metaglassC1 metaglassC2
 
-op add siliconC siliconC 680 # 80 + 130 + (150)
+op add siliconC siliconC 830 # 80 + 260 + (150)
 op add leadC leadC 50 # (50)
-op add graphiteC graphiteC 160 # 40
+set graphiteC 240 # 80 + (80)
 op add coalC coalC 50 # (50)
-op add titaniumC titaniumC 365 # 80 + (45)
-op add metaglassC metaglassC 230 # 40 + (70)
+op add titaniumC titaniumC 420 # 160 + (100)
+op add metaglassC metaglassC 260 # 80 + (100)
 jump start always 0
 
 disable:
+    set config1 @copper
+    set config2 @copper
+    set core null
     control enabled projector1 0
     control enabled factory1 0
     control enabled factory2 0
@@ -445,4 +454,6 @@ disable:
     control enabled reconstructor2 0
     control enabled reconstructor3 0
     control enabled reconstructor4 0
+unbind:
+    write 0 cell1 0
 jump start always 0

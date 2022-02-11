@@ -1,7 +1,7 @@
 # Switch
 sensor enabled switch1 @enabled
 jump disable_skip equal enabled 1
-    print "[sky]Flare Keeper v1.2[] by [green]SBytes\n\n[magenta] Disabled"
+    print "[sky]Flare Keeper v1.2.1[] by [green]SBytes\n\n[magenta] Disabled"
     printflush message1
     end
 disable_skip:
@@ -18,7 +18,7 @@ jump printUnits equal uDead 1
 # Print results
 jump print_skip notEqual unit @unit
     printUnits:
-        print "[sky]Flare Keeper v1.2[] by [green]SBytes[]\n[lightgray]Fixed checks and improved flare protection[]\n\n"
+        print "[sky]Flare Keeper v1.2.1[] by [green]SBytes[]\n[lightgray]Reduced rally radius for more safety.[]\n\n"
         jump skipPrintInit notEqual prevTime 0
             print "Initializing Timer..."
             set prevTime @time
@@ -66,7 +66,7 @@ ulocate building core 0 0 cx cy null core
 # Drop items then approach core 20 rad
 sensor item @unit @firstItem
 jump dropItem notEqual item 0
-    ucontrol approach cx cy 15
+    ucontrol approach cx cy 6
     end
 
 dropItem:

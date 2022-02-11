@@ -23,8 +23,6 @@ read itemMetaglassN cell1 6
 read itemPhaseN cell1 7
 read itemTotalN cell1 13
 
-
-
 unit1:
     ubind unit1
     jump unit1_bind equal @unit null
