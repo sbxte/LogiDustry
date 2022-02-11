@@ -54,5 +54,5 @@ bind_end:
 ucontrol approach @thisx @thisy 5
 
 op add unitIndex unitIndex 1
-op add unitIndex unitIndex unitAmount
+op mod unitIndex unitIndex unitAmount
 jump start always 0
