@@ -1,0 +1,128 @@
+op mul thisFlag @thisx @maph
+op add thisFlag thisFlag @thisy
+start:
+
+
+op sub rssTime @time lastRss
+jump rss_end lessThan rssTime 1e3
+    set lastRss @time
+    print "Design by [red]Yo#0176\n[]Resource Saver by [green]SByte#7574"
+    sensor coreDead core @dead
+    jump coreDead_skip equal coreDead 0
+        coreDead:
+            ubind @flare
+            jump coreDead_continue notEqual @unit null
+            ubind @mono
+            jump printCoreDead equal @unit null
+        coreDead_continue:
+        ulocate building core 0 0 0 0 0 core
+    coreDead_skip:
+
+    sensor coreCap core @itemCapacity
+    op min coreCap coreCap 10e3
+    op div coreCap coreCap 4
+
+    set enable 1
+
+
+    # Items
+    sensor coreThor core @thorium
+    jump thor_end greaterThan coreThor coreCap
+        set enable 0
+        op div coreThor% coreThor coreCap
+        op idiv coreThorF coreThor% 1e-4
+        op div coreThorF coreThorF 1e2
+        print "\n[#fff]⚠ Low [white] []"
+        print coreThorF
+        print "% < 25% in core"
+    thor_end:
+
+    sensor coreSand core @sand
+    jump sand_end greaterThan coreSand coreCap
+        set enable 0
+        op div coreSand% coreSand coreCap
+        op idiv coreSandF coreSand% 1e-4
+        op div coreSandF coreSandF 1e2
+        print "\n[#fff]⚠ Low [white] []"
+        print coreSandF
+        print "% < 25% in core"
+    sand_end:
+
+    # Power
+    sensor netStore node1 @powerNetStored
+    sensor netCap node1 @powerNetCapacity
+    op div netStore% netStore netCap
+    jump power_end greaterThan netStore% 0.33
+        set enable 0
+        op idiv netStoreF netStore% 1e-4
+        op div netStoreF netStoreF 1e2
+        print "\n[#fff]⚠ Low [white] []"
+        print netStoreF
+        print "% < 33%"
+    power_end:
+    printflush message1
+rss_end:
+
+jump disable equal enable 0
+    sensor sand conveyor1 @sand
+    jump unloader_thor greaterThan sand 1
+        set unloaderConfig @sand
+        jump unloader_end always 0
+    unloader_thor:
+    sensor thor conveyor1 @thorium
+    jump unloader_end greaterThan thor 1
+        set unloaderConfig @thorium
+    unloader_end:
+    control config unloader1 unloaderConfig
+    control config unloader2 unloaderConfig
+    sensor items conveyor1 @totalItems
+    op lessThan phaseBridgeEnable items 7
+    control enabled conveyor2 phaseBridgeEnable
+    # control enabled unloader1 phaseBridgeEnable
+    # control enabled unloader2 phaseBridgeEnable
+
+    jump start equal cacheEnabled 1
+        set cacheEnabled 1
+        control enabled weaver1 1
+        control enabled weaver2 1
+        control enabled weaver3 1
+        control enabled weaver4 1
+        control enabled weaver5 1
+        control enabled weaver6 1
+        control enabled conveyor1 1
+        # control enabled conveyor2 1
+        control enabled unloader1 1
+        control enabled unloader2 1
+        control enabled unloader3 1
+        control enabled unloader4 1
+        control enabled unloader5 1
+        control enabled unloader6 1
+jump start always 0
+
+printCoreDead:
+    print "\n[red]⚠ No mono or flare detected! Cannot run resource saver."
+    printflush message1
+
+disable:
+    op sub lastDisabledTime @time lastDisabled
+    jump start lessThan lastDisabledTime 4e3
+        set lastDisabled @time
+        set cacheEnabled 0
+        control enabled weaver1 0
+        control enabled weaver2 0
+        control enabled weaver3 0
+        control enabled weaver4 0
+        control enabled weaver5 0
+        control enabled weaver6 0
+        control enabled conveyor1 0
+        control enabled conveyor2 0
+        # control enabled unloader1 0
+        # control enabled unloader2 0
+        control enabled unloader3 0
+        control enabled unloader4 0
+        control enabled unloader5 0
+        control enabled unloader6 0
+jump start always 0
+
+print "Core Phase 6x logic by SBytes"
+
