@@ -1,40 +1,49 @@
-set unit @flare
+print "Unit type and amount (max 9)"
+set unitType @flare
 set units 1
 
+print "Minimum resources in core before taking items"
+print "Requires a mono/flare to work"
 set minRes 2e3
 
-set item1 null
-set cap1 0
-set item2 null
-set cap2 0
-set item3 null
-set cap3 0
-set item4 null
-set cap4 0
+print "Maximum inactive time before unbinding units in seconds"
+set maxInactiveTime 8
 
-set return1 null
+print "Items to retrieve from core and their max amount"
+set item1 null
+set max1 0
+set item2 null
+set max2 0
+set item3 null
+set max3 0
+set item4 null
+set max4 0
+
+print "Items to return to core and their min amount before returning"
+set item5 null
 set min1 0
-set return2 null
+set item6 null
 set min2 0
 
-# set unit @flare
+# set unitType @flare
 # set units 8
 
 # set item1 @copper
-# set cap1 300
+# set max1 300
 # set item2 @lead
-# set cap2 300
+# set max2 300
 # set item3 @metaglass
-# set cap3 300
+# set max3 300
 # set item4 @graphite
-# set cap4 300
+# set max4 300
 
-# set return1 @surge-alloy
+# set item5 @surge-alloy
 # set min1 0
-# set return2 null
+# set item6 null
 # set min2 0
 
 # set editDone 0
+print "Set editDone to 0 if you aren't finished editing"
 set editDone 1
 editNotDone:
 jump editNotDone equal editDone 0
@@ -46,11 +55,13 @@ printflush message1
 jump 0 greaterThanEq units 10
 jump 0 lessThanEq units 0
 
+op mul maxInactiveTime maxInactiveTime 1e3
+
 op div unitItemStep 1 units
 op div unitItemHalfStep unitItemStep 2
 
-op mul flag @thisy @mapw
-op add flag flag @thisx
+op mul flag @thisx @maph
+op add flag flag @thisy
 initCore:
     ubind @flare
     jump initCore_mono equal @unit null
@@ -79,56 +90,59 @@ set unitI 0
 set needT 0
 
 # Item selection
-jump itemSel_2 equal cap1 0
+jump itemSel_2 equal max1 0
     sensor coreHave1 core item1
     jump itemSel_2 lessThan coreHave1 minRes
         sensor have1 destination item1
-        op sub need1 cap1 have1
+        op sub need1 max1 have1
         op max need1 0 need1
         set needT need1
 itemSel_2:
-jump itemSel_3 equal cap2 0
+jump itemSel_3 equal max2 0
     sensor coreHave2 core item2
     jump itemSel_3 lessThan coreHave2 minRes
         sensor have2 destination item2
-        op sub need2 cap2 have2
+        op sub need2 max2 have2
         op max need2 0 need2
         op add needT needT need2
 itemSel_3:
-jump itemSel_4 equal cap3 0
+jump itemSel_4 equal max3 0
     sensor coreHave3 core item3
     jump itemSel_4 lessThan coreHave3 minRes
         sensor have3 destination item3
-        op sub need3 cap3 have3
+        op sub need3 max3 have3
         op max need3 0 need3
         op add needT needT need3
 itemSel_4:
-jump itemSel_R1 equal cap4 0
+jump itemSel_R1 equal max4 0
     sensor coreHave4 core item4
     jump itemSel_R1 lessThan coreHave4 minRes
         sensor have4 destination item4
-        op sub need4 cap4 have4
+        op sub need4 max4 have4
         op max need4 0 need4
         op add needT needT need4
 itemSel_R1:
-jump itemSel_R2 equal return1 null
-    sensor haveR1 destination return1
-    op sub needR1 haveR1 min1
+jump itemSel_R2 equal item5 null
+    sensor have5 destination item5
+    op sub needR1 have5 min1
     op max needR1 0 needR1
     op add needT needT needR1
 itemSel_R2:
-jump itemSel_end equal return2 null
-    sensor haveR2 destination return2
-    op sub needR2 haveR2 min2
+jump itemSel_end equal item6 null
+    sensor have6 destination item6
+    op sub needR2 have6 min2
     op max needR2 0 needR2
     op add needT needT needR2
 itemSel_end:
 
 jump need0_skip greaterThan needT 0
     # Unbind
-    jump unbind notEqual unit1 null
+    jump start equal unitRef1 null
+    op sub inactiveTime @time lastActiveTime
+    jump unbind greaterThanEq inactiveTime maxInactiveTime
     jump start equal needT 0
 need0_skip:
+set lastActiveTime @time
 
 # Item distribution probabilities
 op div need1P need1 needT
@@ -138,10 +152,11 @@ op div need3P need3 needT
 op add need3P need3P need2P
 op div need4P need4 needT
 op add need4P need4P need3P
-op div needR1P needR1 needT
-op add needR1P needR1P need4P
-op div needR2P needR2 needT
-op add needR2P needR2P needR1P
+
+op div need5P needR1 needT
+op add need5P need5P need4P
+op div need6P needR2 needT
+op add need6P need6P need5P
 
 
 set unitItemI unitItemHalfStep
@@ -151,30 +166,30 @@ unit_loop:
     # Counter jump magic
     op mul counterJump unitI 2
     op add @counter @counter counterJump
-        ubind unit1
+        ubind unitRef1
         jump cntr_uSelect always 0
-        ubind unit2
+        ubind unitRef2
         jump cntr_uSelect always 0
-        ubind unit3
+        ubind unitRef3
         jump cntr_uSelect always 0
-        ubind unit4
+        ubind unitRef4
         jump cntr_uSelect always 0
-        ubind unit5
+        ubind unitRef5
         jump cntr_uSelect always 0
-        ubind unit6
+        ubind unitRef6
         jump cntr_uSelect always 0
-        ubind unit7
+        ubind unitRef7
         jump cntr_uSelect always 0
-        ubind unit8
+        ubind unitRef8
         jump cntr_uSelect always 0
-        ubind unit9
+        ubind unitRef9
     cntr_uSelect:
 
 
     # Binding
     jump bind equal @unit null
-    sensor uFlag @unit @flag
-    jump bind notEqual uFlag flag
+    # sensor uFlag @unit @flag
+    # jump bind notEqual uFlag flag
     sensor uCtrl @unit @controlled
     jump bind_skip lessThanEq uCtrl 1
         # Bind new unit
@@ -183,7 +198,7 @@ unit_loop:
             bind_loop:
             op add attempt attempt 1
             jump ctrl_end greaterThan attempt 8
-            ubind unit
+            ubind unitType
             sensor uFlag @unit @flag
             jump bind_loop notEqual uFlag 0
 
@@ -192,23 +207,23 @@ unit_loop:
 
         # Set unit
         op add @counter @counter counterJump
-            set unit1 @unit
+            set unitRef1 @unit
             jump bind_skip always 0
-            set unit2 @unit
+            set unitRef2 @unit
             jump bind_skip always 0
-            set unit3 @unit
+            set unitRef3 @unit
             jump bind_skip always 0
-            set unit4 @unit
+            set unitRef4 @unit
             jump bind_skip always 0
-            set unit5 @unit
+            set unitRef5 @unit
             jump bind_skip always 0
-            set unit6 @unit
+            set unitRef6 @unit
             jump bind_skip always 0
-            set unit7 @unit
+            set unitRef7 @unit
             jump bind_skip always 0
-            set unit8 @unit
+            set unitRef8 @unit
             jump bind_skip always 0
-            set unit9 @unit
+            set unitRef9 @unit
     bind_skip:
 
 
@@ -222,19 +237,19 @@ unit_loop:
     item_return_skip:
 
     jump item2 notEqual uItem item1
-        jump ctrl_drop lessThan have1 cap1
+        jump ctrl_drop lessThan have1 max1
         jump ctrl_take always 0
     item2:
     jump item3 notEqual uItem item2
-        jump ctrl_drop lessThan have2 cap2
+        jump ctrl_drop lessThan have2 max2
         jump ctrl_take always 0
     item3:
     jump item4 notEqual uItem item3
-        jump ctrl_drop lessThan have3 cap3
+        jump ctrl_drop lessThan have3 max3
         jump ctrl_take always 0
     item4:
     jump ctrl_take notEqual uItem item4
-    jump ctrl_drop lessThan have4 cap4
+    jump ctrl_drop lessThan have4 max4
     jump ctrl_take always 0
 
 
@@ -244,12 +259,15 @@ unit_loop:
         ucontrol approach destX destY 6
         ucontrol within destX destY 7 within
         jump ctrl_end equal within 0
+            sensor unitItem @unit @firstItem
+            jump ctrl_drop notEqual unitItem null
             ucontrol approach coreX coreY 7
         jump ctrl_end always 0
     ctrl_take:
         ulocate building core 0 0 coreX coreY 0 core
         ucontrol within coreX coreY 8 within
         jump ctrl_take_notWithin equal within 0
+            ctrl_take_itemTake:
             ucontrol itemDrop core 999
             jump choose_i2 greaterThan unitItemI need1P
                 ucontrol itemTake core item1 999
@@ -274,12 +292,12 @@ unit_loop:
         jump ctrl_end equal needT 0
         ucontrol within destX destY 7 within
         jump ctrl_rTake_notWithin equal within 0
-            jump choose_rI2 greaterThan unitItemI needR1P
-                set itemToTake return1
+            jump choose_rI2 greaterThan unitItemI need5P
+                set itemToTake item5
                 jump choose_rEnd always 0
-            set itemToTake return1
+            set itemToTake item5
             choose_rI2:
-                set itemToTake return2
+                set itemToTake item6
             choose_rEnd:
             ucontrol itemTake destination itemToTake 999
             ucontrol approach coreX coreY 7
@@ -293,6 +311,8 @@ unit_loop:
         ucontrol approach coreX coreY 7
         ucontrol within coreX coreY 8 within
         jump ctrl_end equal within 0
+            sensor unitItem @unit @firstItem
+            jump ctrl_return_drop notEqual unitItem null
             ucontrol approach destX destY 6
     ctrl_end:
 
@@ -309,32 +329,32 @@ set unitI 0
 unbind_loop:
     op mul counterJump unitI 3
     op add @counter @counter counterJump
-        ubind unit1
-        set unit1 null
+        ubind unitRef1
+        set unitRef1 null
         jump unbind_select always 0
-        ubind unit2
-        set unit2 null
+        ubind unitRef2
+        set unitRef2 null
         jump unbind_select always 0
-        ubind unit3
-        set unit3 null
+        ubind unitRef3
+        set unitRef3 null
         jump unbind_select always 0
-        ubind unit4
-        set unit4 null
+        ubind unitRef4
+        set unitRef4 null
         jump unbind_select always 0
-        ubind unit5
-        set unit5 null
+        ubind unitRef5
+        set unitRef5 null
         jump unbind_select always 0
-        ubind unit6
-        set unit6 null
+        ubind unitRef6
+        set unitRef6 null
         jump unbind_select always 0
-        ubind unit7
-        set unit7 null
+        ubind unitRef7
+        set unitRef7 null
         jump unbind_select always 0
-        ubind unit8
-        set unit8 null
+        ubind unitRef8
+        set unitRef8 null
         jump unbind_select always 0
-        ubind unit9
-        set unit9 null
+        ubind unitRef9
+        set unitRef9 null
     unbind_select:
 
     ucontrol flag 0
@@ -345,7 +365,7 @@ unbind_loop:
 jump unbind_loop lessThan unitI units
 jump start always 0
 
-print "Supply Crew v2.3 by SBytes"
+print "Supply Crew v2.4.1 by SBytes"
 # print "No longer beta!"
 print "Changelog:"
-print "- Added speedy item drop/take. Ported from FlareT3"
+print "- Changed flag generator to use @thisx * @maph +  @thisy"
