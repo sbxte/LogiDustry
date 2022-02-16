@@ -1,4 +1,6 @@
 # Unit Griefe'th
+end
+print "Heheheheh... Dont"
 lookup unit unit i
 ubind unit
 op rand flag flag 1e6
@@ -11,5 +13,6 @@ ucontrol move mx my
 op rand boost 2
 op floor boost boost
 ucontrol boost boost
+ucontrol payEnter
 op add i i 1
 op mod i i @unitCount
