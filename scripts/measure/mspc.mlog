@@ -1,0 +1,34 @@
+# Miliseconds per cycle measurer v1.0 by SBytes
+# FPS must be at 60 for calculations to be correct (or edit the 'div __avg __avg 60')
+jump __ETinit_skip equal __ETinit 1
+    set __ETinit 1
+    set __previousTime @tick # initialize previous time
+    set 0 0 # some offset
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    set 0 0
+    jump __elapsedTime_end always 0
+__ETinit_skip:
+    op sub __elapsedTime @tick __previousTime
+    set __previousTime @tick
+
+    sensor __timescale @this @timescale
+    sensor __timescale2 @this @timescale
+    op max __timescale __timescale __timescale2
+    op mul __offset __timescale @ipt
+    op div __offset 14 __offset
+    op sub __elapsedTime __elapsedTime __offset # adjust for the additional instructions
+    op add __events __events __elapsedTime
+    op add __sample __sample 1
+    op div __avg __events __sample
+    op div __avg __avg 60
+    op mul __avgF __avg 1e3
+__elapsedTime_end:
+set 0 0
