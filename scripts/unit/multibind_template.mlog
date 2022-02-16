@@ -1,5 +1,5 @@
 set unitType @flare
-set unitAmount 5
+set unitAmount 3
 print "-- Edit above --"
 op mul thisFlag @thisx @maph
 op add thisFlag thisFlag @thisy
