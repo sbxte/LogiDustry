@@ -1,8 +1,18 @@
-print "Unit type and amount (max 9)"
+# print "Experimental Dev Version! DO NOT USE!!"
+print "Supply Crew v2.5.1 by SBytes"
+print "> The micro item retriever"
+print "#DethroneAttem83"
+print "------------------------------------------------------------------------------------"
+print "Additional Info:"
+print "Linkable to switch (must be switch1)"
+print "If you think the logic is malfunctioning, break and replace"
+print "If its still malfunctioning, notify SByte#7574 on Discord"
+print "------------------------------------------------------------------------------------"
+print "Unit type and amount, max 9. Setting above 9 or below 1 will halt processor"
 set unitType @flare
-set units 1
+set unitAmount 1
 
-print "Minimum resources in core before taking items"
+print "Minimum resources in core before taking items (setting to 0 disables it)"
 print "Requires a mono/flare to work"
 set minRes 2e3
 
@@ -19,49 +29,57 @@ set max3 0
 set item4 null
 set max4 0
 
-print "Items to return to core and their min amount before returning"
+print "Items to return to core and their minimum amount before returning"
 set item5 null
 set min1 0
 set item6 null
 set min2 0
 
-# set unitType @flare
-# set units 8
+print "(Advanced Setting) Clear items on bind"
+print "Only set to true when you absolutely cannot accept incorrect items"
+print "Warning, this will make throughput halt completely during rebind"
+set newBindClearItems false
 
-# set item1 @copper
-# set max1 300
-# set item2 @lead
-# set max2 300
-# set item3 @metaglass
-# set max3 300
-# set item4 @graphite
-# set max4 300
+# Debug
+# set unitType @mega
+# set unitAmount 8
+
+# set item1 @titanium
+# set max1 200
+# set item2 @sand
+# set max2 200
+# set item3 @plastanium
+# set max3 650
+# set item4 @titanium
+# set max4 250
 
 # set item5 @surge-alloy
 # set min1 0
-# set item6 null
+# set item6 @thorium
 # set min2 0
 
-# set editDone 0
-print "Set editDone to 0 if you aren't finished editing"
-set editDone 1
+print "Set editDone to 1 if you are finished linking and setting everything up"
+# set editDone 1
+set editDone 0
 editNotDone:
 jump editNotDone equal editDone 0
 
 print "-- Edit above --"
 print "No touching stuff below :P"
-printflush message1
+# printflush message1
 
-jump 0 greaterThanEq units 10
-jump 0 lessThanEq units 0
+jump 0 greaterThanEq unitAmount 10
+jump 0 lessThanEq unitAmount 0
 
 op mul maxInactiveTime maxInactiveTime 1e3
 
-op div unitItemStep 1 units
+op div unitItemStep 1 unitAmount
 op div unitItemHalfStep unitItemStep 2
 
-op mul flag @thisx @maph
-op add flag flag @thisy
+op mul thisFlag @thisx @maph
+op add thisFlag thisFlag @thisy
+
+jump initCore_end lessThanEq minRes 0
 initCore:
     ubind @flare
     jump initCore_mono equal @unit null
@@ -81,186 +99,330 @@ initDest:
     set cachedDest destination
     sensor destX destination @x
     sensor destY destination @y
+# set __previousTime @time
+
+
+
 start:
 
 getlink destination 0
 jump initDest notEqual destination cachedDest
 
-set unitI 0
-set needT 0
+jump switch_skip equal switch1 null
+    sensor switch switch1 @enabled
+    jump unbind equal switch 0
+switch_skip:
 
-# Item selection
-jump itemSel_2 equal max1 0
+set unitIndex 0
+set needTotal 0
+
+# Item distribution
+jump itemSel_R1 equal max1 0
     sensor coreHave1 core item1
-    jump itemSel_2 lessThan coreHave1 minRes
+    jump itemSel_1minRes lessThan coreHave1 minRes
         sensor have1 destination item1
         op sub need1 max1 have1
         op max need1 0 need1
-        set needT need1
+        jump itemSel_1minRes_end always 0
+    itemSel_1minRes:
+        set need1 0
+    itemSel_1minRes_end:
+    set needTotal need1
 itemSel_2:
-jump itemSel_3 equal max2 0
+jump itemSel_R1 equal max2 0
     sensor coreHave2 core item2
-    jump itemSel_3 lessThan coreHave2 minRes
+    jump itemSel_2minRes lessThan coreHave2 minRes
         sensor have2 destination item2
         op sub need2 max2 have2
         op max need2 0 need2
-        op add needT needT need2
+        jump itemSel_2minRes_end always 0
+    itemSel_2minRes:
+        set need2 0
+    itemSel_2minRes_end:
+    op add needTotal needTotal need2
+    jump itemSel_3 always 0
 itemSel_3:
-jump itemSel_4 equal max3 0
+jump itemSel_R1 equal max3 0
     sensor coreHave3 core item3
-    jump itemSel_4 lessThan coreHave3 minRes
+    jump itemSel_3minRes lessThan coreHave3 minRes
         sensor have3 destination item3
         op sub need3 max3 have3
         op max need3 0 need3
-        op add needT needT need3
+        jump itemSel_3minRes_end always 0
+    itemSel_3minRes:
+        set need3 0
+    itemSel_3minRes_end:
+    op add needTotal needTotal need3
 itemSel_4:
 jump itemSel_R1 equal max4 0
     sensor coreHave4 core item4
-    jump itemSel_R1 lessThan coreHave4 minRes
+    jump itemSel_4minRes lessThan coreHave4 minRes
         sensor have4 destination item4
         op sub need4 max4 have4
         op max need4 0 need4
-        op add needT needT need4
+        jump itemSel_4minRes_end always 0
+    itemSel_4minRes:
+        set need4 0
+    itemSel_4minRes_end:
+    op add needTotal needTotal need4
 itemSel_R1:
-jump itemSel_R2 equal item5 null
+jump itemSel_end equal item5 null
     sensor have5 destination item5
     op sub needR1 have5 min1
     op max needR1 0 needR1
-    op add needT needT needR1
+    op add needTotal needTotal needR1
 itemSel_R2:
 jump itemSel_end equal item6 null
     sensor have6 destination item6
     op sub needR2 have6 min2
     op max needR2 0 needR2
-    op add needT needT needR2
+    op add needTotal needTotal needR2
 itemSel_end:
 
-jump need0_skip greaterThan needT 0
+jump need0_skip greaterThan needTotal 0
     # Unbind
     jump start equal unitRef1 null
     op sub inactiveTime @time lastActiveTime
     jump unbind greaterThanEq inactiveTime maxInactiveTime
-    jump start equal needT 0
+    jump start equal needTotal 0
 need0_skip:
 set lastActiveTime @time
 
 # Item distribution probabilities
-op div need1P need1 needT
-op div need2P need2 needT
+op div need1P need1 needTotal
+op div need2P need2 needTotal
 op add need2P need2P need1P
-op div need3P need3 needT
+op div need3P need3 needTotal
 op add need3P need3P need2P
-op div need4P need4 needT
+op div need4P need4 needTotal
 op add need4P need4P need3P
 
-op div need5P needR1 needT
+op div need5P needR1 needTotal
 op add need5P need5P need4P
-op div need6P needR2 needT
+op div need6P needR2 needTotal
 op add need6P need6P need5P
+
+
+# Measure speed
+# op sub __elapsedTime @time __previousTime
+# set __previousTime @time
+# op sub __elapsedTime __elapsedTime 50 # adjust for the additional instructions
+# op add __events __events __elapsedTime
+# op add __sample __sample 1
+# op div __avgETime __events __sample
 
 
 set unitItemI unitItemHalfStep
 
 # Unit select
 unit_loop:
-    # Counter jump magic
-    op mul counterJump unitI 2
-    op add @counter @counter counterJump
+
+    op mul unitSelect_counterJump unitIndex 2
+    op add @counter @counter unitSelect_counterJump
         ubind unitRef1
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef2
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef3
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef4
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef5
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef6
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef7
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef8
-        jump cntr_uSelect always 0
+        jump unitSel_end always 0
         ubind unitRef9
-    cntr_uSelect:
+    unitSel_end:
 
 
     # Binding
-    jump bind equal @unit null
-    # sensor uFlag @unit @flag
-    # jump bind notEqual uFlag flag
-    sensor uCtrl @unit @controlled
-    jump bind_skip lessThanEq uCtrl 1
+    sensor unitDead @unit @dead
+    jump bind equal unitDead 1
+    sensor unitFlag @unit @flag
+    jump bind notEqual unitFlag thisFlag
+    sensor unitCtrl @unit @controlled
+    jump bind_end lessThanEq unitCtrl 1
         # Bind new unit
         bind:
-            set attempt 0
-            bind_loop:
-            op add attempt attempt 1
-            jump ctrl_end greaterThan attempt 8
+        jump bind2 equal newBindClearItems 1 # new bind clear items
+        set bindAttempt 0
+        bind_loop:
+            op add bindAttempt bindAttempt 1
+            jump ctrl_end greaterThan bindAttempt 8
             ubind unitType
-            sensor uFlag @unit @flag
-            jump bind_loop notEqual uFlag 0
+            jump ctrl_end equal @unit null
+            sensor unitFlag @unit @flag
+            jump bind_loop notEqual unitFlag 0
+        # Set flag and stop
+        ucontrol stop
+        ucontrol flag thisFlag
 
-        # Set flag
-        ucontrol flag flag
-
-        # Set unit
-        op add @counter @counter counterJump
+        op add @counter @counter unitSelect_counterJump
             set unitRef1 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef2 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef3 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef4 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef5 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef6 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef7 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef8 @unit
-            jump bind_skip always 0
+            jump bind_end always 0
             set unitRef9 @unit
-    bind_skip:
+            jump bind_end always 0
+        # bind_end:
+
+        # Clear items on rebind
+        bind2:
+            set bind2_good 1
+            bind2_loop:
+                # Iterate through every unit reference
+                op mul bind2_counterJump bind2_unitI 2
+                op add @counter @counter bind2_counterJump
+                    ubind unitRef1
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef2
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef3
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef4
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef5
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef6
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef7
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef8
+                    jump bind2_unitSel_end always 0
+                    ubind unitRef9
+                bind2_unitSel_end:
+
+                # Check if unit is still bind2ed (ok to use)
+                sensor unitDead @unit @dead
+                jump bind2_unbind2ed equal unitDead 1
+                sensor unitFlag @unit @flag
+                jump bind2_unbind2ed notEqual unitFlag thisFlag
+                sensor unitCtrl @unit @controlled
+                jump bind2_binded lessThanEq unitCtrl 1
+                    bind2_unbind2ed:
+                    set bind2_good 0
+
+                    # Attempt to bind2 8 times
+                    set bindAttempt 0
+                    bind2_bind2New:
+                        op add bindAttempt bindAttempt 1
+                        jump bind2_loop_cont greaterThan bindAttempt 8
+                        ubind unitType
+                        sensor unitFlag @unit @flag
+                        # jump bind2_bindedNew equal unitFlag thisFlag
+                        jump bind2_bind2New notEqual unitFlag 0
+                    bind2_bindedNew:
+                    # Stop whatever it was doing (mining perhaps)
+                    # And flag
+                    ucontrol stop
+                    ucontrol flag thisFlag
+
+                    # Set unit
+                    op add @counter @counter bind2_counterJump
+                        set unitRef1 @unit
+                        jump bind2_end always 0
+                        set unitRef2 @unit
+                        jump bind2_end always 0
+                        set unitRef3 @unit
+                        jump bind2_end always 0
+                        set unitRef4 @unit
+                        jump bind2_end always 0
+                        set unitRef5 @unit
+                        jump bind2_end always 0
+                        set unitRef6 @unit
+                        jump bind2_end always 0
+                        set unitRef7 @unit
+                        jump bind2_end always 0
+                        set unitRef8 @unit
+                        jump bind2_end always 0
+                        set unitRef9 @unit
+                    bind2_end:
+                bind2_binded:
+
+                # Send to core and clear items
+                ucontrol flag thisFlag
+
+                sensor unitItem @unit @firstItem
+                jump bind2_dropCore_skip equal unitItem null
+                    set bind2_good 0
+                    ulocate building 0 0 coreX coreY 0 core
+                    ucontrol approach coreX coreY 6
+                    ucontrol itemDrop core 999
+                    jump bind2_loop_cont always 0
+                bind2_dropCore_skip:
+                ucontrol move @thisx @thisy
+
+                bind2_loop_cont:
+                op add bind2_unitI bind2_unitI 1
+            jump bind2_loop lessThan bind2_unitI unitAmount
+            set bind2_unitI 0
+
+        jump bind2 equal bind2_good 0
+    bind_end:
 
 
 
     # Item selection
-    sensor uItem @unit @firstItem
+    sensor unitItem @unit @firstItem
 
     jump item_return_skip lessThanEq unitItemI need4P
-        jump ctrl_return_drop notEqual uItem null
-        jump ctrl_return_take always 0
+        jump ctrl_Rdrop notEqual unitItem null
+        jump ctrl_Rtake always 0
     item_return_skip:
 
-    jump item2 notEqual uItem item1
-        jump ctrl_drop lessThan have1 max1
-        jump ctrl_take always 0
-    item2:
-    jump item3 notEqual uItem item2
-        jump ctrl_drop lessThan have2 max2
-        jump ctrl_take always 0
-    item3:
-    jump item4 notEqual uItem item3
-        jump ctrl_drop lessThan have3 max3
-        jump ctrl_take always 0
-    item4:
-    jump ctrl_take notEqual uItem item4
-    jump ctrl_drop lessThan have4 max4
-    jump ctrl_take always 0
+    jump ctrl_take equal unitItem null
+    # jump item2 notEqual unitItem item1
+    #     jump ctrl_drop lessThan have1 max1
+    #     jump ctrl_take always 0
+    # item2:
+    # jump item3 notEqual unitItem item2
+    #     jump ctrl_drop lessThan have2 max2
+    #     jump ctrl_take always 0
+    # item3:
+    # jump item4 notEqual unitItem item3
+    #     jump ctrl_drop lessThan have3 max3
+    #     jump ctrl_take always 0
+    # item4:
+    # jump ctrl_take notEqual unitItem item4
+    # jump ctrl_drop lessThan have4 max4
+    # jump ctrl_take always 0
 
 
     # Unit control
     ctrl_drop:
-        ucontrol itemDrop destination 999
-        ucontrol approach destX destY 6
-        ucontrol within destX destY 7 within
+        ucontrol approach destX destY 5
+        ucontrol within destX destY 6 within
         jump ctrl_end equal within 0
+            ctrl_drop_itemDrop:
+            jump ctrl_end equal needTotal 0
+
+            ucontrol itemDrop destination 999
             sensor unitItem @unit @firstItem
-            jump ctrl_drop notEqual unitItem null
+            jump ctrl_drop_sendBack equal unitItem null
+                sensor unitDead @unit @dead
+                jump bind equal unitDead 1
+                sensor unitFlag @unit @flag
+                jump bind notEqual unitFlag thisFlag
+                sensor unitCtrl @unit @controlled
+                jump ctrl_drop_itemDrop lessThanEq unitCtrl 1
+                jump bind always 0
+            ctrl_drop_sendBack:
             ucontrol approach coreX coreY 7
         jump ctrl_end always 0
     ctrl_take:
@@ -268,6 +430,8 @@ unit_loop:
         ucontrol within coreX coreY 8 within
         jump ctrl_take_notWithin equal within 0
             ctrl_take_itemTake:
+            jump ctrl_end equal needTotal 0
+
             ucontrol itemDrop core 999
             jump choose_i2 greaterThan unitItemI need1P
                 ucontrol itemTake core item1 999
@@ -283,89 +447,153 @@ unit_loop:
             choose_i4:
                 ucontrol itemTake core item4 999
             choose_end:
-            ucontrol approach destX destY 6
+            sensor unitItem @unit @firstItem
+            jump ctrl_take_sendBack notEqual unitItem null
+                sensor unitDead @unit @dead
+                jump bind equal unitDead 0
+                sensor unitFlag @unit @flag
+                jump bind notEqual unitFlag thisFlag
+                sensor unitCtrl @unit @controlled
+                jump ctrl_take_itemTake lessThanEq unitCtrl 1
+                jump bind always 0
+            ctrl_take_sendBack:
+            ucontrol approach destX destY 5
             jump ctrl_end always 0
         ctrl_take_notWithin:
         ucontrol approach coreX coreY 7
         jump ctrl_end always 0
-    ctrl_return_take:
-        jump ctrl_end equal needT 0
-        ucontrol within destX destY 7 within
+
+    ctrl_Rtake:
+        ucontrol within destX destY 6 within
         jump ctrl_rTake_notWithin equal within 0
+            ctrl_Rtake_itemTake:
+            jump ctrl_end equal needTotal 0
+
             jump choose_rI2 greaterThan unitItemI need5P
-                set itemToTake item5
+                ucontrol itemTake destination item5 999
                 jump choose_rEnd always 0
-            set itemToTake item5
             choose_rI2:
-                set itemToTake item6
+                ucontrol itemTake destination item6 999
             choose_rEnd:
-            ucontrol itemTake destination itemToTake 999
+
+            sensor unitItem @unit @firstItem
+            jump ctrl_Rtake_sendBack notEqual unitItem null
+                sensor unitDead @unit @dead
+                jump bind equal unitDead 0
+                sensor unitFlag @unit @flag
+                jump bind notEqual unitFlag thisFlag
+                sensor unitCtrl @unit @controlled
+                jump ctrl_Rtake_itemTake lessThanEq unitCtrl 1
+                jump bind always 0
+            ctrl_Rtake_sendBack:
             ucontrol approach coreX coreY 7
             jump ctrl_end always 0
+
         ctrl_rTake_notWithin:
-        ucontrol approach destX destY 6
+        ucontrol approach destX destY 5
         jump ctrl_end always 0
-    ctrl_return_drop:
+
+    ctrl_Rdrop:
         ulocate building core 0 0 coreX coreY 0 core
-        ucontrol itemDrop core 999
         ucontrol approach coreX coreY 7
         ucontrol within coreX coreY 8 within
         jump ctrl_end equal within 0
+            ctrl_Rdrop_itemDrop:
+            jump ctrl_end equal needTotal 0
+
+            ucontrol itemDrop core 999
             sensor unitItem @unit @firstItem
-            jump ctrl_return_drop notEqual unitItem null
-            ucontrol approach destX destY 6
+            jump ctrl_Rdrop_sendBack equal unitItem null
+                sensor unitDead @unit @dead
+                jump bind equal unitDead 0
+                sensor unitFlag @unit @flag
+                jump bind notEqual unitFlag thisFlag
+                sensor unitCtrl @unit @controlled
+                jump ctrl_Rdrop_itemDrop lessThanEq unitCtrl 1
+                jump bind always 0
+            ctrl_Rdrop_sendBack:
+            ucontrol approach destX destY 5
     ctrl_end:
 
-    # Reset stuff and loop back
-    op add unitI unitI 1
-    op mul unitItemI unitItemStep unitI
-jump unit_loop lessThan unitI units
+# Reset stuff and loop back
+    op add unitIndex unitIndex 1
+    op mul unitItemI unitItemStep unitIndex
+jump unit_loop lessThan unitIndex unitAmount
 jump start always 0
 
 
 # Idle (unbind and deflag)
 unbind:
-set unitI 0
-unbind_loop:
-    op mul counterJump unitI 3
-    op add @counter @counter counterJump
-        ubind unitRef1
-        set unitRef1 null
-        jump unbind_select always 0
-        ubind unitRef2
-        set unitRef2 null
-        jump unbind_select always 0
-        ubind unitRef3
-        set unitRef3 null
-        jump unbind_select always 0
-        ubind unitRef4
-        set unitRef4 null
-        jump unbind_select always 0
-        ubind unitRef5
-        set unitRef5 null
-        jump unbind_select always 0
-        ubind unitRef6
-        set unitRef6 null
-        jump unbind_select always 0
-        ubind unitRef7
-        set unitRef7 null
-        jump unbind_select always 0
-        ubind unitRef8
-        set unitRef8 null
-        jump unbind_select always 0
-        ubind unitRef9
-        set unitRef9 null
-    unbind_select:
-
+    ubind unitRef1
+    set unitRef1 null
     ucontrol flag 0
     ulocate building core 0 0 coreX coreY 0 core
     ucontrol move coreX coreY
 
-    op add unitI unitI 1
-jump unbind_loop lessThan unitI units
+    jump start equal unitRef2 null
+    ubind unitRef2
+    set unitRef2 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef3 null
+    ubind unitRef3
+    set unitRef3 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef4 null
+    ubind unitRef4
+    set unitRef4 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef5 null
+    ubind unitRef5
+    set unitRef5 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef6 null
+    ubind unitRef6
+    set unitRef6 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef7 null
+    ubind unitRef7
+    set unitRef7 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef8 null
+    ubind unitRef8
+    set unitRef8 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
+    jump start equal unitRef9 null
+    ubind unitRef9
+    set unitRef9 null
+    ucontrol flag 0
+    ulocate building core 0 0 coreX coreY 0 core
+    ucontrol move coreX coreY
+
 jump start always 0
 
-print "Supply Crew v2.4.1 by SBytes"
-# print "No longer beta!"
+# print "Supply Crew vDev by SBytes"
+# print "DO NOT USE!"
+print "Supply Crew v2.5.1 by SBytes"
 print "Changelog:"
-print "- Changed flag generator to use @thisx * @maph +  @thisy"
+print "- Fixed critical bug with resource saver"
+print "- Fixed not rebinding properly"
+print "- New setting: Clear items on rebind (recommended: off)"
+print "- Added switch compatibility (yes its finally disable-able)"
+print "Send help. I spent way too long on this update."
