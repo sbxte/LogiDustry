@@ -1,0 +1,97 @@
+jump 0 equal void1 null
+sensor toX void1 @x
+sensor toY void1 @y
+
+op floor thisFlag @thisy 0
+op mul thisFlag thisFlag @mapw
+op add thisFlag thisFlag @thisx
+op floor thisFlag thisFlag 0
+start:
+
+# Disable
+sensor enable switch1 @enabled
+jump start equal enable 0
+
+op mul counterJump unitI 2
+op add @counter @counter counterJump
+    ubind unit1
+    jump unitSel_end always 0
+    ubind unit2
+    jump unitSel_end always 0
+    ubind unit3
+    jump unitSel_end always 0
+    ubind unit4
+    jump unitSel_end always 0
+    ubind unit5
+    jump unitSel_end always 0
+    ubind unit6
+    jump unitSel_end always 0
+    ubind unit7
+    jump unitSel_end always 0
+    ubind unit8
+    jump unitSel_end always 0
+    ubind unit9
+unitSel_end:
+
+sensor flag @unit @flag
+jump bind notEqual flag thisFlag
+sensor dead @unit @dead
+jump bind_skip equal dead 0
+    bind:
+        lookup unit unit bindI
+        jump bind_con equal unit @alpha
+        jump bind_con equal unit @beta
+        jump bind_con equal unit @gamma
+        ubind unit
+        jump bind_con equal @unit null
+        sensor flag @unit @flag
+        jump bind_end equal flag 0
+        jump bind_end equal flag thisFlag
+        bind_con:
+        op add bindI bindI 1
+        op mod bindI bindI @unitCount
+        op add bindAttempt bindAttempt 1
+    jump bind lessThan bindAttempt 20
+    set bindAttempt 0
+    jump unitSel_inc always 0
+
+    bind_end:
+    op add bindI bindI 1
+    op mod bindI bindI @unitCount
+    op add @counter @counter counterJump
+        set unit1 @unit
+        jump bindSet_end always 0
+        set unit2 @unit
+        jump bindSet_end always 0
+        set unit3 @unit
+        jump bindSet_end always 0
+        set unit4 @unit
+        jump bindSet_end always 0
+        set unit5 @unit
+        jump bindSet_end always 0
+        set unit6 @unit
+        jump bindSet_end always 0
+        set unit7 @unit
+        jump bindSet_end always 0
+        set unit8 @unit
+        jump bindSet_end always 0
+        set unit9 @unit
+    bindSet_end:
+bind_skip:
+ucontrol flag thisFlag
+set bindAttempt 0
+
+ucontrol within toX toY 2.5 within
+jump unitCtrl_notWithin equal within 0
+    ucontrol payEnter
+    jump unitSel_inc always 0
+unitCtrl_notWithin:
+ucontrol move toX toY
+ucontrol boost 1
+
+unitSel_inc:
+op add unitI unitI 1
+op mod unitI unitI 9
+jump start always 0
+
+print "Unit Voider v1.0 by SBytes"

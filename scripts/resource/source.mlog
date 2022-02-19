@@ -1,0 +1,17 @@
+getlink source 0
+getlink core 1
+loop:
+    lookup item item index
+    sensor amount core item
+    jump continue greaterThan amount least
+        set least amount
+        set lItem item
+    continue:
+    op add index index 1
+jump loop lessThan index @itemCount
+control config source lItem
+set index 0
+set least 1e16
+set lItem null
+end
+print "Auto Item Source v1.0 by SBytes"
