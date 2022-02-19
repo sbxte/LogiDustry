@@ -1,0 +1,8 @@
+name: "infiniblock"
+displayName: "Free items"
+author: "SBytes"
+description: "Generates free items at the cost of low power, use to cheat in campaign"
+version: "1.0"
+minGameVersion: "135"
+dependencies: []
+hidden: true
