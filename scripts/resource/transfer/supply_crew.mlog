@@ -1,5 +1,5 @@
 # print "Experimental Dev Version! DO NOT USE!!"
-print "Supply Crew v2.5.1 by SBytes"
+print "Supply Crew v2.5.2 by SBytes"
 print "> The micro item retriever"
 print "#DethroneAttem83"
 print "------------------------------------------------------------------------------------"
@@ -376,7 +376,7 @@ unit_loop:
         jump bind2 equal bind2_good 0
     bind_end:
 
-
+    ucontrol boost 1 # scuffed
 
     # Item selection
     sensor unitItem @unit @firstItem
@@ -590,10 +590,11 @@ jump start always 0
 
 # print "Supply Crew vDev by SBytes"
 # print "DO NOT USE!"
-print "Supply Crew v2.5.1 by SBytes"
+print "Supply Crew v2.5.2 by SBytes"
 print "Changelog:"
 print "- Fixed critical bug with resource saver"
 print "- Fixed not rebinding properly"
 print "- New setting: Clear items on rebind (recommended: off)"
 print "- Added switch compatibility (yes its finally disable-able)"
+print "- Added Boost for nova tree"
 print "Send help. I spent way too long on this update."
