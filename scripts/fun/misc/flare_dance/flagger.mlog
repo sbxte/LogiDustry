@@ -1,0 +1,37 @@
+sensor switch switch1 @enabled
+jump 0 equal switch 1
+
+# count
+ubind @flare
+jump 0 equal @unit null
+set anchor @unit
+set count 0
+count:
+    ubind @flare
+    op add count count 1
+jump count notEqual anchor @unit
+
+op div countThirds count 3
+
+flag1:
+    ubind @flare
+    ucontrol flag 1
+    op add flagCount flagCount 1
+jump flag1 lessThan flagCount countThirds
+set flagCount 0
+
+flag2:
+    ubind @flare
+    ucontrol flag 2
+    op add flagCount flagCount 1
+jump flag2 lessThan flagCount countThirds
+set flagCount 0
+
+flag3:
+    ubind @flare
+    ucontrol flag 3
+    op add flagCount flagCount 1
+jump flag3 lessThan flagCount countThirds
+set flagCount 0
+
+control enabled switch1 1

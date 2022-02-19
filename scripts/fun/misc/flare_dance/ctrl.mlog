@@ -1,0 +1,68 @@
+set r 30
+getlink center 0
+sensor centerX center @x
+sensor centerY center @y
+
+read angleOffset cell1 0
+
+
+ubind @flare
+sensor flag @unit @flag
+jump f0 equal flag 1
+jump f1 equal flag 2
+jump f2 equal flag 3
+end
+
+f0:
+    op div angle 360 3
+    op add angle angle angleOffset
+
+    op sin x angle 0
+    op mul x x r
+    op add x x centerX
+
+    op cos y angle 0
+    op mul y y r
+    op add y y centerY
+
+    ucontrol move x y
+    ucontrol within x y 10 within
+    jump 0 equal within 0
+        ucontrol flag 2
+end
+
+f1:
+    op div angle 360 3
+    op mul angle angle 2
+    op add angle angle angleOffset
+
+    op sin x angle 0
+    op mul x x r
+    op add x x centerX
+
+    op cos y angle 0
+    op mul y y r
+    op add y y centerY
+
+    ucontrol move x y
+    ucontrol within x y 10 within
+    jump 0 equal within 0
+        ucontrol flag 3
+end
+
+f2:
+    set angle angleOffset
+
+    op sin x angle 0
+    op mul x x r
+    op add x x centerX
+
+    op cos y angle 0
+    op mul y y r
+    op add y y centerY
+
+    ucontrol move x y
+    ucontrol within x y 10 within
+    jump 0 equal within 0
+        ucontrol flag 1
+end

@@ -1,0 +1,7 @@
+op add angleOffsetI angleOffsetI 2
+op sin angleOffset angleOffsetI 0
+op mul angleOffset angleOffset 120
+
+write angleOffset cell1 0
+
+wait 0.1

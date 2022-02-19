@@ -1,0 +1,42 @@
+# Radius from processor
+set r 55
+
+# Anchor unit (a unit counter like system)
+ubind @flare
+set anchor @unit
+
+# Get next shape angle (360 deg / amount of sides)
+op sub sides sidesIterate 8
+op abs sides sides 0
+op add sides sides 8
+op div shapeAngle 360 sides
+
+loop:
+    ubind @flare
+    # Next angle per flare
+    op add unitI unitI 1
+    op mul a shapeAngle unitI
+
+    # Get x coordinate
+    op sin x a 0
+    op mul x x r
+    op add x x @thisx
+
+    # Get y coordinate
+    op cos y a 0
+    op mul y y r
+    op add y y @thisy
+
+    # Move there
+    ucontrol move x y 0 0 0
+jump loop notEqual @unit anchor
+# Reset unit index
+set unitI 0
+
+# Iterate 5 times (for delay lol)
+op add unitIteration unitIteration 1
+jump loop lessThan unitIteration 5
+set unitIteration 0
+
+op add angleI sidesIterate 0.5
+op mod angleI angleI 8
