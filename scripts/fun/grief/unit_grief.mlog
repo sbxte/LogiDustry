@@ -1,10 +1,12 @@
 # Unit Griefe'th
-end
-print "Heheheheh... Dont"
+# end
+# print "Heheheheh... Dont"
+sensor @counter switch1 @enabled
 lookup unit unit i
 ubind unit
-op rand flag flag 1e6
-op floor flag flag
+jump next equal @unit null
+op rand flag 0xfffffffffffffff
+op floor flag flag 0
 ucontrol flag flag
 ucontrol targetp @unit 1
 op rand mx @mapw
@@ -14,5 +16,15 @@ op rand boost 2
 op floor boost boost
 ucontrol boost boost
 ucontrol payEnter
+op rand pay 1
+jump payTake greaterThan pay 0.5
+    ucontrol payDrop
+    jump payEnd always 0
+payTake:
+    op rand payTake 2
+    op floor payTake payTake
+    ucontrol payTake payTake
+payEnd:
+next:
 op add i i 1
 op mod i i @unitCount
