@@ -257,27 +257,6 @@ op div need6P needR2 needTotal
 op add need6P need6P need5P
 
 
-# Measure speed
-    # Miliseconds per cycle measurer v1.0 by SBytes
-    # FPS must be at 60 for calculations to be correct (or edit the 'div __avg __avg 60')
-    # jump __elapsedTime_end equal __ETinit 0
-    #     op sub __elapsedTime @tick __previousTime
-
-    #     sensor __timescale @this @timescale
-    #     sensor __timescale2 @this @timescale
-    #     op max __timescale __timescale __timescale2
-    #     op mul __offset __timescale @ipt
-    #     op div __offset 2 __offset
-    #     op sub __elapsedTime __elapsedTime __offset # adjust for the additional instructions
-    #     op add __events __events __elapsedTime
-    #     op add __sample __sample 1
-    #     op div __avg __events __sample
-    #     op div __avg __avg 60
-    #     op mul __avgF __avg 1e3
-    # __elapsedTime_end:
-    # set __ETinit 1
-    # set __previousTime @tick
-
 # Re-locate core building
 ulocate building core 0 0 coreX coreY 0 core
 
@@ -409,21 +388,6 @@ ctrlLoop:
 
     jump ctrl_drop notEqual unitItem null
 
-    # jump ctrl_itemSel_r equal item1C null
-    #     jump ctrl_drop equal unitItem item1C
-    #     jump ctrl_drop equal unitItem item2C
-    #     jump ctrl_drop equal unitItem item3C
-    #     jump ctrl_drop equal unitItem item4C
-    # ctrl_itemSel_r:
-
-    # jump ctrl_itemSel_end equal item5C null
-    #     jump ctrl_Rdrop equal unitItem item5C
-    #     jump ctrl_Rdrop equal unitItem item6C
-    #     jump ctrl_Rtake greaterThan unitItemI need4P
-    # ctrl_itemSel_end:
-
-    # Some note:
-    # the 'sendBack' timesave has backfired due to need4P jittering around when mixing output and input.
 
 
     # Unit control
