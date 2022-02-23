@@ -1,7 +1,7 @@
 # --------------------- Information ---------------------
 
 # print "Experimental Dev Version! DO NOT USE!!"
-print "Supply Crew v2.6 by SBytes"
+print "Supply Crew v2.6.1 by SBytes"
 print "> The micro item retriever"
 print "#DethroneAttem83"
 print "------------------------------------------------------------------------------------"
@@ -146,11 +146,9 @@ sensor destY destination @y
 
 # Size
 sensor destSize destination @size
-op mul destApproachRadius 3 destSize
-op add destApproachRadius 45 destApproachRadius
-op div destApproachRadius destApproachRadius 8
-set destWithinRadius destApproachRadius
-op sub destApproachRadius destApproachRadius 0.5
+op mul destWithinRadius 0.375 destSize
+op add destWithinRadius 5.625 destWithinRadius
+op sub destApproachRadius destWithinRadius  0.5
 
 
 start:
@@ -335,10 +333,9 @@ ctrlLoop:
 
         # Bind new unit
         bind:
-        set bindAttempt 0
+        op add bindTillTime @time 333 # 5 / 120 * 1e3 * 8
         bind_loop:
-            op add bindAttempt bindAttempt 1
-            jump bind_decCounter greaterThan bindAttempt 8 # to not waste time on a single unit
+            jump bind_decCounter greaterThanEq @time bindTillTime # to not waste time on a single unit
             ubind unitType
             jump ctrl_end equal @unit null
             sensor unitFlag @unit @flag
@@ -736,11 +733,12 @@ jump start always 0
 
 # print "Supply Crew vDev by SBytes"
 # print "DO NOT USE!"
-print "Supply Crew v2.6 by SBytes"
+print "Supply Crew v2.6.1 by SBytes"
 print "Changelog:"
-print "- Fixed units getting stuck when they cant deposit items."
-print "- Yet another speed optimization."
-print "- Fixed units not being controlled until maxInactiveTime when no needed items."
-print "- Now base approach distance on core & destination size."
-print "- Optimized unbind with reversed order."
-print "Thanks to Commander#2919 for helping me bug proof this."
+# print "- Fixed units getting stuck when they cant deposit items."
+# print "- Yet another speed optimization."
+# print "- Fixed units not being controlled until maxInactiveTime when no needed items."
+# print "- Now base approach distance on core & destination size."
+# print "- Optimized unbind with reversed order."
+# print "Thanks to Commander#2919 for helping me bug proof this."
+print "- Minor optimizations thanks to Gewi#6375"
