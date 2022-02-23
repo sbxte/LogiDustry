@@ -179,7 +179,7 @@ set needTotal 0
         itemSel_1minRes:
             set need1 0
         itemSel_1minRes_end:
-        set needTotal need1
+        op add needTotal needTotal need1
     itemSel_2:
     jump itemSel_R1 equal max2 0
         sensor coreHave2 core item2
@@ -622,7 +622,7 @@ jump ctrlLoop always 0
 
 
 
-# Units idling near proc
+# Units idling near destination
 ctrl_idle:
     op sub idleJump 9 unitAmount
     op mul idleJump 3 idleJump
