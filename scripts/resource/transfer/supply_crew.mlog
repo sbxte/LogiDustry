@@ -1,7 +1,7 @@
 # --------------------- Information ---------------------
 
 # print "Experimental Dev Version! DO NOT USE!!"
-print "Supply Crew v2.6.1 by SBytes"
+print "Supply Crew v2.6.2 by SBytes"
 print "> The micro item retriever"
 print "#DethroneAttem83"
 print "------------------------------------------------------------------------------------"
@@ -236,7 +236,7 @@ jump need0_skip greaterThan needTotal 0
     op sub inactiveTime @time lastActiveTime
     jump unbind greaterThanEq inactiveTime maxInactiveTime
 
-    # Otherwise just idle at processor
+    # Otherwise just idle at destination
     jump ctrl_idle always 0
 need0_skip:
 set lastActiveTime @time
@@ -261,7 +261,7 @@ op add need6P need6P need5P
 ulocate building core 0 0 coreX coreY 0 core
 
 sensor coreSize core @size
-jump coreSize_skip notEqual coreSize cachedCoreSize
+jump coreSize_skip equal coreSize cachedCoreSize
     set cachedCoreSize coreSize
     op mul coreApproachRadius 3 coreSize
     op add coreApproachRadius 45 coreApproachRadius
@@ -695,7 +695,7 @@ jump start always 0
 
 # print "Supply Crew vDev by SBytes"
 # print "DO NOT USE!"
-print "Supply Crew v2.6.1 by SBytes"
+print "Supply Crew v2.6.2 by SBytes"
 print "Changelog:"
 # print "- Fixed units getting stuck when they cant deposit items."
 # print "- Yet another speed optimization."
@@ -703,4 +703,4 @@ print "Changelog:"
 # print "- Now base approach distance on core & destination size."
 # print "- Optimized unbind with reversed order."
 # print "Thanks to Commander#2919 for helping me bug proof this."
-print "- Minor optimizations thanks to Gewi#6375"
+print "- Fixed broken cache skip on core size calc."
