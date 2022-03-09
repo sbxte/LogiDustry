@@ -1,0 +1,16 @@
+read unitTypeIndex cell1 1
+lookup unit unitType unitTypeIndex
+
+ubind unitType
+sensor unitFlag @unit @flag
+jump 0 notEqual unitFlag 0
+
+read @counter cell1 4
+    sensor sorterItem sorter1 @config
+    sensor unitItem @unit @firstItem
+    jump 0 notEqual unitItem sorterItem
+
+sensor shootX arc1 @shootX
+sensor shootY arc1 @shootY
+ucontrol move shootX shootY 0 0 madeBySBytesAndGewi
+ucontrol targetp @unit 1

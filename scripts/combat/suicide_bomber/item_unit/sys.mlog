@@ -1,0 +1,157 @@
+# User variables
+set coreItemThreshold 1000
+set coreRallyRadius 20
+print "-- Edit above --"
+write coreItemThreshold cell1 2
+write coreRallyRadius cell1 3
+printflush message1
+print ""
+printflush message1
+
+
+start:
+
+# Disable arc to prevent power usage
+control enabled arc1 0
+
+# Arc controlled sensor
+sensor arcControlled arc1 @controlled
+jump idleItemProc_skip greaterThanEq arcControlled 2
+    write 22 cell1 0
+    control enabled processor1 0
+
+    jump idleItemProc_end lessThan @time cleanTimer
+        control enabled processor2 0
+    jump idleItemProc_end always 0
+idleItemProc_skip:
+    op add cleanTimer @time 30e3
+    control enabled processor1 1
+    control enabled processor2 1
+    write 8 cell1 0
+idleItemProc_end:
+
+
+# Funky messages
+sensor sorterConf sorter1 @config
+
+jump printSkip lessThan @time printTimer
+    jump printStage_1 notEqual printStage 0
+        print "[sky]Suicide Bomber v2[]\n[slate]By [blue]Gewi[] and [green]SBytes[][]\n [lightgray]selects a unittype as follows:[]\n   \n   \n   \n [lightgray]selects an item to bomb with, reccomended: []"
+        set printStage 1
+        jump printStage_end always 0
+    printStage_1:
+    jump printStage_2 notEqual printStage 1
+        print "[sky]Suicide Bomber v2[]\n[slate]By [blue]Gewi[] and [green]SBytes[][]\n[lightgray]Selected unit & payload:[] "
+        print printUnit
+        print " "
+        print printItem
+        set printStage 2
+        jump printStage_end always 0
+    printStage_2:
+        print "[sky]Suicide Bomber v2[]\n[slate]By [blue]Gewi[] and [green]SBytes[][]\nChangelogs:\n- Added flag check\n- Clear items when uncontrolled (30s)\n- Funky messages\n- Added crawler tree support"
+        set printStage 0
+    printStage_end:
+    printflush message1
+    op add printTimer @time 3e3
+printSkip:
+
+# TODO: Disable proc when sorter is null
+# TODO: Immediately grab items for inactive units instead of waiting for someone to be in arc.
+
+# Unit lookup id based on sorter
+jump conf_lead notEqual sorterConf @copper
+    write 15 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_lead:
+jump conf_meta notEqual sorterConf @lead
+    write 16 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_meta:
+jump conf_graph notEqual sorterConf @metaglass
+    write 17 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_graph:
+jump conf_sand notEqual sorterConf @graphite
+    write 18 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_sand:
+jump conf_coal notEqual sorterConf @sand
+    write 21 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_coal:
+jump conf_titan notEqual sorterConf @coal
+    write 22 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_titan:
+jump conf_thor notEqual sorterConf @titanium
+    write 23 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_thor:
+jump conf_scrap notEqual sorterConf @thorium
+    write 24 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_scrap:
+jump conf_sili notEqual sorterConf @thorium
+    write 10 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_sili:
+jump conf_plast notEqual sorterConf @thorium
+    write 11 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_plast:
+jump conf_phase notEqual sorterConf @thorium
+    write 12 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_phase:
+jump conf_default notEqual sorterConf @phase-fabric
+    write 13 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    jump start always 0
+conf_default:
+    # Zeniths and disable proc, because why not
+    write 17 cell1 1
+    set printUnit ""
+    set printItem ""
+    set disabled 0
+    set disabled 1
+    jump start always 0
+
+
+print "Suicide Bomber: v2"
+print "By SBytes and Gewi"
+

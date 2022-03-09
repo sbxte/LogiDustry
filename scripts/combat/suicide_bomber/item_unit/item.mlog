@@ -1,0 +1,59 @@
+read unitTypeIndex cell1 1
+lookup unit unitType unitTypeIndex
+
+ubind unitType
+sensor unitFlag @unit @flag
+jump 0 notEqual unitFlag 0
+
+# Sensor unit item (because its required in either action)
+sensor unitItem @unit @firstItem
+
+# Sorter config
+sensor sorterItem sorter1 @config
+
+# Determine action
+read @counter cell1 0
+
+# If already equal then just skip
+jump 0 equal unitItem sorterItem
+jump 0 equal sorterItem null
+
+# Locate core
+ulocate building core 0 0 coreX coreY 0 core
+
+# Sensor items in core
+sensor coreItem core sorterItem
+read coreItemThreshold cell1 2
+op greaterThanEq coreItemEnough coreItem coreItemThreshold
+op mul coreItemEnough coreItemEnough -3
+op add coreItemEnoughCntr coreItemEnough 9
+write coreItemEnoughCntr cell1 4
+jump 0 equal coreItemEnough 0
+
+# Take items
+ucontrol move coreX coreY
+ucontrol itemDrop core 999 0 0 madeBySBytesAndGewi
+ucontrol itemTake core sorterItem 999 0 madeBySBytesAndGewi
+end
+
+
+
+# Clear items
+clear:
+
+# Locate core
+ulocate building core 0 0 coreX coreY 0 core
+
+# Clear items
+jump rally notEqual unitItem sorterItem
+jump rally equal sorterItem null
+
+    # Clean items
+    ucontrol move coreX coreY
+    ucontrol itemDrop core 999 0 0 madeBySBytesAndGewi
+    end
+
+rally:
+read coreRallyRadius cell1 3
+ucontrol approach coreX coreY coreRallyRadius
+ucontrol targetp null 0
