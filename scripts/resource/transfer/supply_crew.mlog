@@ -69,88 +69,55 @@ print "No touching stuff below :P"
 
 # -------------------- Setup and precalc --------------------
 
-jump 0 greaterThanEq unitAmount 10
+jump 0 greaterThanEq unitAmount 10     # Make sure amount is between 1 and 9
 jump 0 lessThanEq unitAmount 0
 
-op mul maxInactiveTime maxInactiveTime 1e3
+op mul maxInactiveTime maxInactiveTime 1e3       # Convert seconds to milliseconds
 
-op div unitItemStep 1 unitAmount
+op div unitItemStep 1 unitAmount            # Calculate unitItemStep, used for distribution
 op div unitItemHalfStep unitItemStep 2
 
-op mul thisFlag @thisx @maph
+op mul thisFlag @thisx @maph           # Generate unique flag with thisx * maph + thisy
 op add thisFlag thisFlag @thisy
 
-# # Item C
-# jump itemC_setup_r equal item1 null
-# set item1C item1
-# set itemC_setupItem item1
-# jump itemC_setup_2 equal item2 null
-# set item2C item2
-# set itemC_setupItem item2
-# jump itemC_setup_3 equal item3 null
-# set item3C item3
-# set itemC_setupItem item3
-# jump itemC_setup_4 equal item4 null
-# set item4C item4
-# set itemC_setupItem item4
-# jump itemC_setup_r always 0
-
-# itemC_setup_2:
-# set item2C itemC_setupItem
-# itemC_setup_3:
-# set item3C itemC_setupItem
-# itemC_setup_4:
-# set item4C itemC_setupItem
-
-
-# itemC_setup_r:
-
-# jump itemC_setup_end equal item5 null
-# set item5C item5
-# set itemC_setupItem item5
-# jump itemC_setup_6 equal item6 null
-# set item6C item6
-# set itemC_setupItem item6
-# jump itemC_setup_end always 0
-
-# itemC_setup_6:
-# set item6C itemC_setupItem
-
-# itemC_setup_end:
 
 
 
 # Initialize core
 jump initCore_end lessThanEq minRes 0
     initCore:
-    ubind unitType
-    jump initCore equal @unit null # keep rebinding if no units
+    ubind unitType                        # Check for an existing unit of unitType
+    jump initCore equal @unit null        # Keep looping until one is found.
 
-    ulocate building core 0 0 coreX coreY 0 core
+    ulocate building core 0 0 coreX coreY 0 core # Locate a core, shouldn't break other logic unless they're flagless.
 
-    sensor coreSize core @size
+    sensor coreSize core @size                   # Approach and within radius
     set cachedCoreSize coreSize
     op mul coreWithinRadius 0.375 coreSize
     op add coreWithinRadius 5.625 coreWithinRadius
     op sub coreApproachRadius coreWithinRadius 0.5
 initCore_end:
 
+
+# Initialize destination.
 initDest:
 getlink destination 0
-jump initDest equal destination null
-set cachedDest destination
-sensor destX destination @x
+jump initDest equal destination null # Keep looping if dest is nonexistent
+set cachedDest destination           # Store it in cache
+sensor destX destination @x          # Coordinates
 sensor destY destination @y
 
-# Size
-sensor destSize destination @size
+sensor destSize destination @size  # Approach and within radius
 op mul destWithinRadius 0.375 destSize
 op add destWithinRadius 5.625 destWithinRadius
 op sub destApproachRadius destWithinRadius  0.5
 
 
+# -------------------- Main Execution ---------------------
+
 start:
 
+# Check for new destination building
 getlink destination 0
 jump initDest notEqual destination cachedDest
 
@@ -164,68 +131,88 @@ set unitsDropTaken 0
 # Reset needTotal
 set needTotal 0
 
-# Item distribution
-    jump itemSel_R1 equal max1 0
-        sensor coreHave1 core item1
-        jump itemSel_1minRes lessThan coreHave1 minRes
-            sensor have1 destination item1
-            op sub need1 max1 have1
-            op max need1 0 need1
-            jump itemSel_1minRes_end always 0
-        itemSel_1minRes:
-            set need1 0
-        itemSel_1minRes_end:
-        op add needTotal needTotal need1
-    itemSel_2:
-    jump itemSel_R1 equal max2 0
-        sensor coreHave2 core item2
-        jump itemSel_2minRes lessThan coreHave2 minRes
-            sensor have2 destination item2
-            op sub need2 max2 have2
-            op max need2 0 need2
-            jump itemSel_2minRes_end always 0
-        itemSel_2minRes:
-            set need2 0
-        itemSel_2minRes_end:
-        op add needTotal needTotal need2
-        jump itemSel_3 always 0
-    itemSel_3:
-    jump itemSel_R1 equal max3 0
-        sensor coreHave3 core item3
-        jump itemSel_3minRes lessThan coreHave3 minRes
-            sensor have3 destination item3
-            op sub need3 max3 have3
-            op max need3 0 need3
-            jump itemSel_3minRes_end always 0
-        itemSel_3minRes:
-            set need3 0
-        itemSel_3minRes_end:
-        op add needTotal needTotal need3
-    itemSel_4:
-    jump itemSel_R1 equal max4 0
-        sensor coreHave4 core item4
-        jump itemSel_4minRes lessThan coreHave4 minRes
-            sensor have4 destination item4
-            op sub need4 max4 have4
-            op max need4 0 need4
-            jump itemSel_4minRes_end always 0
-        itemSel_4minRes:
-            set need4 0
-        itemSel_4minRes_end:
-        op add needTotal needTotal need4
-    itemSel_R1:
-    jump itemSel_end equal item5 null
-        sensor have5 destination item5
-        op sub needR1 have5 min1
-        op max needR1 0 needR1
-        op add needTotal needTotal needR1
-    itemSel_R2:
-    jump itemSel_end equal item6 null
-        sensor have6 destination item6
-        op sub needR2 have6 min2
-        op max needR2 0 needR2
-        op add needTotal needTotal needR2
+
+# Item distribution (I am bad at explaining things aaaa)
+# Get each item's cap, and the amount we have in destination.
+# Get the need value;
+#
+#         cap - have = need
+#
+# If said item has less than minRes in core, assume we dont need it;
+#
+#        need = 0
+#
+# 'Need' has to be a positive integer, either 0 or 1....
+#
+#         need = max(need, 0)
+#
+# Increment total 'need's
+#
+#         needTotal += need
+#
+
+jump itemSel_R1 equal max1 0
+    sensor coreHave1 core item1
+    jump itemSel_1minRes lessThan coreHave1 minRes
+        sensor have1 destination item1
+        op sub need1 max1 have1
+        op max need1 0 need1
+        jump itemSel_1minRes_end always 0
+    itemSel_1minRes:
+        set need1 0
+    itemSel_1minRes_end:
+    op add needTotal needTotal need1
+itemSel_2:
+jump itemSel_R1 equal max2 0
+    sensor coreHave2 core item2
+    jump itemSel_2minRes lessThan coreHave2 minRes
+        sensor have2 destination item2
+        op sub need2 max2 have2
+        op max need2 0 need2
+        jump itemSel_2minRes_end always 0
+    itemSel_2minRes:
+        set need2 0
+    itemSel_2minRes_end:
+    op add needTotal needTotal need2
+    jump itemSel_3 always 0
+itemSel_3:
+jump itemSel_R1 equal max3 0
+    sensor coreHave3 core item3
+    jump itemSel_3minRes lessThan coreHave3 minRes
+        sensor have3 destination item3
+        op sub need3 max3 have3
+        op max need3 0 need3
+        jump itemSel_3minRes_end always 0
+    itemSel_3minRes:
+        set need3 0
+    itemSel_3minRes_end:
+    op add needTotal needTotal need3
+itemSel_4:
+jump itemSel_R1 equal max4 0
+    sensor coreHave4 core item4
+    jump itemSel_4minRes lessThan coreHave4 minRes
+        sensor have4 destination item4
+        op sub need4 max4 have4
+        op max need4 0 need4
+        jump itemSel_4minRes_end always 0
+    itemSel_4minRes:
+        set need4 0
+    itemSel_4minRes_end:
+    op add needTotal needTotal need4
+itemSel_R1:
+jump itemSel_end equal item5 null
+    sensor have5 destination item5
+    op sub needR1 have5 min1
+    op max needR1 0 needR1
+    op add needTotal needTotal needR1
+itemSel_R2:
+jump itemSel_end equal item6 null
+    sensor have6 destination item6
+    op sub needR2 have6 min2
+    op max needR2 0 needR2
+    op add needTotal needTotal needR2
 itemSel_end:
+
 
 # Unbind if no items are needed
 jump need0_skip greaterThan needTotal 0
@@ -243,6 +230,8 @@ set lastActiveTime @time
 
 
 # Item distribution probabilities
+# Probability = need / needTotal
+# Stack those probability on each other and then iterate through it.
 op div need1P need1 needTotal
 op div need2P need2 needTotal
 op add need2P need2P need1P
@@ -257,12 +246,13 @@ op div need6P needR2 needTotal
 op add need6P need6P need5P
 
 
-# Re-locate core building
+
+# Re-locate core building (incase there exists a closer one)
 ulocate building core 0 0 coreX coreY 0 core
 
 sensor coreSize core @size
-jump coreSize_skip equal coreSize cachedCoreSize
-    set cachedCoreSize coreSize
+jump coreSize_skip equal coreSize cachedCoreSize # Check for core size
+    set cachedCoreSize coreSize                  # Recalculate approach and within radius if necessary
     op mul coreApproachRadius 3 coreSize
     op add coreApproachRadius 45 coreApproachRadius
     op div coreApproachRadius coreApproachRadius 8
@@ -273,7 +263,11 @@ coreSize_skip:
 # Reset item index
 set unitItemI unitItemHalfStep
 
-# Unit control
+
+
+
+# -------------------- Unit Control ---------------------
+
 ctrlLoop:
     # Bind a unit from the array
     op mul unitSelect_counterJump unitIndex 2
@@ -380,7 +374,6 @@ ctrlLoop:
     # Item selection
     sensor unitItem @unit @firstItem
 
-
     jump item_return_skip lessThanEq unitItemI need4P
         jump ctrl_Rdrop notEqual unitItem null
         jump ctrl_Rtake always 0
@@ -390,7 +383,7 @@ ctrlLoop:
 
 
 
-    # Unit control
+    # Unit actions
 
     # Take items from core to destination
     ctrl_take:
