@@ -1,0 +1,967 @@
+
+print "[sky]Unit Deflagger v1.3.1[]\nby [green]SBytes[]"
+# print "[sky]Unit Deflagger v1.3.1[]\nby [green]SBytes\n[#bfbfbf]Merged into 1 processor and optimized with py script[][]"
+
+
+# Just because I don't want to have a 'deflagged' with no units afterwards
+# lol
+
+cell_titleCheck:
+    jump cell_title_dagger equal count_dagger 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_dagger always 0
+    cell_title_dagger:
+    jump cell_title_mace equal count_mace 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_mace always 0
+    cell_title_mace:
+    jump cell_title_fortress equal count_fortress 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_fortress always 0
+    cell_title_fortress:
+    jump cell_title_scepter equal count_scepter 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_scepter always 0
+    cell_title_scepter:
+    jump cell_title_reign equal count_reign 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_reign always 0
+    cell_title_reign:
+    jump cell_title_nova equal count_nova 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_nova always 0
+    cell_title_nova:
+    jump cell_title_pulsar equal count_pulsar 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_pulsar always 0
+    cell_title_pulsar:
+    jump cell_title_quasar equal count_quasar 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_quasar always 0
+    cell_title_quasar:
+    jump cell_title_vela equal count_vela 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_vela always 0
+    cell_title_vela:
+    jump cell_title_corvus equal count_corvus 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_corvus always 0
+    cell_title_corvus:
+    jump cell_title_crawler equal count_crawler 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_crawler always 0
+    cell_title_crawler:
+    jump cell_title_atrax equal count_atrax 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_atrax always 0
+    cell_title_atrax:
+    jump cell_title_spiroct equal count_spiroct 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_spiroct always 0
+    cell_title_spiroct:
+    jump cell_title_arkyid equal count_arkyid 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_arkyid always 0
+    cell_title_arkyid:
+    jump cell_title_toxopid equal count_toxopid 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_toxopid always 0
+    cell_title_toxopid:
+    jump cell_title_flare equal count_flare 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_flare always 0
+    cell_title_flare:
+    jump cell_title_horizon equal count_horizon 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_horizon always 0
+    cell_title_horizon:
+    jump cell_title_zenith equal count_zenith 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_zenith always 0
+    cell_title_zenith:
+    jump cell_title_antumbra equal count_antumbra 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_antumbra always 0
+    cell_title_antumbra:
+    jump cell_title_eclipse equal count_eclipse 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_eclipse always 0
+    cell_title_eclipse:
+    jump cell_title_mono equal count_mono 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_mono always 0
+    cell_title_mono:
+    jump cell_title_poly equal count_poly 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_poly always 0
+    cell_title_poly:
+    jump cell_title_mega equal count_mega 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_mega always 0
+    cell_title_mega:
+    jump cell_title_quad equal count_quad 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_quad always 0
+    cell_title_quad:
+    jump cell_title_oct equal count_oct 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_oct always 0
+    cell_title_oct:
+    jump cell_title_risso equal count_risso 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_risso always 0
+    cell_title_risso:
+    jump cell_title_minke equal count_minke 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_minke always 0
+    cell_title_minke:
+    jump cell_title_bryde equal count_bryde 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_bryde always 0
+    cell_title_bryde:
+    jump cell_title_sei equal count_sei 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_sei always 0
+    cell_title_sei:
+    jump cell_title_omura equal count_omura 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_omura always 0
+    cell_title_omura:
+    jump cell_title_retusa equal count_retusa 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_retusa always 0
+    cell_title_retusa:
+    jump cell_title_oxynoe equal count_oxynoe 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_oxynoe always 0
+    cell_title_oxynoe:
+    jump cell_title_cyerce equal count_cyerce 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_cyerce always 0
+    cell_title_cyerce:
+    jump cell_title_aegires equal count_aegires 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_aegires always 0
+    cell_title_aegires:
+    jump cell_title_navanax equal count_navanax 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_navanax always 0
+    cell_title_navanax:
+    jump cell_title_alpha equal count_alpha 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_alpha always 0
+    cell_title_alpha:
+    jump cell_title_beta equal count_beta 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_beta always 0
+    cell_title_beta:
+    jump cell_title_gamma equal count_gamma 0
+        print "\n\n[lime]Deflagged[]"
+        jump cell_gamma always 0
+    cell_title_gamma:
+jump cell_end always 0
+
+
+    jump cell_dagger_skip equal count_dagger 0
+        cell_dagger:
+        print ",\n"
+        print count_dagger
+        print " dagger"
+    cell_dagger_skip:
+    jump cell_mace_skip equal count_mace 0
+        cell_mace:
+        print ",\n"
+        print count_mace
+        print " mace"
+    cell_mace_skip:
+    jump cell_fortress_skip equal count_fortress 0
+        cell_fortress:
+        print ",\n"
+        print count_fortress
+        print " fortress"
+    cell_fortress_skip:
+    jump cell_scepter_skip equal count_scepter 0
+        cell_scepter:
+        print ",\n"
+        print count_scepter
+        print " scepter"
+    cell_scepter_skip:
+    jump cell_reign_skip equal count_reign 0
+        cell_reign:
+        print ",\n"
+        print count_reign
+        print " reign"
+    cell_reign_skip:
+    jump cell_nova_skip equal count_nova 0
+        cell_nova:
+        print ",\n"
+        print count_nova
+        print " nova"
+    cell_nova_skip:
+    jump cell_pulsar_skip equal count_pulsar 0
+        cell_pulsar:
+        print ",\n"
+        print count_pulsar
+        print " pulsar"
+    cell_pulsar_skip:
+    jump cell_quasar_skip equal count_quasar 0
+        cell_quasar:
+        print ",\n"
+        print count_quasar
+        print " quasar"
+    cell_quasar_skip:
+    jump cell_vela_skip equal count_vela 0
+        cell_vela:
+        print ",\n"
+        print count_vela
+        print " vela"
+    cell_vela_skip:
+    jump cell_corvus_skip equal count_corvus 0
+        cell_corvus:
+        print ",\n"
+        print count_corvus
+        print " corvus"
+    cell_corvus_skip:
+    jump cell_crawler_skip equal count_crawler 0
+        cell_crawler:
+        print ",\n"
+        print count_crawler
+        print " crawler"
+    cell_crawler_skip:
+    jump cell_atrax_skip equal count_atrax 0
+        cell_atrax:
+        print ",\n"
+        print count_atrax
+        print " atrax"
+    cell_atrax_skip:
+    jump cell_spiroct_skip equal count_spiroct 0
+        cell_spiroct:
+        print ",\n"
+        print count_spiroct
+        print " spiroct"
+    cell_spiroct_skip:
+    jump cell_arkyid_skip equal count_arkyid 0
+        cell_arkyid:
+        print ",\n"
+        print count_arkyid
+        print " arkyid"
+    cell_arkyid_skip:
+    jump cell_toxopid_skip equal count_toxopid 0
+        cell_toxopid:
+        print ",\n"
+        print count_toxopid
+        print " toxopid"
+    cell_toxopid_skip:
+    jump cell_flare_skip equal count_flare 0
+        cell_flare:
+        print ",\n"
+        print count_flare
+        print " flare"
+    cell_flare_skip:
+    jump cell_horizon_skip equal count_horizon 0
+        cell_horizon:
+        print ",\n"
+        print count_horizon
+        print " horizon"
+    cell_horizon_skip:
+    jump cell_zenith_skip equal count_zenith 0
+        cell_zenith:
+        print ",\n"
+        print count_zenith
+        print " zenith"
+    cell_zenith_skip:
+    jump cell_antumbra_skip equal count_antumbra 0
+        cell_antumbra:
+        print ",\n"
+        print count_antumbra
+        print " antumbra"
+    cell_antumbra_skip:
+    jump cell_eclipse_skip equal count_eclipse 0
+        cell_eclipse:
+        print ",\n"
+        print count_eclipse
+        print " eclipse"
+    cell_eclipse_skip:
+    jump cell_mono_skip equal count_mono 0
+        cell_mono:
+        print ",\n"
+        print count_mono
+        print " mono"
+    cell_mono_skip:
+    jump cell_poly_skip equal count_poly 0
+        cell_poly:
+        print ",\n"
+        print count_poly
+        print " poly"
+    cell_poly_skip:
+    jump cell_mega_skip equal count_mega 0
+        cell_mega:
+        print ",\n"
+        print count_mega
+        print " mega"
+    cell_mega_skip:
+    jump cell_quad_skip equal count_quad 0
+        cell_quad:
+        print ",\n"
+        print count_quad
+        print " quad"
+    cell_quad_skip:
+    jump cell_oct_skip equal count_oct 0
+        cell_oct:
+        print ",\n"
+        print count_oct
+        print " oct"
+    cell_oct_skip:
+    jump cell_risso_skip equal count_risso 0
+        cell_risso:
+        print ",\n"
+        print count_risso
+        print " risso"
+    cell_risso_skip:
+    jump cell_minke_skip equal count_minke 0
+        cell_minke:
+        print ",\n"
+        print count_minke
+        print " minke"
+    cell_minke_skip:
+    jump cell_bryde_skip equal count_bryde 0
+        cell_bryde:
+        print ",\n"
+        print count_bryde
+        print " bryde"
+    cell_bryde_skip:
+    jump cell_sei_skip equal count_sei 0
+        cell_sei:
+        print ",\n"
+        print count_sei
+        print " sei"
+    cell_sei_skip:
+    jump cell_omura_skip equal count_omura 0
+        cell_omura:
+        print ",\n"
+        print count_omura
+        print " omura"
+    cell_omura_skip:
+    jump cell_retusa_skip equal count_retusa 0
+        cell_retusa:
+        print ",\n"
+        print count_retusa
+        print " retusa"
+    cell_retusa_skip:
+    jump cell_oxynoe_skip equal count_oxynoe 0
+        cell_oxynoe:
+        print ",\n"
+        print count_oxynoe
+        print " oxynoe"
+    cell_oxynoe_skip:
+    jump cell_cyerce_skip equal count_cyerce 0
+        cell_cyerce:
+        print ",\n"
+        print count_cyerce
+        print " cyerce"
+    cell_cyerce_skip:
+    jump cell_aegires_skip equal count_aegires 0
+        cell_aegires:
+        print ",\n"
+        print count_aegires
+        print " aegires"
+    cell_aegires_skip:
+    jump cell_navanax_skip equal count_navanax 0
+        cell_navanax:
+        print ",\n"
+        print count_navanax
+        print " navanax"
+    cell_navanax_skip:
+    jump cell_alpha_skip equal count_alpha 0
+        cell_alpha:
+        print ",\n"
+        print count_alpha
+        print " alpha"
+    cell_alpha_skip:
+    jump cell_beta_skip equal count_beta 0
+        cell_beta:
+        print ",\n"
+        print count_beta
+        print " beta"
+    cell_beta_skip:
+    jump cell_gamma_skip equal count_gamma 0
+        cell_gamma:
+        print ",\n"
+        print count_gamma
+        print " gamma"
+    cell_gamma_skip:
+cell_end:
+printflush message1
+
+
+# Generated by py script
+
+    ubind @dagger
+    jump d_dagger_end equal @unit null
+    set anchor @unit
+    d_dagger_loop:
+        sensor unitDead anchor @dead
+        jump d_dagger_end equal unitDead 1
+        ubind @dagger
+        sensor unitFlag @unit @flag
+        jump d_dagger_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_dagger_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_dagger count_dagger 1
+    jump d_dagger_loop notEqual @unit anchor
+    d_dagger_end:
+    ubind @mace
+    jump d_mace_end equal @unit null
+    set anchor @unit
+    d_mace_loop:
+        sensor unitDead anchor @dead
+        jump d_mace_end equal unitDead 1
+        ubind @mace
+        sensor unitFlag @unit @flag
+        jump d_mace_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_mace_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_mace count_mace 1
+    jump d_mace_loop notEqual @unit anchor
+    d_mace_end:
+    ubind @fortress
+    jump d_fortress_end equal @unit null
+    set anchor @unit
+    d_fortress_loop:
+        sensor unitDead anchor @dead
+        jump d_fortress_end equal unitDead 1
+        ubind @fortress
+        sensor unitFlag @unit @flag
+        jump d_fortress_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_fortress_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_fortress count_fortress 1
+    jump d_fortress_loop notEqual @unit anchor
+    d_fortress_end:
+    ubind @scepter
+    jump d_scepter_end equal @unit null
+    set anchor @unit
+    d_scepter_loop:
+        sensor unitDead anchor @dead
+        jump d_scepter_end equal unitDead 1
+        ubind @scepter
+        sensor unitFlag @unit @flag
+        jump d_scepter_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_scepter_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_scepter count_scepter 1
+    jump d_scepter_loop notEqual @unit anchor
+    d_scepter_end:
+    ubind @reign
+    jump d_reign_end equal @unit null
+    set anchor @unit
+    d_reign_loop:
+        sensor unitDead anchor @dead
+        jump d_reign_end equal unitDead 1
+        ubind @reign
+        sensor unitFlag @unit @flag
+        jump d_reign_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_reign_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_reign count_reign 1
+    jump d_reign_loop notEqual @unit anchor
+    d_reign_end:
+    ubind @nova
+    jump d_nova_end equal @unit null
+    set anchor @unit
+    d_nova_loop:
+        sensor unitDead anchor @dead
+        jump d_nova_end equal unitDead 1
+        ubind @nova
+        sensor unitFlag @unit @flag
+        jump d_nova_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_nova_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_nova count_nova 1
+    jump d_nova_loop notEqual @unit anchor
+    d_nova_end:
+    ubind @pulsar
+    jump d_pulsar_end equal @unit null
+    set anchor @unit
+    d_pulsar_loop:
+        sensor unitDead anchor @dead
+        jump d_pulsar_end equal unitDead 1
+        ubind @pulsar
+        sensor unitFlag @unit @flag
+        jump d_pulsar_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_pulsar_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_pulsar count_pulsar 1
+    jump d_pulsar_loop notEqual @unit anchor
+    d_pulsar_end:
+    ubind @quasar
+    jump d_quasar_end equal @unit null
+    set anchor @unit
+    d_quasar_loop:
+        sensor unitDead anchor @dead
+        jump d_quasar_end equal unitDead 1
+        ubind @quasar
+        sensor unitFlag @unit @flag
+        jump d_quasar_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_quasar_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_quasar count_quasar 1
+    jump d_quasar_loop notEqual @unit anchor
+    d_quasar_end:
+    ubind @vela
+    jump d_vela_end equal @unit null
+    set anchor @unit
+    d_vela_loop:
+        sensor unitDead anchor @dead
+        jump d_vela_end equal unitDead 1
+        ubind @vela
+        sensor unitFlag @unit @flag
+        jump d_vela_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_vela_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_vela count_vela 1
+    jump d_vela_loop notEqual @unit anchor
+    d_vela_end:
+    ubind @corvus
+    jump d_corvus_end equal @unit null
+    set anchor @unit
+    d_corvus_loop:
+        sensor unitDead anchor @dead
+        jump d_corvus_end equal unitDead 1
+        ubind @corvus
+        sensor unitFlag @unit @flag
+        jump d_corvus_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_corvus_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_corvus count_corvus 1
+    jump d_corvus_loop notEqual @unit anchor
+    d_corvus_end:
+    ubind @crawler
+    jump d_crawler_end equal @unit null
+    set anchor @unit
+    d_crawler_loop:
+        sensor unitDead anchor @dead
+        jump d_crawler_end equal unitDead 1
+        ubind @crawler
+        sensor unitFlag @unit @flag
+        jump d_crawler_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_crawler_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_crawler count_crawler 1
+    jump d_crawler_loop notEqual @unit anchor
+    d_crawler_end:
+    ubind @atrax
+    jump d_atrax_end equal @unit null
+    set anchor @unit
+    d_atrax_loop:
+        sensor unitDead anchor @dead
+        jump d_atrax_end equal unitDead 1
+        ubind @atrax
+        sensor unitFlag @unit @flag
+        jump d_atrax_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_atrax_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_atrax count_atrax 1
+    jump d_atrax_loop notEqual @unit anchor
+    d_atrax_end:
+    ubind @spiroct
+    jump d_spiroct_end equal @unit null
+    set anchor @unit
+    d_spiroct_loop:
+        sensor unitDead anchor @dead
+        jump d_spiroct_end equal unitDead 1
+        ubind @spiroct
+        sensor unitFlag @unit @flag
+        jump d_spiroct_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_spiroct_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_spiroct count_spiroct 1
+    jump d_spiroct_loop notEqual @unit anchor
+    d_spiroct_end:
+    ubind @arkyid
+    jump d_arkyid_end equal @unit null
+    set anchor @unit
+    d_arkyid_loop:
+        sensor unitDead anchor @dead
+        jump d_arkyid_end equal unitDead 1
+        ubind @arkyid
+        sensor unitFlag @unit @flag
+        jump d_arkyid_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_arkyid_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_arkyid count_arkyid 1
+    jump d_arkyid_loop notEqual @unit anchor
+    d_arkyid_end:
+    ubind @toxopid
+    jump d_toxopid_end equal @unit null
+    set anchor @unit
+    d_toxopid_loop:
+        sensor unitDead anchor @dead
+        jump d_toxopid_end equal unitDead 1
+        ubind @toxopid
+        sensor unitFlag @unit @flag
+        jump d_toxopid_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_toxopid_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_toxopid count_toxopid 1
+    jump d_toxopid_loop notEqual @unit anchor
+    d_toxopid_end:
+    ubind @flare
+    jump d_flare_end equal @unit null
+    set anchor @unit
+    d_flare_loop:
+        sensor unitDead anchor @dead
+        jump d_flare_end equal unitDead 1
+        ubind @flare
+        sensor unitFlag @unit @flag
+        jump d_flare_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_flare_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_flare count_flare 1
+    jump d_flare_loop notEqual @unit anchor
+    d_flare_end:
+    ubind @horizon
+    jump d_horizon_end equal @unit null
+    set anchor @unit
+    d_horizon_loop:
+        sensor unitDead anchor @dead
+        jump d_horizon_end equal unitDead 1
+        ubind @horizon
+        sensor unitFlag @unit @flag
+        jump d_horizon_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_horizon_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_horizon count_horizon 1
+    jump d_horizon_loop notEqual @unit anchor
+    d_horizon_end:
+    ubind @zenith
+    jump d_zenith_end equal @unit null
+    set anchor @unit
+    d_zenith_loop:
+        sensor unitDead anchor @dead
+        jump d_zenith_end equal unitDead 1
+        ubind @zenith
+        sensor unitFlag @unit @flag
+        jump d_zenith_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_zenith_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_zenith count_zenith 1
+    jump d_zenith_loop notEqual @unit anchor
+    d_zenith_end:
+    ubind @antumbra
+    jump d_antumbra_end equal @unit null
+    set anchor @unit
+    d_antumbra_loop:
+        sensor unitDead anchor @dead
+        jump d_antumbra_end equal unitDead 1
+        ubind @antumbra
+        sensor unitFlag @unit @flag
+        jump d_antumbra_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_antumbra_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_antumbra count_antumbra 1
+    jump d_antumbra_loop notEqual @unit anchor
+    d_antumbra_end:
+    ubind @eclipse
+    jump d_eclipse_end equal @unit null
+    set anchor @unit
+    d_eclipse_loop:
+        sensor unitDead anchor @dead
+        jump d_eclipse_end equal unitDead 1
+        ubind @eclipse
+        sensor unitFlag @unit @flag
+        jump d_eclipse_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_eclipse_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_eclipse count_eclipse 1
+    jump d_eclipse_loop notEqual @unit anchor
+    d_eclipse_end:
+    ubind @mono
+    jump d_mono_end equal @unit null
+    set anchor @unit
+    d_mono_loop:
+        sensor unitDead anchor @dead
+        jump d_mono_end equal unitDead 1
+        ubind @mono
+        sensor unitFlag @unit @flag
+        jump d_mono_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_mono_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_mono count_mono 1
+    jump d_mono_loop notEqual @unit anchor
+    d_mono_end:
+    ubind @poly
+    jump d_poly_end equal @unit null
+    set anchor @unit
+    d_poly_loop:
+        sensor unitDead anchor @dead
+        jump d_poly_end equal unitDead 1
+        ubind @poly
+        sensor unitFlag @unit @flag
+        jump d_poly_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_poly_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_poly count_poly 1
+    jump d_poly_loop notEqual @unit anchor
+    d_poly_end:
+    ubind @mega
+    jump d_mega_end equal @unit null
+    set anchor @unit
+    d_mega_loop:
+        sensor unitDead anchor @dead
+        jump d_mega_end equal unitDead 1
+        ubind @mega
+        sensor unitFlag @unit @flag
+        jump d_mega_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_mega_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_mega count_mega 1
+    jump d_mega_loop notEqual @unit anchor
+    d_mega_end:
+    ubind @quad
+    jump d_quad_end equal @unit null
+    set anchor @unit
+    d_quad_loop:
+        sensor unitDead anchor @dead
+        jump d_quad_end equal unitDead 1
+        ubind @quad
+        sensor unitFlag @unit @flag
+        jump d_quad_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_quad_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_quad count_quad 1
+    jump d_quad_loop notEqual @unit anchor
+    d_quad_end:
+    ubind @oct
+    jump d_oct_end equal @unit null
+    set anchor @unit
+    d_oct_loop:
+        sensor unitDead anchor @dead
+        jump d_oct_end equal unitDead 1
+        ubind @oct
+        sensor unitFlag @unit @flag
+        jump d_oct_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_oct_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_oct count_oct 1
+    jump d_oct_loop notEqual @unit anchor
+    d_oct_end:
+    ubind @risso
+    jump d_risso_end equal @unit null
+    set anchor @unit
+    d_risso_loop:
+        sensor unitDead anchor @dead
+        jump d_risso_end equal unitDead 1
+        ubind @risso
+        sensor unitFlag @unit @flag
+        jump d_risso_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_risso_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_risso count_risso 1
+    jump d_risso_loop notEqual @unit anchor
+    d_risso_end:
+    ubind @minke
+    jump d_minke_end equal @unit null
+    set anchor @unit
+    d_minke_loop:
+        sensor unitDead anchor @dead
+        jump d_minke_end equal unitDead 1
+        ubind @minke
+        sensor unitFlag @unit @flag
+        jump d_minke_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_minke_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_minke count_minke 1
+    jump d_minke_loop notEqual @unit anchor
+    d_minke_end:
+    ubind @bryde
+    jump d_bryde_end equal @unit null
+    set anchor @unit
+    d_bryde_loop:
+        sensor unitDead anchor @dead
+        jump d_bryde_end equal unitDead 1
+        ubind @bryde
+        sensor unitFlag @unit @flag
+        jump d_bryde_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_bryde_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_bryde count_bryde 1
+    jump d_bryde_loop notEqual @unit anchor
+    d_bryde_end:
+    ubind @sei
+    jump d_sei_end equal @unit null
+    set anchor @unit
+    d_sei_loop:
+        sensor unitDead anchor @dead
+        jump d_sei_end equal unitDead 1
+        ubind @sei
+        sensor unitFlag @unit @flag
+        jump d_sei_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_sei_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_sei count_sei 1
+    jump d_sei_loop notEqual @unit anchor
+    d_sei_end:
+    ubind @omura
+    jump d_omura_end equal @unit null
+    set anchor @unit
+    d_omura_loop:
+        sensor unitDead anchor @dead
+        jump d_omura_end equal unitDead 1
+        ubind @omura
+        sensor unitFlag @unit @flag
+        jump d_omura_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_omura_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_omura count_omura 1
+    jump d_omura_loop notEqual @unit anchor
+    d_omura_end:
+    ubind @retusa
+    jump d_retusa_end equal @unit null
+    set anchor @unit
+    d_retusa_loop:
+        sensor unitDead anchor @dead
+        jump d_retusa_end equal unitDead 1
+        ubind @retusa
+        sensor unitFlag @unit @flag
+        jump d_retusa_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_retusa_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_retusa count_retusa 1
+    jump d_retusa_loop notEqual @unit anchor
+    d_retusa_end:
+    ubind @oxynoe
+    jump d_oxynoe_end equal @unit null
+    set anchor @unit
+    d_oxynoe_loop:
+        sensor unitDead anchor @dead
+        jump d_oxynoe_end equal unitDead 1
+        ubind @oxynoe
+        sensor unitFlag @unit @flag
+        jump d_oxynoe_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_oxynoe_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_oxynoe count_oxynoe 1
+    jump d_oxynoe_loop notEqual @unit anchor
+    d_oxynoe_end:
+    ubind @cyerce
+    jump d_cyerce_end equal @unit null
+    set anchor @unit
+    d_cyerce_loop:
+        sensor unitDead anchor @dead
+        jump d_cyerce_end equal unitDead 1
+        ubind @cyerce
+        sensor unitFlag @unit @flag
+        jump d_cyerce_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_cyerce_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_cyerce count_cyerce 1
+    jump d_cyerce_loop notEqual @unit anchor
+    d_cyerce_end:
+    ubind @aegires
+    jump d_aegires_end equal @unit null
+    set anchor @unit
+    d_aegires_loop:
+        sensor unitDead anchor @dead
+        jump d_aegires_end equal unitDead 1
+        ubind @aegires
+        sensor unitFlag @unit @flag
+        jump d_aegires_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_aegires_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_aegires count_aegires 1
+    jump d_aegires_loop notEqual @unit anchor
+    d_aegires_end:
+    ubind @navanax
+    jump d_navanax_end equal @unit null
+    set anchor @unit
+    d_navanax_loop:
+        sensor unitDead anchor @dead
+        jump d_navanax_end equal unitDead 1
+        ubind @navanax
+        sensor unitFlag @unit @flag
+        jump d_navanax_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_navanax_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_navanax count_navanax 1
+    jump d_navanax_loop notEqual @unit anchor
+    d_navanax_end:
+    ubind @alpha
+    jump d_alpha_end equal @unit null
+    set anchor @unit
+    d_alpha_loop:
+        sensor unitDead anchor @dead
+        jump d_alpha_end equal unitDead 1
+        ubind @alpha
+        sensor unitFlag @unit @flag
+        jump d_alpha_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_alpha_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_alpha count_alpha 1
+    jump d_alpha_loop notEqual @unit anchor
+    d_alpha_end:
+    ubind @beta
+    jump d_beta_end equal @unit null
+    set anchor @unit
+    d_beta_loop:
+        sensor unitDead anchor @dead
+        jump d_beta_end equal unitDead 1
+        ubind @beta
+        sensor unitFlag @unit @flag
+        jump d_beta_end equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump d_beta_end equal unitCtrl 1
+            ucontrol flag 0
+            op add count_beta count_beta 1
+    jump d_beta_loop notEqual @unit anchor
+    d_beta_end:
+    ubind @gamma
+    jump 0 equal @unit null
+    set anchor @unit
+    d_gamma_loop:
+        sensor unitDead anchor @dead
+        jump 0 equal unitDead 1
+        ubind @gamma
+        sensor unitFlag @unit @flag
+        jump 0 equal unitFlag 0
+        sensor unitCtrl @unit @controlled
+        jump 0 equal unitCtrl 1
+            ucontrol flag 0
+            op add count_gamma count_gamma 1
+    jump d_gamma_loop notEqual @unit anchor
