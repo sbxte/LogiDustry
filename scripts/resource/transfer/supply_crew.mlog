@@ -1,7 +1,7 @@
 # --------------------- Information ---------------------
 
 # print "Experimental Dev Version! DO NOT USE!!"
-print "Supply Crew v2.6.2 by SBytes"
+print "Supply Crew v2.6.3 by SBytes"
 print "> The micro item retriever"
 print "#DethroneAttem83"
 print "------------------------------------------------------------------------------------"
@@ -297,8 +297,8 @@ ctrlLoop:
     jump bind equal unitDead 1
     sensor unitFlag @unit @flag
     jump bind notEqual unitFlag thisFlag
-    sensor unitCtrl @unit @controlled
-    jump bind greaterThanEq unitCtrl 2
+    sensor unitCtrlr @unit @controller
+    jump bind notEqual unitCtrlr @this
     jump bind_end equal unwantedItems 0
         jump bind_clearItems always 0
 
@@ -422,8 +422,8 @@ ctrlLoop:
                 jump ctrl_end equal unitDead 1
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
-                sensor unitCtrl @unit @controlled
-                jump ctrl_take_itemTake lessThanEq unitCtrl 1
+                sensor unitCtrlr @unit @controller
+                jump ctrl_take_itemTake lessThanEq unitCtrlr 1
                 jump ctrl_end always 0
 
             # # Immediately send back to save time
@@ -457,8 +457,8 @@ ctrlLoop:
                 jump ctrl_end equal unitDead 1
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
-                sensor unitCtrl @unit @controlled
-                jump ctrl_drop_itemDrop lessThanEq unitCtrl 1
+                sensor unitCtrlr @unit @controller
+                jump ctrl_drop_itemDrop lessThanEq unitCtrlr 1
                 jump ctrl_end always 0
 
             # Immediately send back to save time
@@ -499,8 +499,8 @@ ctrlLoop:
                 jump ctrl_end equal unitDead 1
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
-                sensor unitCtrl @unit @controlled
-                jump ctrl_Rtake_itemTake lessThanEq unitCtrl 1
+                sensor unitCtrlr @unit @controller
+                jump ctrl_Rtake_itemTake lessThanEq unitCtrlr 1
                 jump ctrl_end always 0
 
             # Immediately send back to save time
@@ -535,8 +535,8 @@ ctrlLoop:
                 jump ctrl_end equal unitDead 1
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
-                sensor unitCtrl @unit @controlled
-                jump ctrl_Rdrop_itemDrop lessThanEq unitCtrl 1
+                sensor unitCtrlr @unit @controller
+                jump ctrl_Rdrop_itemDrop lessThanEq unitCtrlr 1
                 jump ctrl_end always 0
 
         ctrl_Rdrop_notWithin:
@@ -688,12 +688,6 @@ jump start always 0
 
 # print "Supply Crew vDev by SBytes"
 # print "DO NOT USE!"
-print "Supply Crew v2.6.2 by SBytes"
+print "Supply Crew v2.6.3 by SBytes"
 print "Changelog:"
-# print "- Fixed units getting stuck when they cant deposit items."
-# print "- Yet another speed optimization."
-# print "- Fixed units not being controlled until maxInactiveTime when no needed items."
-# print "- Now base approach distance on core & destination size."
-# print "- Optimized unbind with reversed order."
-# print "Thanks to Commander#2919 for helping me bug proof this."
-print "- Fixed broken cache skip on core size calc."
+print "- Use @controller for regular checks and @controlled for binding."
