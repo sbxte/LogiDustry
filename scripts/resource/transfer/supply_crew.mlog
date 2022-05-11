@@ -423,7 +423,7 @@ ctrlLoop:
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
                 sensor unitCtrlr @unit @controller
-                jump ctrl_take_itemTake lessThanEq unitCtrlr 1
+                jump ctrl_take_itemTake equal unitCtrlr @this
                 jump ctrl_end always 0
 
             # # Immediately send back to save time
@@ -458,7 +458,7 @@ ctrlLoop:
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
                 sensor unitCtrlr @unit @controller
-                jump ctrl_drop_itemDrop lessThanEq unitCtrlr 1
+                jump ctrl_drop_itemDrop equal unitCtrlr @this
                 jump ctrl_end always 0
 
             # Immediately send back to save time
@@ -500,7 +500,7 @@ ctrlLoop:
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
                 sensor unitCtrlr @unit @controller
-                jump ctrl_Rtake_itemTake lessThanEq unitCtrlr 1
+                jump ctrl_Rtake_itemTake equal unitCtrlr @this
                 jump ctrl_end always 0
 
             # Immediately send back to save time
@@ -536,7 +536,7 @@ ctrlLoop:
                 sensor unitFlag @unit @flag
                 jump ctrl_end notEqual unitFlag thisFlag
                 sensor unitCtrlr @unit @controller
-                jump ctrl_Rdrop_itemDrop lessThanEq unitCtrlr 1
+                jump ctrl_Rdrop_itemDrop equal unitCtrlr @this
                 jump ctrl_end always 0
 
         ctrl_Rdrop_notWithin:
