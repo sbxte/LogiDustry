@@ -1,0 +1,1387 @@
+# Inspired by Highfire's ODD v6
+# flare 22.5, poly 19.5, mega 18.8
+
+# Note to self: Make a transpiler, this is killing me.
+
+## Some description in prints
+print "OverArch v0.3.7 by SBytes"
+print "heavily inspired by Ultimate Dome Loader (thanks highfire1 :D)"
+
+### Setup
+setup:
+set printCycleMax 16
+op sub printCycle printCycleMax 1 # delayed force print
+
+# Flag
+op mul thisFlag @thisx @mapw
+op add thisFlag thisFlag @thisy
+
+# default core approach distance
+set coreAppr 7
+
+# double units
+# unit 1 bind jump
+set U1_bind_jump 326
+set U21_bind_jump 625
+set U22_bind_jump 745
+# shift -3 and
+
+
+
+
+
+### Refresh target blocks
+refreshBlocks:
+set domeDead 1 # assume it is dead
+refreshBlocks_loop:
+    getlink linkedBlock linkIterator
+    sensor linkedBlockType linkedBlock @type
+
+    jump refreshBlocks_notDome notEqual linkedBlockType @overdrive-dome
+        set domeDead 0
+        set domeBlock linkedBlock
+        sensor domeX domeBlock @x
+        sensor domeY domeBlock @y
+        jump refreshBlocks_next always 0
+    refreshBlocks_notDome:
+
+    jump refreshBlocks_notMessage notEqual linkedBlockType @message
+        set messageBlock linkedBlock
+    refreshBlocks_notMessage:
+
+    refreshBlocks_next:
+    op add linkIterator linkIterator 1
+jump refreshBlocks_loop lessThan linkIterator @links
+set linkIterator 0
+
+
+## clear out unwanted description text
+
+## dome stuf
+jump noDome equal domeDead 1
+
+sensor powerIn domeBlock @powerNetIn
+sensor powerOut domeBlock @powerNetOut
+jump setupNoPower lessThanEq powerIn powerOut
+
+
+jump S1_end equal domeBlock cachedDomeBlock
+
+
+### Stage 1
+# bind one unit
+# and then calculate distance
+
+
+# Workflow
+
+S1:
+    set cachedDomeBlock domeBlock
+    printflush messageBlock
+    print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Calculating distance..."
+    printflush messageBlock
+
+
+    # Unit 1 validicity checks
+    ubind unitRef1
+    sensor unitDead @unit @dead
+    jump S1_bind equal unitDead true
+    sensor unitCtrlr @unit @controller
+    jump S1_bind notEqual unitCtrlr @this
+    sensor unitFlag @unit @flag
+    jump S1_bind_end equal unitFlag thisFlag
+
+    ## Bind a unit
+    S1_bind:
+        print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Calculating distance. Binding new unit..."
+        printflush messageBlock
+
+        S1_bind_flare:
+        set unitType1 @flare
+        set unitRate1 281.25 # 22.5 * 10 / 2 / 0.4
+
+        ubind @flare
+        jump S1_bind_poly equal @unit null
+        set bindAnchor @unit
+        sensor unitFlag @unit @flag
+        jump S1_bind_flare_continue equal unitFlag thisFlag
+        jump S1_bind_flare_loop notEqual unitFlag 0
+        sensor unitCtrld @unit @controlled
+        jump S1_bind_flare_continue lessThan unitCtrld 2 # player / formation ctrl
+            S1_bind_flare_loop:
+                ubind @flare
+                jump S1_bind_poly equal @unit bindAnchor
+                jump S1_bind_poly equal @unit null
+                sensor anchorDead bindAnchor @dead
+                jump S1_bind_poly equal anchorDead 1
+                sensor unitFlag @unit @flag
+                jump S1_bind_flare_continue equal unitFlag thisFlag
+                jump S1_bind_flare_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump S1_bind_flare_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+            S1_bind_flare_continue:
+            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a flare.\nResuming calculation..."
+            printflush messageBlock
+            jump S1_bind_continue always 0
+
+        S1_bind_poly:
+        set unitType1 @poly
+        set unitRate1 243.75 # 19.5 * 10 / 2 / 0.4
+
+        ubind @poly
+        jump S1_bind_mega equal @unit null
+        set bindAnchor @unit
+        sensor unitFlag @unit @flag
+        jump S1_bind_poly_continue equal unitFlag thisFlag
+        jump S1_bind_poly_loop notEqual unitFlag 0
+        sensor unitCtrld @unit @controlled
+        jump S1_bind_poly_continue lessThan unitCtrld 2 # player / formation ctrl
+            S1_bind_poly_loop:
+                ubind @poly
+                jump S1_bind_mega equal @unit bindAnchor
+                jump S1_bind_mega equal @unit null
+                sensor anchorDead bindAnchor @dead
+                jump S1_bind_mega equal anchorDead 1
+                sensor unitFlag @unit @flag
+                jump S1_bind_poly_continue equal unitFlag thisFlag
+                jump S1_bind_poly_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump S1_bind_poly_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+            S1_bind_poly_continue:
+            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a poly.\nResuming calculation..."
+            printflush messageBlock
+            jump S1_bind_continue always 0
+
+        S1_bind_mega:
+        set unitType1 @mega
+        set unitRate1 235 # 18.8 * 10 / 2 / 0.4
+
+        ubind @mega
+        jump S1_bind_mono equal @unit null
+        set bindAnchor @unit
+        sensor unitFlag @unit @flag
+        jump S1_bind_mega_continue equal unitFlag thisFlag
+        jump S1_bind_mega_loop notEqual unitFlag 0
+        sensor unitCtrld @unit @controlled
+        jump S1_bind_mega_continue lessThan unitCtrld 2 # player / formation ctrl
+            S1_bind_mega_loop:
+                ubind @mega
+                jump S1_bind_mono equal @unit bindAnchor
+                jump S1_bind_mono equal @unit null
+                sensor anchorDead bindAnchor @dead
+                jump S1_bind_mono equal anchorDead 1
+                sensor unitFlag @unit @flag
+                jump S1_bind_mega_continue equal unitFlag thisFlag
+                jump S1_bind_mega_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump S1_bind_mega_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+            S1_bind_mega_continue:
+            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a mega.\nResuming calculation..."
+            printflush messageBlock
+            jump S1_bind_continue always 0
+
+        S1_bind_mono:
+        set unitType1 @mono
+        set unitRate1 140.625 # 11.25 * 10 / 2 / 0.4
+
+        ubind @mono
+        jump S1_bind_flare equal @unit null
+        set bindAnchor @unit
+        sensor unitFlag @unit @flag
+        jump S1_bind_mono_continue equal unitFlag thisFlag
+        jump S1_bind_mono_loop notEqual unitFlag 0
+        sensor unitCtrld @unit @controlled
+        jump S1_bind_mono_continue lessThan unitCtrld 2 # player / formation ctrl
+            S1_bind_mono_loop:
+                ubind @mono
+                jump S1_bind_flare equal @unit bindAnchor
+                jump S1_bind_flare equal @unit null
+                sensor anchorDead bindAnchor @dead
+                jump S1_bind_flare equal anchorDead 1
+                sensor unitFlag @unit @flag
+                jump S1_bind_mono_continue equal unitFlag thisFlag
+                jump S1_bind_mono_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump S1_bind_mono_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+            S1_bind_mono_continue:
+            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a mono.\nResuming calculation..."
+            printflush messageBlock
+            jump S1_bind_continue always 0
+
+    S1_bind_continue:
+    ucontrol flag thisFlag
+    set unitRef1 @unit
+    S1_bind_end:
+
+
+    # check what the unit has
+    sensor unitItem @unit @firstItem
+    jump S1_sili_drop equal unitItem @silicon
+    jump S1_phase_drop equal unitItem @phase-fabric
+
+    # Otherwise, Check which resource is less
+    sensor domeSili domeBlock @silicon
+    sensor domePhase domeBlock @phase-fabric
+    jump S1_phase lessThan domePhase domeSili
+
+
+    # Da controls
+    S1_sili:
+        sensor unitItem @unit @firstItem
+        jump S1_sili_drop equal unitItem @silicon
+
+        S1_sili_take:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit validicity checks
+                sensor unitDead @unit @dead
+                jump S1_bind equal unitDead true
+                sensor unitFlag @unit @flag
+                jump S1_bind notEqual unitFlag thisFlag
+                sensor unitCtrlr @unit @controller
+                jump S1_bind notEqual unitCtrlr @this
+
+            # movement
+            ulocate building core 0 0 coreX coreY 0 coreBlock
+            ucontrol approach coreX coreY 7
+            ucontrol within coreX coreY 7 within
+            jump S1_sili_take equal within 0
+
+            # take
+            ucontrol itemDrop coreBlock 999
+            sensor domeSili domeBlock @silicon
+            op sub itemsRequired 10 domeSili
+            ucontrol itemTake coreBlock @silicon itemsRequired
+
+            sensor unitItem @unit @firstItem
+            jump S1_sili_take notEqual unitItem @silicon
+
+        S1_sili_drop:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit validicity checks
+                sensor unitDead @unit @dead
+                jump S1_bind equal unitDead true
+                sensor unitFlag @unit @flag
+                jump S1_bind notEqual unitFlag thisFlag
+                sensor unitCtrlr @unit @controller
+                jump S1_bind notEqual unitCtrlr @this
+
+            # movement
+            ulocate building core 0 0 coreX coreY 0 coreBlock
+            ucontrol move domeX domeY
+            ucontrol within domeX domeY 3 within
+            jump S1_sili_drop equal within 0
+
+            # drop
+            ucontrol itemDrop domeBlock 999
+            sensor domeSili domeBlock @silicon
+            jump S1_unit_end equal domeSili 10
+            sensor unitItem @unit @firstItem
+            jump S1_sili_drop notEqual unitItem null
+            jump S1_unit_end always 0
+
+
+    # actual unit start
+    S1_phase:
+        sensor unitItem @unit @firstItem
+        jump S1_phase_drop equal unitItem @phase-fabric
+
+        S1_phase_take:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit validicity checks
+                sensor unitDead @unit @dead
+                jump S1_bind equal unitDead true
+                sensor unitFlag @unit @flag
+                jump S1_bind notEqual unitFlag thisFlag
+                sensor unitCtrlr @unit @controller
+                jump S1_bind notEqual unitCtrlr @this
+
+            # movement
+            ulocate building core 0 0 coreX coreY 0 coreBlock
+            ucontrol approach coreX coreY 7
+            ucontrol within coreX coreY 7 within
+            jump S1_phase_take equal within 0
+
+            # drop
+            ucontrol itemDrop coreBlock 999
+            sensor domePhase domeBlock @phase-fabric
+            op sub itemsRequired 10 domePhase
+            ucontrol itemTake coreBlock @phase-fabric itemsRequired
+
+            sensor unitItem @unit @firstItem
+            jump S1_phase_take notEqual unitItem @phase-fabric
+
+        S1_phase_drop:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit validicity checks
+                sensor unitDead @unit @dead
+                jump S1_bind equal unitDead true
+                sensor unitFlag @unit @flag
+                jump S1_bind notEqual unitFlag thisFlag
+                sensor unitCtrlr @unit @controller
+                jump S1_bind notEqual unitCtrlr @this
+
+            # movement
+            ulocate building core 0 0 coreX coreY 0 coreBlock
+            ucontrol move domeX domeY
+            ucontrol within domeX domeY 3 within
+            jump S1_phase_drop equal within 0
+
+            ucontrol itemDrop domeBlock 999
+            sensor domePhase domeBlock @phase-fabric
+            jump S1_unit_end equal domePhase 10
+            sensor unitItem @unit @firstItem
+            jump S1_phase_drop notEqual unitItem null
+
+
+    S1_unit_end:
+
+
+    S1_dist:
+        # distance calculation
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        op sub distX domeX coreX
+        op sub distY domeY coreY
+        op len distance distX distY
+        op div unitsRequired distance unitRate1
+        op add unitsRequired unitsRequired 0.15 # tiny offset
+        op ceil unitsRequired unitsRequired 0
+
+        # some calculations for single unit
+        op div distDomeRate distance 5 # * 0.3.1; which is just / 5
+
+
+        # print
+        print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Distance calculated : "
+        op idiv distanceF distance 1e-2
+        op div distanceF distanceF 1e2
+        print distanceF
+        printflush messageBlock
+    S1_dist_end:
+    # note: unused jump label... hmm
+
+S1_end:
+
+
+### Stage 2
+# single or double unit
+
+jump U2 greaterThanEq unitsRequired 2
+
+# fix the unit rate
+jump U1_rate_poly notEqual unitType1 @flare
+    op div unitRate1 distDomeRate 22.5
+    jump U1_rate_end always 0
+U1_rate_poly:
+jump U1_rate_mega notEqual unitType1 @poly
+    op div unitRate1 distDomeRate 19.5
+    jump U1_rate_end always 0
+U1_rate_mega:
+jump U1_rate_mono notEqual unitType1 @poly
+    op div unitRate1 distDomeRate 18.8
+    jump U1_rate_end always 0
+U1_rate_mono:
+    op div unitRate1 distDomeRate 11.25
+U1_rate_end:
+
+### Single unit
+U1:
+    sensor domeDead domeBlock @dead
+    jump refreshBlocks equal domeDead 1
+
+
+    # Print
+    op add printCycle printCycle 1
+    jump U1_print_end lessThan printCycle printCycleMax
+        U1_print:
+        set printCycle 0
+
+        print "[sky]OverArch v0.3.7 [green]By SBytes\n[violet]Inspired by Ultimate Dome Loader"
+
+        # dome no power
+        sensor powerIn domeBlock @powerNetIn
+        sensor powerOut domeBlock @powerNetOut
+        op sub powerNet powerIn powerOut
+        jump U1_print_domePower_end greaterThan powerNet 1e3
+            jump U1_print_domePower_zero equal powerNet 0
+                print "\n\n[#ff]⚠ Warning: Low power!"
+                printflush messageBlock
+                jump U1_print_end always 0
+            U1_print_domePower_zero:
+                print "\n\n[#ff] Error: No power!"
+                printflush messageBlock
+                jump U1_print_end always 0
+        U1_print_domePower_end:
+
+
+        # distance from core
+        print "\n\n[teal]Dome distance from core: "
+        print distanceF
+        print "\n"
+        U1_print_coreDist_end:
+
+        # dome resources
+        sensor coreSili coreBlock @silicon
+        jump U1_print_coreRes_phase greaterThanEq coreSili 300
+            print "[#ff]⚠ Warning: Low [white][]\n"
+        U1_print_coreRes_phase:
+        sensor corePhase coreBlock @phase-fabric
+        jump U1_print_coreRes_end greaterThanEq corePhase 300
+            print "[#ff]⚠ Warning: Low [white][]\n"
+        U1_print_coreRes_end:
+
+
+
+        # unit status
+        print "[teal]"
+        jump U1_print_unit_binding equal bindingUnit1 1
+            print unitType1
+            print " is at "
+            sensor unitX unitRef1 @x
+            sensor unitY unitRef1 @y
+            op floor unitX unitX 0
+            op floor unitY unitY 0
+            print unitX
+            print ", "
+            print unitY
+            set prevUnitType1 unitType1
+        jump U1_print_unit_end always 0
+
+        U1_print_unit_binding:
+
+            # Controlled by what, and where.
+            print prevUnitType1
+
+            sensor unitDead unitRef1 @dead
+            jump U1_print_unit_binding_notDead equal unitDead true
+                print " died\n> Binding a new "
+                jump U1_print_unit_binding_continue always 0
+            U1_print_unit_binding_notDead:
+
+            sensor unitCtrld unitRef1 @controlled
+            jump U1_print_unit_binding_notCtrl lessThan unitCtrld 2
+                print " is controlled by player "
+                sensor unitCtrlr unitRef1 @controller
+                sensor unitCtrldName unitCtrlr @name
+                print unitCtrldName
+                print "\n[teal]> Binding a new "
+                jump U1_print_unit_binding_continue always 0
+            U1_print_unit_binding_notCtrl:
+
+            sensor unitFlag unitRef1 @flag
+            jump U1_print_unit_binding_notFlag equal unitFlag thisFlag
+                print "'s flag was changed"
+                sensor unitCtrlr unitRef1 @controller
+                jump U1_print_unit_binding_notFlag_continue notEqual unitCtrld 1
+                    print " by processor at "
+                    sensor unitCtrldX unitCtrlr @x
+                    sensor unitCtrldY unitCtrlr @y
+                    op floor unitCtrldX unitCtrldX 0
+                    op floor unitCtrldY unitCtrldY 0
+                    print unitCtrldX
+                    print ", "
+                    print unitCtrldY
+                U1_print_unit_binding_notFlag_continue:
+                print "\n> Binding a new "
+            U1_print_unit_binding_notFlag:
+
+            U1_print_unit_binding_continue:
+            print unitType1
+        U1_print_unit_end:
+
+
+        # flush
+        printflush messageBlock
+
+
+        # check if message block poofed
+        sensor messageDead messageBlock @dead
+        jump refreshBlocks equal messageDead 1
+    U1_print_end:
+
+
+
+
+    # Unit ctrl
+
+        # Optimal core approach distance
+        jump U1_coreAppr_end equal coreBlock cachedCoreBuilding
+            set cachedCoreBuilding coreBlock
+            sensor coreSize coreBlock @size
+            op mul coreAppr coreSize 0.375
+            op add coreAppr coreAppr 5.625
+        U1_coreAppr_end:
+
+    # Unit 1 validicity checks
+    ubind unitRef1
+    sensor unitDead @unit @dead
+    jump U1_bind equal unitDead true
+    sensor unitCtrlr @unit @controller
+    jump U1_bind notEqual unitCtrlr @this
+    sensor unitFlag @unit @flag
+    jump U1_bind_end equal unitFlag thisFlag
+        # Bind ----
+        U1_bind:
+            set bindingUnit1 1
+            set printCycle printCycleMax
+            set @counter U1_bind_jump
+
+            U1_bind_flare:
+            set U1_bind_jump 346
+            set unitType1 @flare
+            op div unitRate1 distDomeRate 22.5
+
+            ubind @flare
+            jump U1_bind_poly equal @unit null
+            set bindAnchor @unit
+            sensor unitFlag @unit @flag
+            jump U1_bind_flare_loop notEqual unitFlag 0
+            sensor unitCtrld @unit @controlled
+            jump U1_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                U1_bind_flare_loop:
+                    ubind @flare
+                    jump U1_bind_poly equal @unit bindAnchor
+                    jump U1_bind_poly equal @unit null
+                    sensor anchorDead bindAnchor @dead
+                    jump U1_bind_poly equal anchorDead 1
+                    sensor unitFlag @unit @flag
+                    jump U1_bind_flare_loop notEqual unitFlag 0
+                    sensor unitCtrld @unit @controlled
+                    jump U1_bind_flare_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                jump U1_bind_continue always 0
+
+            U1_bind_poly:
+            set U1_bind_jump 366
+            set unitType1 @poly
+            op div unitRate1 distDomeRate 19.5
+
+            ubind @poly
+            jump U1_bind_mega equal @unit null
+            set bindAnchor @unit
+            sensor unitFlag @unit @flag
+            jump U1_bind_poly_loop notEqual unitFlag 0
+            sensor unitCtrld @unit @controlled
+            jump U1_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                U1_bind_poly_loop:
+                    ubind @poly
+                    jump U1_bind_mega equal @unit bindAnchor
+                    jump U1_bind_mega equal @unit null
+                    sensor anchorDead bindAnchor @dead
+                    jump U1_bind_mega equal anchorDead 1
+                    sensor unitFlag @unit @flag
+                    jump U1_bind_poly_loop notEqual unitFlag 0
+                    sensor unitCtrld @unit @controlled
+                    jump U1_bind_poly_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                jump U1_bind_continue always 0
+
+            U1_bind_mega:
+            set U1_bind_jump 386
+            set unitType1 @mega
+            op div unitRate1 distDomeRate 18.8
+
+            ubind @mega
+            jump U1_bind_mono equal @unit null
+            set bindAnchor @unit
+            sensor unitFlag @unit @flag
+            jump U1_bind_mega_loop notEqual unitFlag 0
+            sensor unitCtrld @unit @controlled
+            jump U1_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                U1_bind_mega_loop:
+                    ubind @mega
+                    jump U1_bind_mono equal @unit bindAnchor
+                    jump U1_bind_mono equal @unit null
+                    sensor anchorDead bindAnchor @dead
+                    jump U1_bind_mono equal anchorDead 1
+                    sensor unitFlag @unit @flag
+                    jump U1_bind_mega_loop notEqual unitFlag 0
+                    sensor unitCtrld @unit @controlled
+                    jump U1_bind_mega_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                jump U1_bind_continue always 0
+
+            U1_bind_mono:
+            set U1_bind_jump 326
+            set unitType1 @mono
+            op div unitRate1 distDomeRate 11.25
+
+            ubind @mono
+            jump U1_bind_flare equal @unit null
+            set bindAnchor @unit
+            sensor unitFlag @unit @flag
+            jump U1_bind_mono_loop notEqual unitFlag 0
+            sensor unitCtrld @unit @controlled
+            jump U1_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                U1_bind_mono_loop:
+                    ubind @mono
+                    jump U1_bind_flare equal @unit bindAnchor
+                    jump U1_bind_flare equal @unit null
+                    sensor anchorDead bindAnchor @dead
+                    jump U1_bind_flare equal anchorDead 1
+                    sensor unitFlag @unit @flag
+                    jump U1_bind_mono_loop notEqual unitFlag 0
+                    sensor unitCtrld @unit @controlled
+                    jump U1_bind_mono_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+
+        U1_bind_continue:
+        set bindingUnit1 0
+        ucontrol stop
+        ucontrol flag thisFlag
+        set unitRef1 @unit
+        op ceil unitRate1 unitRate1 0
+        ucontrol itemDrop @air 999 # yeetus deletus
+
+    U1_bind_end:
+
+    # unit control
+    sensor domeSili domeBlock @silicon
+    sensor domePhase domeBlock @phase-fabric
+
+    jump U1_phase greaterThan domeSili domePhase
+    U1_sili:
+        sensor unitItem @unit @firstItem
+        jump U1_sili_drop equal unitItem @silicon
+
+        # take
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        U1_sili_take:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit 1 validicity checks
+                sensor unitDead @unit @dead
+                jump U1_bind equal unitDead true
+                sensor unitCtrlr @unit @controller
+                jump U1_bind notEqual unitCtrlr @this
+                sensor unitFlag @unit @flag
+                jump U1_bind notEqual unitFlag thisFlag
+
+            # movement weeee
+            ucontrol approach coreX coreY coreAppr
+            ucontrol within coreX coreY coreAppr within
+            jump U1 equal within 0
+
+            ucontrol itemDrop coreBlock 999
+
+            # just-in-time maths
+            sensor domeSili domeBlock @silicon
+            op sub itemsRequired 10 domeSili
+            op add itemsRequired itemsRequired unitRate1
+            op min itemsRequired 10 itemsRequired
+            ucontrol itemTake coreBlock @silicon itemsRequired
+
+            # send back
+            sensor unitItem @unit @firstItem
+            jump U1 notEqual unitItem @silicon
+            ucontrol approach domeX domeY 6.5
+
+        # drop
+        U1_sili_drop:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit 1 validicity checks
+                sensor unitDead @unit @dead
+                jump U1_bind equal unitDead true
+                sensor unitCtrlr @unit @controller
+                jump U1_bind notEqual unitCtrlr @this
+                sensor unitFlag @unit @flag
+                jump U1_bind notEqual unitFlag thisFlag
+
+            # movement
+            ucontrol approach domeX domeY 6.5
+            ucontrol within domeX domeY 7 within
+            jump U1 equal within 0
+
+            ucontrol itemDrop domeBlock 999
+            # send back
+            sensor unitItem @unit @firstItem
+            jump U1_sili_drop notEqual unitItem null
+
+            ucontrol approach coreX coreY coreAppr
+
+    jump U1 always 0
+
+    U1_phase:
+        sensor unitItem @unit @firstItem
+        jump U1_phase_drop equal unitItem @phase-fabric
+
+        # take
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        U1_phase_take:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit 1 validicity checks
+                sensor unitDead @unit @dead
+                jump U1_bind equal unitDead true
+                sensor unitCtrlr @unit @controller
+                jump U1_bind notEqual unitCtrlr @this
+                sensor unitFlag @unit @flag
+                jump U1_bind notEqual unitFlag thisFlag
+
+            # movements
+            ucontrol approach coreX coreY coreAppr
+            ucontrol within coreX coreY coreAppr within
+            jump U1 equal within 0
+
+            ucontrol itemDrop coreBlock 999
+
+            # just-in-time maths
+            sensor domePhase domeBlock @phase-fabric
+            op sub itemsRequired 10 domePhase
+            op add itemsRequired itemsRequired unitRate1
+            op min itemsRequired 10 itemsRequired
+            ucontrol itemTake coreBlock @phase-fabric itemsRequired
+
+            # send back
+            sensor unitItem @unit @firstItem
+            jump U1 notEqual unitItem @phase-fabric
+
+        # drop
+        U1_phase_drop:
+                # dome validicity
+                sensor domeDead domeBlock @dead
+                jump refreshBlocks equal domeDead 1
+                # Unit 1 validicity checks
+                sensor unitDead @unit @dead
+                jump U1_bind equal unitDead true
+                sensor unitCtrlr @unit @controller
+                jump U1_bind notEqual unitCtrlr @this
+                sensor unitFlag @unit @flag
+                jump U1_bind notEqual unitFlag thisFlag
+
+            # movement
+            ucontrol approach domeX domeY 6.5
+            ucontrol within domeX domeY 7 within
+            jump U1 equal within 0
+
+            ucontrol itemDrop domeBlock 999
+
+            # send back
+            sensor unitItem @unit @firstItem
+            jump U1_phase_drop notEqual unitItem null
+
+            ucontrol approach coreX coreY coreAppr
+
+jump U1 always 0
+
+
+### Double unit
+U2:
+    sensor domeDead domeBlock @dead
+    jump refreshBlocks equal domeDead 1
+
+
+    # Print
+    op add printCycle printCycle 1
+    jump U2_print_end lessThan printCycle printCycleMax
+        U2_print:
+        set printCycle 0
+
+        print "[sky]OverArch v0.3.7 [green]By SBytes\n[violet]Inspired by Ultimate Dome Loader"
+
+        # dome no power
+        sensor powerIn domeBlock @powerNetIn
+        sensor powerOut domeBlock @powerNetOut
+        op sub powerNet powerIn powerOut
+        jump U2_print_domePower_end greaterThan powerNet 1e3
+            jump U2_print_domePower_zero equal powerNet 0
+                print "\n\n[#ff]⚠ Warning: Low power!"
+                printflush messageBlock
+                jump U2_print_end always 0
+            U2_print_domePower_zero:
+                print "\n\n[#ff] Error: No power!"
+                printflush messageBlock
+                jump U2_print_end always 0
+        U2_print_domePower_end:
+
+
+        # distance from core
+        print "\n\n[teal]Dome distance from core: "
+        print distanceF
+        print "\n"
+
+        # unguaranteed uptime
+        op div U2_coreDist_dist distance 2
+        op div U2_coreDist_over U2_coreDist_dist unitRate1
+        jump U2_print_coreDist_over greaterThanEq U2_coreDist_over 1
+        op div U2_coreDist_over U2_coreDist_dist unitRate2
+        jump U2_print_coreDist_end lessThan U2_coreDist_over 1
+            U2_print_coreDist_over:
+            print "\n[#ff]⚠ Warning: Core too far; Unguaranteed uptime![teal]\n"
+        U2_print_coreDist_end:
+
+        # dome resources
+        sensor coreSili coreBlock @silicon
+        jump U2_print_coreRes_phase greaterThanEq coreSili 300
+            print "[#ff]⚠ Warning: Low [white][]\n"
+        U2_print_coreRes_phase:
+        sensor corePhase coreBlock @phase-fabric
+        jump U2_print_coreRes_end greaterThanEq corePhase 300
+            print "[#ff]⚠ Warning: Low [white][]\n"
+        U2_print_coreRes_end:
+
+
+
+        # unit status
+        jump U21_print_unit_binding equal bindingUnit1 1
+            print "(1) "
+            print unitType1
+            print " is at "
+            sensor unitX unitRef1 @x
+            sensor unitY unitRef1 @y
+            op floor unitX unitX 0
+            op floor unitY unitY 0
+            print unitX
+            print ", "
+            print unitY
+            set prevUnitType1 unitType1
+        jump U21_print_unit_end always 0
+
+        U21_print_unit_binding:
+
+            # Controlled by what, and where.
+            print prevUnitType1
+
+            sensor unitDead unitRef1 @dead
+            jump U21_print_unit_binding_notDead equal unitDead true
+                print " died\n> Binding a new "
+                jump U21_print_unit_binding_continue always 0
+            U21_print_unit_binding_notDead:
+
+            sensor unitCtrld unitRef1 @controlled
+            jump U21_print_unit_binding_notCtrl lessThan unitCtrld 2
+                print " is controlled by player "
+                sensor unitCtrlr unitRef1 @controller
+                sensor unitCtrldName unitCtrlr @name
+                print unitCtrldName
+                print "\n[teal]> Binding a new "
+                jump U21_print_unit_binding_continue always 0
+            U21_print_unit_binding_notCtrl:
+
+            sensor unitFlag unitRef1 @flag
+            jump U21_print_unit_binding_notFlag equal unitFlag thisFlag
+                print "'s flag was changed"
+                sensor unitCtrlr unitRef1 @controller
+                jump U21_print_unit_binding_notFlag_continue notEqual unitCtrld 1
+                    print " by processor at "
+                    sensor unitCtrldX unitCtrlr @x
+                    sensor unitCtrldY unitCtrlr @y
+                    op floor unitCtrldX unitCtrldX 0
+                    op floor unitCtrldY unitCtrldY 0
+                    print unitCtrldX
+                    print ", "
+                    print unitCtrldY
+                U21_print_unit_binding_notFlag_continue:
+                print "\n> Binding a new "
+            U21_print_unit_binding_notFlag:
+
+            U21_print_unit_binding_continue:
+            print unitType1
+        U21_print_unit_end:
+
+
+        print "\n(2) "
+        # unit status
+        jump U22_print_unit_binding equal bindingUnit2 1
+            print unitType2
+            print " is at "
+            sensor unitX unitRef2 @x
+            sensor unitY unitRef2 @y
+            op floor unitX unitX 0
+            op floor unitY unitY 0
+            print unitX
+            print ", "
+            print unitY
+            set prevUnitType2 unitType2
+        jump U22_print_unit_end always 0
+
+        U22_print_unit_binding:
+
+            # Controlled by what, and where.
+            print prevUnitType2
+
+            sensor unitDead unitRef2 @dead
+            jump U22_print_unit_binding_notDead equal unitDead true
+                print " died\n> Binding a new "
+                jump U22_print_unit_binding_continue always 0
+            U22_print_unit_binding_notDead:
+
+            sensor unitCtrld unitRef2 @controlled
+            jump U22_print_unit_binding_notCtrl lessThan unitCtrld 2
+                print " is controlled by player "
+                sensor unitCtrlr unitRef2 @controller
+                sensor unitCtrldName unitCtrlr @name
+                print unitCtrldName
+                print "\n[teal]> Binding a new "
+                jump U22_print_unit_binding_continue always 0
+            U22_print_unit_binding_notCtrl:
+
+            sensor unitFlag unitRef2 @flag
+            jump U22_print_unit_binding_notFlag equal unitFlag thisFlag
+                print "'s flag was changed"
+                sensor unitCtrlr unitRef2 @controller
+                jump U22_print_unit_binding_notFlag_continue notEqual unitCtrld 1
+                    print " by processor at "
+                    sensor unitCtrldX unitCtrlr @x
+                    sensor unitCtrldY unitCtrlr @y
+                    op floor unitCtrldX unitCtrldX 0
+                    op floor unitCtrldY unitCtrldY 0
+                    print unitCtrldX
+                    print ", "
+                    print unitCtrldY
+                U22_print_unit_binding_notFlag_continue:
+                print "\n> Binding a new "
+            U22_print_unit_binding_notFlag:
+
+            U22_print_unit_binding_continue:
+            print unitType2
+        U22_print_unit_end:
+
+
+        # flush
+        printflush messageBlock
+
+
+        # check if message block is ded
+        sensor messageDead messageBlock @dead
+        jump refreshBlocks equal messageDead 1
+    U2_print_end:
+
+    jump U22 equal U2_turn 1
+
+    # Unit 1
+    U21:
+    set U2_turn 1
+
+            # Optimal core approach distance
+            jump U21_coreAppr_end equal coreBlock cachedCoreBuilding
+                set cachedCoreBuilding coreBlock
+                sensor coreSize coreBlock @size
+                op mul coreAppr coreSize 0.375
+                op add coreAppr coreAppr 5.625
+            U21_coreAppr_end:
+
+        # Unit 1 validicity checks
+        ubind unitRef1
+        sensor unitDead @unit @dead
+        jump U21_bind equal unitDead true
+        sensor unitCtrlr @unit @controller
+        jump U21_bind notEqual unitCtrlr @this
+        sensor unitFlag @unit @flag
+        jump U21_bind_end equal unitFlag thisFlag
+            # Bind ----
+            U21_bind:
+                set printCycle printCycleMax
+                set bindingUnit1 1
+                set @counter U21_bind_jump
+
+                U21_bind_flare:
+                set U21_bind_jump 645
+                set unitType1 @flare
+                set unitRate1 281.25 # 22.5 * 10 / 2 / 0.4
+
+                ubind @flare
+                jump U22 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U21_bind_flare_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U21_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U21_bind_flare_loop:
+                        ubind @flare
+                        jump U22 equal @unit bindAnchor
+                        jump U22 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U22 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U21_bind_flare_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U21_bind_flare_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U21_bind_continue always 0
+
+                U21_bind_poly:
+                set U21_bind_jump 659
+                set unitType1 @poly
+                set unitRate1 243.75 # 19.5 * 10 / 2 / 0.4
+
+                ubind @poly
+                jump U22 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U21_bind_poly_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U21_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U21_bind_poly_loop:
+                        ubind @poly
+                        jump U22 equal @unit bindAnchor
+                        jump U22 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U22 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U21_bind_poly_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U21_bind_poly_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U21_bind_continue always 0
+
+                U21_bind_mega:
+                set U21_bind_jump 685
+                set unitType1 @mega
+                set unitRate1 235 # 18.8 * 10 / 2 / 0.4
+
+                ubind @mega
+                jump U22 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U21_bind_mega_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U21_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U21_bind_mega_loop:
+                        ubind @mega
+                        jump U22 equal @unit bindAnchor
+                        jump U22 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U22 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U21_bind_mega_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U21_bind_mega_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U21_bind_continue always 0
+
+                U21_bind_mono:
+                set U21_bind_jump 625 # be careful when replacing this one
+                set unitType1 @mono
+                set unitRate1 140.625 # 11.25 * 10 / 2 / 0.4
+
+                ubind @mono
+                jump U22 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U21_bind_mono_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U21_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U21_bind_mono_loop:
+                        ubind @mono
+                        jump U22 equal @unit bindAnchor
+                        jump U22 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U22 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U21_bind_mono_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U21_bind_mono_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U21_bind_continue always 0
+
+            U21_bind_continue:
+            set bindingUnit1 0
+            ucontrol stop
+            ucontrol flag thisFlag
+            set unitRef1 @unit
+            op ceil unitRate1 unitRate1 0
+            ucontrol itemDrop @air 999 # yeetus deletus
+
+        U21_bind_end:
+
+        # movement
+        sensor unitItem @unit @firstItem
+        jump U21_drop equal unitItem @silicon
+
+        # take
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        U21_take:
+            ucontrol approach coreX coreY coreAppr
+            ucontrol within coreX coreY coreAppr within
+            jump U2 equal within 0
+
+            sensor unitItem @unit @firstItem
+            jump U21_take_clear_end equal unitItem null
+                ucontrol itemDrop coreBlock 999 # i dunno some random logic could just force take and get items in our unit
+                jump U2 always 0 # just let the next unit do shit first whilst waiting for the 1.5 second delay
+            U21_take_clear_end:
+
+            ucontrol itemTake coreBlock @silicon 999
+
+        # drop
+        U21_drop:
+            ucontrol approach domeX domeY 6.5
+            ucontrol within domeX domeY 7 within
+            jump U2 equal within 0
+
+            ucontrol itemDrop domeBlock 999
+            sensor unitItem @unit @firstItem
+            jump U22 notEqual unitItem null
+            ucontrol approach coreX coreY coreAppr
+
+    # Unit 2
+    U22:
+    set U2_turn 0
+
+            # Optimal core approach distance
+            jump U22_coreAppr_end equal coreBlock cachedCoreBuilding
+                set cachedCoreBuilding coreBlock
+                sensor coreSize coreBlock @size
+                op mul coreAppr coreSize 0.375
+                op add coreAppr coreAppr 5.625
+            U22_coreAppr_end:
+
+        # Unit 2 validicity checks
+        ubind unitRef2
+        sensor unitDead @unit @dead
+        jump U22_bind equal unitDead true
+        sensor unitCtrlr @unit @controller
+        jump U22_bind notEqual unitCtrlr @this
+        sensor unitFlag @unit @flag
+        jump U22_bind_end equal unitFlag thisFlag
+            # Bind ----
+            U22_bind:
+                set printCycle printCycleMax
+                set bindingUnit2 1
+                set @counter U22_bind_jump
+
+                U22_bind_flare:
+                set U22_bind_jump 765
+                set unitType2 @flare
+                set unitRate2 281.25 # 22.5 * 10 / 2 / 0.4
+
+                ubind @flare
+                jump U2 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U22_bind_flare_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U22_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U22_bind_flare_loop:
+                        ubind @flare
+                        jump U2 equal @unit bindAnchor
+                        jump U2 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U2 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U22_bind_flare_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U22_bind_flare_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U22_bind_continue always 0
+
+                U22_bind_poly:
+                set U22_bind_jump 785
+                set unitType2 @poly
+                set unitRate2 243.75 # 19.5 * 10 / 2 / 0.4
+
+                ubind @poly
+                jump U2 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U22_bind_poly_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U22_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U22_bind_poly_loop:
+                        ubind @poly
+                        jump U2 equal @unit bindAnchor
+                        jump U2 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U2 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U22_bind_poly_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U22_bind_poly_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U22_bind_continue always 0
+
+                U22_bind_mega:
+                set U22_bind_jump 805
+                set unitType2 @mega
+                set unitRate2 235 # 18.8 * 10 / 2 / 0.4
+
+                ubind @mega
+                jump U2 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U22_bind_mega_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U22_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U22_bind_mega_loop:
+                        ubind @mega
+                        jump U2 equal @unit bindAnchor
+                        jump U2 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U2 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U22_bind_mega_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U22_bind_mega_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U22_bind_continue always 0
+
+                U22_bind_mono:
+                set U22_bind_jump 745
+                set unitType2 @mono
+                set unitRate2 140.625 # 11.25 * 10 / 2 / 0.4
+
+                ubind @mono
+                jump U2 equal @unit null
+                set bindAnchor @unit
+                sensor unitFlag @unit @flag
+                jump U22_bind_mono_loop notEqual unitFlag 0
+                sensor unitCtrld @unit @controlled
+                jump U22_bind_continue lessThan unitCtrld 2 # player / formation ctrl
+                    U22_bind_mono_loop:
+                        ubind @mono
+                        jump U2 equal @unit bindAnchor
+                        jump U2 equal @unit null
+                        sensor anchorDead bindAnchor @dead
+                        jump U2 equal anchorDead 1
+                        sensor unitFlag @unit @flag
+                        jump U22_bind_mono_loop notEqual unitFlag 0
+                        sensor unitCtrld @unit @controlled
+                        jump U22_bind_mono_loop greaterThanEq unitCtrld 2 # player / formation ctrl
+                    jump U22_bind_continue always 0
+
+            U22_bind_continue:
+            set bindingUnit2 0
+            ucontrol stop
+            ucontrol flag thisFlag
+            set unitRef2 @unit
+            op ceil unitRate2 unitRate2 0
+            ucontrol itemDrop @air 999 # yeetus deletus
+
+        U22_bind_end:
+
+
+        # movement
+        sensor unitItem @unit @firstItem
+        jump U22_drop equal unitItem @phase-fabric
+
+        # take
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        U22_take:
+            ucontrol approach coreX coreY coreAppr
+            ucontrol within coreX coreY coreAppr within
+            jump U2 equal within 0
+
+            sensor unitItem @unit @firstItem
+            jump U22_take_clear_end equal unitItem null
+                ucontrol itemDrop coreBlock 999
+                jump U2 always 0
+            U22_take_clear_end:
+
+            ucontrol itemTake coreBlock @phase-fabric 999
+
+        # drop
+        U22_drop:
+            ucontrol approach domeX domeY 6.5
+            ucontrol within domeX domeY 7 within
+            jump U2 equal within 0
+
+            ucontrol itemDrop domeBlock 999
+
+            sensor unitItem @unit @firstItem
+            jump U2 equal unitItem @phase-fabric
+            ucontrol approach coreX coreY coreAppr
+
+jump U2 always 0
+
+
+### No power detected during setup/refresh blocks
+setupNoPower:
+    print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[#ff]Error: Dome unpowered!"
+    printflush messageBlock
+
+    jump unitIdle always 0
+
+### No dome
+noDome:
+    set printCycle printCycleMax # force print
+
+    print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[#ff]Error: No linked dome found!"
+    printflush messageBlock
+
+## idle da units
+unitIdle:
+    # Unit 1
+    jump noDome_u1_end equal unitRef1 null
+    ubind unitRef1
+    sensor unitDead @unit @dead
+    jump noDome_u1_unbind equal unitDead true
+    sensor unitCtrlr @unit @controller
+    jump noDome_u1_deflag notEqual unitCtrlr @this
+    sensor unitFlag @unit @flag
+    jump noDome_u1_unbind notEqual unitFlag thisFlag
+
+    sensor unitItem @unit @firstItem
+    jump noDome_u1_atDome equal unitItem @silicon
+    jump noDome_u1_atCore notEqual unitItem @phase-fabric
+
+    noDome_u1_atDome:
+        op mod idleSpin_deg @tick 360
+        op sin idleSpin_sin idleSpin_deg 360
+        op cos idleSpin_cos idleSpin_deg 360
+        op mul idleSpin_diffX idleSpin_sin 3.5
+        op mul idleSpin_diffY idleSpin_cos 3.5
+        op add idleSpin_moveX @thisx idleSpin_diffX
+        op add idleSpin_moveY @thisy idleSpin_diffY
+        ucontrol move idleSpin_moveX idleSpin_moveY
+        jump noDome_u1_end always 0
+
+    noDome_u1_atCore:
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        ucontrol approach coreX coreY coreAppr
+        jump noDome_u1_end always 0
+
+    noDome_u1_deflag:
+    ubind unitRef1
+    ucontrol flag 0
+    noDome_u1_unbind:
+    set unitRef1 null
+
+    noDome_u1_end:
+
+
+    # Unit 2
+    jump refreshBlocks equal unitRef2 null
+    ubind unitRef2
+    sensor unitDead @unit @dead
+    jump noDome_u2_unbind equal unitDead true
+    sensor unitCtrlr @unit @controller
+    jump noDome_u2_deflag notEqual unitCtrlr @this
+    sensor unitFlag @unit @flag
+    jump noDome_u2_unbind notEqual unitFlag thisFlag
+
+    sensor unitItem @unit @firstItem
+    jump noDome_u2_atDome equal unitItem @silicon
+    jump noDome_u2_atCore notEqual unitItem @phase-fabric
+    noDome_u2_atDome:
+        op mod idleSpin_deg @tick 360
+        op add idleSpin_deg idleSpin_deg 180
+        op sin idleSpin_sin idleSpin_deg 360
+        op cos idleSpin_cos idleSpin_deg 360
+        op mul idleSpin_diffX idleSpin_sin 3.5
+        op mul idleSpin_diffY idleSpin_cos 3.5
+        op add idleSpin_moveX @thisx idleSpin_diffX
+        op add idleSpin_moveY @thisy idleSpin_diffY
+        ucontrol move idleSpin_moveX idleSpin_moveY
+        jump refreshBlocks always 0
+
+    noDome_u2_atCore:
+        ulocate building core 0 0 coreX coreY 0 coreBlock
+        ucontrol approach coreX coreY coreAppr
+        jump refreshBlocks always 0
+
+    noDome_u2_deflag:
+    ubind unitRef2
+    ucontrol flag 0
+    noDome_u2_unbind:
+    set unitRef2 null
+
+    # noDome_u2_end:
+
+jump refreshBlocks always 0
+
+### Some end credits
+print "OverArch v0.3.7 by SBytes"
+print "-------- Change logs --------"
+print "- Forgot to set bindingUnit1"
+print "- Stop unit actions after binding (to prevent issues like still mining)"
