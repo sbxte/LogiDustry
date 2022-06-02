@@ -1,3 +1,3 @@
 _test*
-decompile/input.txt
-decompile/output.txt
+compilers/input.txt
+compilers/output.txt
