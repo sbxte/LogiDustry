@@ -1,0 +1,251 @@
+jump 0 equal switch1 null
+jump 0 equal switch2 null
+jump 0 equal message1 null
+jump 0 equal message2 null
+
+
+init_reactor:
+    getlink reactor 4
+    jump noReactor equal reactor null
+    set cachedReactor reactor
+    print "[sky]Reactor Uptime v2.0\n[green]by SBytes\n\n[slate](Use upper switch to reset)"
+    printflush message1
+    jump init always 0
+
+start:
+
+getlink reactor 4
+jump init_reactor notEqual reactor cachedReactor
+
+sensor reset switch1 @enabled
+jump reset strictEqual reset true
+
+# Sensor res values
+sensor blast reactor @blast-compound
+sensor cryo reactor @cryofluid
+sensor efficiency reactor @efficiency
+sensor netPowerIn reactor @powerNetIn
+sensor netPowerOut reactor @powerNetIn
+op sub netPower netPowerIn netPowerOut
+
+
+# Fail checks
+jump blast_skip greaterThan blast 0
+    jump failCheck_end equal reactorDown 1
+    op add failCounterBlast failCounterBlast 1
+
+    set reactorDown 1
+    op sub runLasted @time runStart
+    op add totalRunTimes totalRunTimes runLasted
+    op add samplesRunTimes samplesRunTimes 1
+    op div avgRunTimes totalRunTimes samplesRunTimes
+    op mod avgRunTimes avgRunTimes 60e3
+    op idiv avgRunTimes avgRunTimes 1e-2
+    op div avgRunTimes avgRunTimes 1e2
+
+    op idiv runLasted runLasted 60e3
+    op max longestRun longestRun runLasted
+    jump failCheck_end always 0
+blast_skip:
+
+jump cryo_skip greaterThanEq cryo 1
+    jump failCheck_end equal reactorDown 1
+    op add failCounterCryo failCounterCryo 1
+
+    set reactorDown 1
+    op sub runLasted @time runStart
+    op add totalRunTimes totalRunTimes runLasted
+    op add samplesRunTimes samplesRunTimes 1
+    op div avgRunTimes totalRunTimes samplesRunTimes
+    op mod avgRunTimes avgRunTimes 60e3
+    op idiv avgRunTimes avgRunTimes 1e-2
+    op div avgRunTimes avgRunTimes 1e2
+
+    op idiv runLasted runLasted 60e3
+    op max longestRun longestRun runLasted
+    jump failCheck_end always 0
+cryo_skip:
+
+jump efficiency_skip equal efficiency 1
+    jump failCheck_end equal reactorDown 1
+    op add failCounterEfficiency failCounterEfficiency 1
+
+    set reactorDown 1
+    op sub runLasted @time runStart
+    op add totalRunTimes totalRunTimes runLasted
+    op add samplesRunTimes samplesRunTimes 1
+    op div avgRunTimes totalRunTimes samplesRunTimes
+    op mod avgRunTimes avgRunTimes 60e3
+    op idiv avgRunTimes avgRunTimes 1e-2
+    op div avgRunTimes avgRunTimes 1e2
+
+    op idiv runLasted runLasted 60e3
+    op max longestRun longestRun runLasted
+    jump failCheck_end always 0
+efficiency_skip:
+
+
+jump reactorDown equal reactorDown 0
+    set runStart @time
+reactorDown:
+set reactorDown 0
+
+failCheck_end:
+
+# Collect data
+
+# op add resData_events
+# op add resData_sample
+op add resData_eventsBlast resData_eventsBlast blast
+op add resData_sampleBlast resData_sampleBlast 1
+op add resData_eventsCryo resData_eventsCryo cryo
+op add resData_sampleCryo resData_sampleCryo 1
+op add resData_eventsPower resData_eventsPower netPower
+op add resData_samplePower resData_samplePower 1
+# op add resData_eventsEfficiency resData_eventsEfficiency efficiency
+# op add resData_sampleEfficiency resData_sampleEfficiency 1
+
+
+
+# Dip detection
+jump blast_dip_skip greaterThan blast 3
+    jump blast_dip_skip_ equal dippedBlast 1
+    op add dipCounterBlast dipCounterBlast 1
+    set dippedBlast 1
+    jump blast_dip_skip_ always 0
+blast_dip_skip:
+    set dippedBlast 0
+blast_dip_skip_:
+
+jump cryo_dip_skip greaterThan cryo 10
+    jump cryo_dip_skip_ equal dippedCryo 1
+    op add dipCounterCryo dipCounterCryo 1
+    set dippedCryo 1
+    jump cryo_dip_skip_ always 0
+cryo_dip_skip:
+    set dippedCryo 0
+cryo_dip_skip_:
+
+jump power_dip_skip greaterThan netPower 100
+    jump power_dip_skip_ equal dippedPower 1
+    op add dipCounterPower dipCounterPower 1
+    set dippedPower 1
+    jump power_dip_skip_ always 0
+power_dip_skip:
+    set dippedPower 0
+power_dip_skip_:
+
+
+
+# Generate report
+sensor reportSwitch switch2 @enabled
+jump report_skip equal reportSwitch 0
+    print "[sky]Reactor Uptime v2.0\n[green]by SBytes\n[slate](Use upper switch to reset)\n\n[white]Total time: "
+    op sub timeSinceStart @time timeStart
+    op idiv timeSinceStart timeSinceStart 60e3
+    print timeSinceStart
+    print " minutes\n\n[slate]> Runs[]\nCurrent: "
+    op sub currentRun @time runStart
+    op idiv currentRun currentRun 60e3
+    print currentRun
+    print " min\nPrevious: "
+    print runLasted
+    print " min\nLongest: "
+    print longestRun
+    print " min\nAverage: "
+    print avgRunTimes
+    print " min"
+    printflush message1
+
+
+    print "Fails: "
+    print failCounterBlast
+    print "  "
+    print failCounterCryo
+    print " [yellow][] "
+    print failCounterEfficiency
+    print "\nDipped:  "
+    print dipCounterBlast
+    print "  "
+    print dipCounterCryo
+    print " [yellow][] "
+    print dipCounterPower
+
+    print "\nAverages: "
+    op div resData_avgBlast resData_eventsBlast resData_sampleBlast
+    op idiv resData_avgBlast resData_avgBlast 1e-2
+    op div resData_avgBlast resData_avgBlast 1e2
+    print resData_avgBlast
+    print "  "
+    op div resData_avgCryo resData_eventsCryo resData_sampleCryo
+    op idiv resData_avgCryo resData_avgCryo 1e-2
+    op div resData_avgCryo resData_avgCryo 1e2
+    print resData_avgCryo
+    print " [yellow][] "
+    op div resData_avgPower resData_eventsPower resData_samplePower
+    op idiv resData_avgPower resData_avgPower 1e-2
+    op div resData_avgPower resData_avgPower 1e2
+    print resData_avgPower
+
+    printflush message2
+
+    control enabled switch2 0
+report_skip:
+
+
+jump start always 0
+
+
+reset:
+    print "[sky]Reactor Uptime v2.0\n[green]by SBytes\n\n[slate] Resetting..."
+    printflush message1
+
+    init:
+    control enabled switch1 0
+    control enabled switch2 0
+
+    print "[slate]Click lower switch to generate report"
+    printflush message2
+
+    set failCounterBlast 0
+    set failCounterCryo 0
+    set failCounterEfficiency 0
+
+    set totalRunTimes 0
+    set samplesRunTimes 0
+    set avgRunTimes 0
+
+    set timeStart @time
+    set runStart @time
+    set longestRun 0
+    set runLasted 0
+
+    set resData_eventsBlast 0
+    set resData_sampleBlast 0
+    set resData_eventsCryo 0
+    set resData_sampleCryo 0
+    set resData_eventsPower 0
+    set resData_samplePower 0
+    set resData_eventsEfficiency 0
+    set resData_sampleEfficiency 0
+
+    set dipCounterBlast 0
+    set dipCounterCryo 0
+    set dipCounterPower 0
+
+    set dippedBlast 0
+    set dippedCryo 0
+    set dippedPower 0
+
+    print "[sky]Reactor Uptime v2.0\n[green]by SBytes\n\n[slate](Use upper switch to reset)"
+    printflush message1
+jump start always 0
+
+noReactor:
+    print "[sky]Reactor Uptime v2.0\n[green]by SBytes\n\n[#ff] No Reactor Linked!"
+    printflush message1
+
+jump init_reactor always 0
+
+print "Reactor Uptime v2.0 by SBytes"
+print "Credits to Cirrocco for his original work."
