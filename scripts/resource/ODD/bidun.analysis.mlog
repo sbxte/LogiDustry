@@ -1,0 +1,185 @@
+set type @flare
+jump_29_:
+jump jump_0_ always 0
+jump_30_:
+ubind unum1
+sensor dx dome1 @x
+sensor dy dome1 @y
+jump jump_30_ equal dx 0
+ucontrol flag 0 corey
+ubind unum2
+ucontrol flag 0 corey
+set unum1 0
+set unum2 0
+op mul x @thisx 100000
+op add flag_sili x @thisy
+op add flag_phase flag_sili 1
+jump_17_:
+ubind type
+sensor hisflag @unit @flag
+sensor on switch1 @enabled
+jump jump_30_ equal on 1
+jump jump_17_ notEqual hisflag 0
+jump jump_4_ notEqual unum1 0
+ucontrol flag flag_sili
+set unum1 @unit
+jump jump_17_ always 0
+jump_4_:
+jump jump_27_ notEqual unum2 0
+ucontrol flag flag_phase
+set unum2 @unit
+jump jump_17_ always 0
+jump_27_:
+ubind unum1
+sensor on switch1 @enabled
+jump jump_30_ equal on 1
+sensor hisflag @unit @flag
+sensor h @unit @dead
+print h
+printflush message1
+jump jump_9_ equal h 1
+jump jump_10_ equal hisflag flag_sili
+jump_9_:
+set unum1 0
+jump jump_17_ always 0
+jump_10_:
+sensor s @unit @silicon
+jump jump_12_ notEqual s 0
+ulocate building core false @copper corex corey found core
+ucontrol move corex corey
+ucontrol boost 1 corey
+ucontrol itemDrop core 999
+ucontrol itemTake core @silicon 999
+jump jump_14_ always 0
+jump_12_:
+ucontrol move dx dy
+ucontrol boost 1 @thisy
+ucontrol itemDrop dome1 999 999
+jump jump_14_ always 0
+jump_14_:
+ubind unum2
+sensor hisflag @unit @flag
+sensor h @unit @dead
+jump jump_15_ equal h 1
+jump jump_16_ equal hisflag flag_phase
+jump_15_:
+set unum2 0
+jump jump_17_ always 0
+jump_16_:
+sensor f @unit @phase-fabric
+jump jump_18_ notEqual f 0
+ulocate building core false @copper corex corey found core
+ucontrol move corex corey
+ucontrol boost 1 corey
+ucontrol itemDrop core 999 999
+ucontrol itemTake core @phase-fabric 999
+jump jump_20_ always 0
+jump_18_:
+ucontrol move dx dy
+ucontrol boost 1 corey
+ucontrol itemDrop dome1 999
+jump jump_20_ always 0
+jump_20_:
+ubind type
+sensor hisflag @unit @flag
+jump jump_21_ equal hisflag flag_sili
+jump jump_22_ equal hisflag flag_phase
+jump jump_27_ always 0
+jump_21_:
+set test @unit
+jump jump_27_ strictEqual test unum1
+ubind unum1
+ucontrol flag
+set unum1 test
+jump jump_27_ always 0
+jump_22_:
+set test @unit
+jump jump_27_ strictEqual test unum2
+ubind unum2
+ucontrol flag
+set unum2 test
+jump jump_27_ always 0
+
+jump_0_:
+set unum1 0
+set unum2 0
+
+jump_28_:
+    sensor domex dome1 @x
+    sensor domey dome1 @y
+jump jump_28_ equal domex 0 # note: what??
+op mul flagx @thisx 10000
+op add flag flagx @thisy
+ubind type
+jump jump_29_ equal @unit 0 # note: ??????
+
+ulocate building core false @copper cx cy found core
+op sub dx domex cx
+op sub dy domey cy
+op mul dx2 dx dx
+op mul dy2 dy dy
+op add d dx2 dy2
+op sqrt d d b
+print d
+printflush message1
+jump jump_30_ greaterThan d 250
+
+# binding?? i guess??
+jump_38_:
+ubind type
+sensor hisflag @unit @flag
+jump jump_34_ equal hisflag flag
+jump jump_38_ notEqual hisflag 0
+sensor on switch1 @enabled
+jump jump_38_ equal on 1
+jump jump_34_ always 0
+jump_36_:
+ucontrol flag 0
+jump jump_38_ always 0
+jump_34_:
+ucontrol flag flag
+set myunit @unit
+
+jump_47_:
+ubind myunit
+sensor on switch1 @enabled
+jump jump_36_ equal on 1
+sensor gone @unit @dead
+sensor hisflag @unit @flag
+jump jump_38_ notEqual hisflag flag
+jump jump_38_ equal gone 1
+sensor sili dome1 @silicon
+sensor phase dome1 @phase-fabric
+jump jump_39_ lessThanEq sili phase
+set need @phase-fabric
+jump jump_40_ always 0
+jump_39_:
+set need @silicon
+jump_40_:
+sensor t @unit @totalItems
+sensor hold @unit need
+jump jump_41_ equal hold t
+jump_43_:
+ulocate building core false @copper corex corey found core
+ucontrol move corex corey
+ucontrol itemTake core need 10
+ucontrol itemDrop core 999 999
+jump jump_42_ always 0
+jump_41_:
+jump jump_43_ equal t 0
+ucontrol move domex domey
+ucontrol itemDrop dome1 999
+jump_42_:
+ubind type
+sensor hisflag @unit @flag
+jump jump_47_ notEqual hisflag flag
+print flag # note: left out debug print?
+printflush message1
+jump jump_47_ strictEqual @unit myunit # whaaat???????????
+ulocate building core false @copper corex corey found core
+ucontrol move corex corey
+ucontrol itemDrop core 999
+sensor t @unit @totalItems
+jump jump_47_ notEqual t 0
+ucontrol flag 0
+jump jump_47_ always 0
