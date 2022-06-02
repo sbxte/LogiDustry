@@ -7,7 +7,7 @@ jump __elapsedTime_end equal __ETinit 0
     sensor __timescale2 @this @timescale
     op max __timescale __timescale __timescale2
     op mul __offset __timescale @ipt
-    op div __offset 2 __offset
+    op div __offset 3 __offset
     op sub __elapsedTime __elapsedTime __offset # adjust for the additional instructions
     op add __events __events __elapsedTime
     op add __sample __sample 1
@@ -17,3 +17,20 @@ jump __elapsedTime_end equal __ETinit 0
 __elapsedTime_end:
 set __ETinit 1
 set __previousTime @tick
+
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
+print "froge"
