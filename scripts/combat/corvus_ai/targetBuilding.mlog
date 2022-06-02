@@ -5,15 +5,16 @@ start:
 ubind @corvus
 sensor flag @unit @flag
 jump 0 lessThan flag 10
+set __deflagged 0
 
-op sub encodedTarget flag 10
-op mod targetX encodedTarget @mapw
-op mod targetY encodedTarget mapArea
-op sub targetY targetY targetX
-op div targetY targetY @mapw
-op idiv cellIndex encodedTarget mapArea
+op sub encodedFlag flag 10
+op mod encodedCoord encodedFlag mapArea
+op idiv targetX encodedCoord @maph
+op mod targetY encodedCoord @maph
 
+op idiv cellIndex encodedFlag mapArea
 op add cellIndex2 cellIndex 1
+
 read cellTX cell1 cellIndex
 read cellTY cell1 cellIndex2
 
@@ -37,6 +38,7 @@ cleanCell:
     write 0 cell1 cellIndex
     write 0 cell1 cellIndex2
 stop:
+    set __deflagged 1
     ucontrol flag 0
 jump start always 0
 

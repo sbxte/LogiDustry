@@ -1,5 +1,45 @@
 ubind @corvus
 sensor flag @unit @flag
-jump 0 notEqual flag 0
+
+
+# Healing
+sensor health @unit @health
+jump heal_skip greaterThan health 15e3
+    ulocate building repair 0 0 repairX repairY repairFound repair
+    write repairFound cell1 1
+    jump default equal repairFound 0
+    ucontrol flag 1
+    ucontrol approach repairX repairY 10
+    end
+heal_skip:
+
+jump heal_deflag_skip notEqual flag 1
+    ucontrol flag 0
+heal_deflag_skip:
+
+
+
+# Target unit
+sensor targetUnitSwitch switch1 @enabled
+jump targetUnit_deflag_skip strictEqual targetUnitSwitch false
+
+uradar enemy attacker any maxHealth 0 1 enemy
+sensor maxHealth enemy @maxHealth
+jump targetUnit_skip lessThan maxHealth 6e3
+    ucontrol flag 2
+    ucontrol targetp enemy 1
+    sensor enemyX enemy @x
+    sensor enemyY enemy @y
+    ucontrol approach enemyX enemyY 30
+    end
+targetUnit_skip:
+
+jump targetUnit_deflag_skip notEqual flag 2
+    ucontrol flag 0
+targetUnit_deflag_skip:
+
+
+# Default, ie pathfinding
+default:
 ucontrol pathfind
 ucontrol targetp @unit 0

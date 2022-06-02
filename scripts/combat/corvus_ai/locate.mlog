@@ -2,6 +2,11 @@ ubind @corvus
 jump 0 equal @unit null
 wait 0.01
 
+jump toggle_core lessThan @time toggleCoreTime
+    op add toggleCoreTime @time 30e3
+    op xor toggleCore toggleCore 1
+toggle_core:
+
 ulocate building turret 1 0 enemyTurretX enemyTurretY enemyTurretFound enemyTurret
 ulocate building core 1 0 enemyCoreX enemyCoreY enemyCoreFound enemyCore
 ulocate building factory 1 0 enemyFactoryX enemyFactoryY enemyFactoryFound enemyFactory
@@ -25,6 +30,7 @@ cell_loop:
         cell_turretSkip:
 
         jump cell_coreSkip equal cell_appendCore 0
+        jump cell_coreSkip equal toggleCore 1
             op sub dx x enemyCoreX
             op sub dy y enemyCoreY
             op len dist dx dy
@@ -67,6 +73,7 @@ cell_appendLoop:
         cell_append_skipTurret:
 
         jump cell_append_skipCore equal cell_appendCore 0
+        jump cell_append_skipCore equal toggleCore 1
             op floor enemyCoreX enemyCoreX 0
             op floor enemyCoreY enemyCoreY 0
             write enemyCoreX cell1 cellIter
@@ -87,4 +94,3 @@ cell_appendLoop:
 jump cell_appendLoop lessThan cellIter 64
 cell_append_end:
 set cellIter 0
-end

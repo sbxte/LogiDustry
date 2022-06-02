@@ -1,0 +1,39 @@
+bind:
+    ubind @gamma
+    jump bind_skip notEqual @unit null
+    ubind @beta
+    jump bind_skip notEqual @unit null
+    ubind @alpha
+    jump bind_skip notEqual @unit null
+    ubind @mega
+    sensor controlled @unit @controlled
+    jump bind_skip greaterThan controlled 1
+    ubind @poly
+    sensor controlled @unit @controlled
+    jump bind_skip greaterThan controlled 1
+    ubind @reign
+    sensor controlled @unit @controlled
+    jump bind_skip greaterThan controlled 1
+    ubind @corvus
+    sensor controlled @unit @controlled
+    jump bind_skip greaterThan controlled 1
+    ubind @oct
+    sensor controlled @unit @controlled
+    jump bind_skip greaterThan controlled 1
+    ubind @eclipse
+    sensor controlled @unit @controlled
+    jump bind lessThanEq controlled 1
+bind_skip:
+sensor ourTeam @unit @team
+write ourTeam cell2 0
+
+resetLoop:
+
+jump resetLoop lessThan @time waitTill
+op add waitTill @time 15e3
+
+loop:
+    write 0 cell1 cellIter
+    op add cellIter cellIter 1
+jump loop lessThan cellIter 64
+set cellIter 0

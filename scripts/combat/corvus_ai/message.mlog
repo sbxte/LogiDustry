@@ -1,18 +1,11 @@
-print "[purple]Hyper[cyan]Scope [sky]vAlpha2\n[green]by SBytes\n\n[slate]The Ultimate Corvus Attack AI\n>[#ff] Alpha testing! Use with caution!"
+# print "[purple]Hyper[cyan]Scope [sky]vAlpha3\n[green]by SBytes\n\n[slate]The Ultimate Corvus Attack AI\n>[#ff] Alpha testing! Use with caution!"
+print "[purple]Hyper[cyan]Scope \n[green]by SBytes\n\n[#ff]> Experimental! Use with caution!"
 printflush message1
-sensor disable switch1 @enabled
-jump disabled equal disable 1
+sensor enable switch1 @enabled
+jump disabled equal enable 0
 jump enable_skip equal enabled 1
     control enabled processor1 1
     control enabled processor2 1
-    control enabled processor3 1
-    control enabled processor4 1
-    control enabled processor5 1
-    control enabled processor6 1
-    control enabled processor7 1
-    control enabled processor8 1
-    control enabled processor9 1
-    control enabled processor10 1
     set enabled 1
 enable_skip:
 
@@ -92,26 +85,9 @@ print "[magenta]Disabled"
 printflush message2
 control enabled processor1 0
 control enabled processor2 0
-control enabled processor3 0
-control enabled processor4 0
-control enabled processor5 0
-control enabled processor6 0
-control enabled processor7 0
-control enabled processor8 0
-control enabled processor9 0
-control enabled processor10 0
+jump 0 equal enabled 0
 set enabled 0
 
-
-ubind @corvus
-set anchorUnit @unit
-disable_unitLoop:
-    sensor anchorUnitDead anchorUnit @dead
-    jump disable_unitLoop_end equal anchorUnitDead 1
-    ubind @corvus
-    ucontrol flag 0
-jump disable_unitLoop notEqual @unit anchorUnit
-disable_unitLoop_end:
 
 disable_cellLoop:
     write 0 cell1 cellIter
@@ -121,3 +97,12 @@ disable_cellLoop:
     op add cellIter cellIter 1
 jump disable_cellLoop lessThan cellIter 64
 set cellIter 0
+
+ubind @corvus
+set anchorUnit @unit
+disable_unitLoop:
+    sensor anchorUnitDead anchorUnit @dead
+    jump 0 equal anchorUnitDead 1
+    ubind @corvus
+    ucontrol flag 0
+jump disable_unitLoop notEqual @unit anchorUnit

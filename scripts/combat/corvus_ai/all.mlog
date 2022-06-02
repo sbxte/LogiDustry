@@ -1,0 +1,142 @@
+op mul mapArea @mapw @maph
+read ourTeam cell2 0
+
+ubind @corvus
+set anchorUnit @unit
+start:
+
+
+ubind @corvus
+
+jump anchor_skip notEqual @unit anchorUnit
+    op sub __dTime @time __lTime
+    op floor __dTime __dTime 0
+    write __dTime cell2 1
+    set __lTime @time
+anchor_skip:
+
+sensor unitFlag @unit @flag
+jump healCheck equal unitFlag 1
+jump enemy equal unitFlag 2
+
+
+sensor health @unit @health
+jump heal lessThanEq health 15e3
+
+
+# Enemy skip
+enemy:
+sensor targetEnemySwitch switch1 @enabled
+jump enemy_skip strictEqual targetEnemySwitch 0
+    uradar enemy attacker any maxHealth 0 1 enemy
+    sensor maxHealth enemy @maxHealth
+    jump enemy_skip lessThan maxHealth 6e3
+        ucontrol flag 2
+        ucontrol targetp enemy 1
+        sensor enemyX enemy @x
+        sensor enemyY enemy @y
+        ucontrol approach enemyX enemyY 30
+        jump start always 0
+enemy_skip:
+jump deflag equal unitFlag 2
+
+
+
+# Building check
+jump buildingCheck greaterThan unitFlag 10
+sensor unitX @unit @x
+sensor unitY @unit @y
+checkCell_loop:
+    op add cellIndex2 cellIndex 1
+    read cellTargetX cell1 cellIndex
+    jump default equal cellTargetX 0
+    read cellTargetY cell1 cellIndex2
+    op sub deltaX unitX cellTargetX
+    op sub deltaY unitY cellTargetY
+    op len dist deltaX deltaY
+    jump flag lessThan dist 60
+    op add cellIndex cellIndex 2
+jump checkCell_loop lessThan cellIndex 64
+
+# Default behaviour
+default:
+set cellIndex 0
+ucontrol targetp @unit 0
+ucontrol pathfind
+ucontrol flag 0
+jump start always 0
+
+
+flag:
+    op mul calcFlag mapArea cellIndex
+    op mul calcFlag_ cellTargetX @maph
+    op add calcFlag_ calcFlag_ cellTargetY
+    op add calcFlag calcFlag calcFlag_
+    op add calcFlag calcFlag 10 # shift by 10
+    ucontrol flag calcFlag
+    set cellIndex 0
+
+    set targetX cellTargetX
+    set targetY cellTargetY
+jump shoot always 0
+
+buildingCheck:
+# Unshift 10
+op sub calcFlag unitFlag 10
+
+# Cell index
+op idiv flagCellIndex calcFlag mapArea
+op add flagCellIndex2 flagCellIndex 1
+
+# Flag target
+op mod calcFlag calcFlag mapArea
+op idiv flagTargetX calcFlag @maph
+op mod flagTargetY calcFlag @maph
+
+# read cell
+read cellTargetX cell1 cellIndex
+read cellTargetY cell1 cellIndex2
+
+jump deflag notEqual flagTargetX cellTargetX
+jump deflag notEqual flagTargetY cellTargetY
+
+# Target validation
+ucontrol getBlock flagTargetX flagTargetY getType getBlock
+jump shoot equal getType null
+jump cleanCell equal getType @air
+jump cleanCell equal getType @solid
+sensor getBlockTeam getBlock @team
+jump cleanCell equal getBlockTeam ourTeam
+
+set targetX flagTargetX
+set targetY flagTargetY
+
+
+# Target
+shoot:
+ucontrol approach targetX targetY 55
+op mod shootTimer @time 5500
+op lessThanEq shootTimerGood shootTimer 2e3
+ucontrol target targetX targetY shootTimerGood
+jump start always 0
+
+cleanCell:
+write 0 cell1 cellIndex
+write 0 cell1 cellIndex2
+deflag:
+ucontrol flag 0
+jump start always 0
+
+
+# Heal
+healCheck:
+sensor health @unit @health
+jump deflag greaterThan health 15e3
+
+heal:
+ulocate building repair 0 0 repairX repairY repairFound repair
+jump default equal repairFound 0
+ucontrol approach repairX repairY 10
+ucontrol shootp @unit 0
+ucontrol flag 1
+jump start always 0
