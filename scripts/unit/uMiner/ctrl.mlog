@@ -1,0 +1,140 @@
+#keep to mind that this has variation for different unit for faster logic
+#list: qumepupomo:
+
+#Initializing
+return:
+ubind @quasar
+sensor uFlag @unit @flag
+jump return notEqual uFlag 0
+
+#initialize
+
+init_loop:
+read @counter cell 48           #read ore cell location: +48
+ubind @quasar
+sensor uiCap @unit @itemCapacity
+jump init_loop equal @unit null
+set cell cell1
+end
+
+# --------------------------------------------
+# Unit rally/release
+# --------------------------------------------
+
+#perhap may add much various thing here eg. unit controlling, rally at this processor, etc.
+
+ulocate building rally 0 0 bcCX bcCY bcCFound bcCenter            #buildingCommand-center
+ulocate building core false @copper bcX bcY 0 bCore         #buildingCore
+sensor uiTotal @unit @totalItems        #unitItemTotal
+jump uStatus_rally equal uiTotal 0
+
+    ucontrol stop 0 0 0 0 0 0
+    ucontrol itemDrop bCore 999 0 0
+    ucontrol approach bcX bcY 5 0 0
+    end
+
+uStatus_rally:
+jump bc_rally equal bcCFound false
+
+    #read the location jump, check if direction goes to ulocate command center or else
+    read uStatus cell1 48           #read ore cell location +48
+    jump bc_rally notEqual uStatus 9
+
+        ucontrol approach bcCX bcCY 12 0 0          #rally range 12 10 8 6 4;
+        end
+
+bc_rally:
+ucontrol approach bcX bcY 12 0 0            #rally range 12 10 8 6 4;
+end
+
+# --------------------------------------------
+# Unit mining controlling
+# --------------------------------------------
+
+#count unit until reach limit
+jump uCounter_add lessThan uCounter limit
+
+    set uCounter 0
+    counter_jump:
+    op add @counter counter @counter
+
+        set iMine @copper
+        read limit cell1 0          #write ore cell location 0-5, 6-11, ...
+        jump counter_add always 0 0
+
+        set iMine @lead
+        read limit cell1 1
+        jump counter_add always 0 0
+
+        set iMine @titanium
+        read limit cell1 2
+        jump counter_add always 0 0
+
+        set iMine @coal
+        read limit cell1 3
+        jump counter_add always 0 0
+
+        set iMine @sand
+        read limit cell1 4
+        jump counter_add always 0 0
+
+        set iMine @scrap
+        read limit cell1 5
+        set counter -3
+        sensor bciCap bCore @itemCapacity
+        op sub dTime @time lTime
+        set lTime @time
+        write dTime cell1 42            #write deltaTime cell location 42, 43, ...
+
+    counter_add:
+    op add counter counter 3
+    jump counter_jump lessThan limit 1
+
+uCounter_add:
+op add uCounter uCounter 1
+ulocate ore core false iMine oX oY 0 0
+ulocate building core false 0 bcX bcY 0 bCore
+ucontrol within bcX bcY 26.5 bccDrop 0          #if unit near core, for auto drop
+jump bccDrop_false equal bccDrop false
+
+    ucontrol mine oX oY 0 0 0
+    ucontrol itemDrop bCore 999 0 0 0
+    sensor uMining @unit @mining
+    jump approach_ore equal uMining true
+
+        sensor uiType @unit @firstItem
+        jump approach_ore equal uiType null
+
+            sensor bciTotal bCore uiType            #dump item if buildingCoreItemTotal reached buildingcoreItemCapacity
+            jump approach_bCore lessThan bciTotal bciCap
+
+                ucontrol itemDrop @air 999 0 0 0
+                jump approach_bCore always 0 0
+
+bccDrop_false:
+sensor uMining @unit @mining
+jump check_item equal uMining false
+
+    sensor oX @unit @mineX
+    sensor oY @unit @mineY
+    op min vOre oX oY           #for prevent if vars given -1, 0, or unit not mining
+    jump approach_ore greaterThanEq vOre 0
+
+check_item:
+sensor uimTotal @unit iMine         #unitItemMineTotal
+sensor uiTotal @unit @totalItems            #unitItemTotal
+jump approach_bCore notEqual uimTotal uiTotal
+
+    jump mine_ore lessThan uimTotal uiCap
+
+approach_bCore:
+ucontrol approach bcX bcY 5 0 0
+end
+
+set "Logic_for_5_utype_miner_by:" "Username#3530"
+
+mine_ore:
+ucontrol mine oX oY 0 0 0
+
+approach_ore:
+ucontrol approach oX oY 2 0 0

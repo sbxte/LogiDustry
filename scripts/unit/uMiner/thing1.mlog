@@ -1,0 +1,1186 @@
+read Read cell1 63
+jump ccNVCFlV equal Read lRead
+set lRead Read
+op and quasar Read 1
+op and mega Read 2
+op and pulsar Read 4
+op and poly Read 8
+op and mono Read 16
+ccNVCFlV:
+set counter 0
+jump OzwmKYvN equal quasar false
+ubind @quasar
+jump OzwmKYvN equal @unit null
+OZsdgovd:
+set counter 0
+set uTag @unit
+kxmATiun:
+ubind @quasar
+sensor uFlag @unit @flag
+jump xebZjJAt notEqual uFlag 0
+op add counter counter 1
+xebZjJAt:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump QgMskKMH notEqual uFlag 0
+op add counter counter 1
+QgMskKMH:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump BiIXRrVU notEqual uFlag 0
+op add counter counter 1
+BiIXRrVU:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump SKNDdTau notEqual uFlag 0
+op add counter counter 1
+SKNDdTau:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump xllTEkFm notEqual uFlag 0
+op add counter counter 1
+xllTEkFm:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump ugncnGmC notEqual uFlag 0
+op add counter counter 1
+ugncnGmC:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump XcwnwYhu notEqual uFlag 0
+op add counter counter 1
+XcwnwYhu:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump gCeOAoxi notEqual uFlag 0
+op add counter counter 1
+gCeOAoxi:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump avWbrVkr notEqual uFlag 0
+op add counter counter 1
+avWbrVkr:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump aFFbOIRp notEqual uFlag 0
+op add counter counter 1
+aFFbOIRp:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump QeAfwVkv notEqual uFlag 0
+op add counter counter 1
+QeAfwVkv:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump gURnFzjC notEqual uFlag 0
+op add counter counter 1
+gURnFzjC:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump bgEWpmHt notEqual uFlag 0
+op add counter counter 1
+bgEWpmHt:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump hrepnCir notEqual uFlag 0
+op add counter counter 1
+hrepnCir:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump fZcKWvXL notEqual uFlag 0
+op add counter counter 1
+fZcKWvXL:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump tXMIzpJy notEqual uFlag 0
+op add counter counter 1
+tXMIzpJy:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump UPehBwVk notEqual uFlag 0
+op add counter counter 1
+UPehBwVk:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump NzSwjVfS notEqual uFlag 0
+op add counter counter 1
+NzSwjVfS:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump DkLecMPw notEqual uFlag 0
+op add counter counter 1
+DkLecMPw:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump PXlZRKDD notEqual uFlag 0
+op add counter counter 1
+PXlZRKDD:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump mwQtYpGk notEqual uFlag 0
+op add counter counter 1
+mwQtYpGk:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump RpdYiHas notEqual uFlag 0
+op add counter counter 1
+RpdYiHas:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump ZwXEakKV notEqual uFlag 0
+op add counter counter 1
+ZwXEakKV:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump wLkeSkvJ notEqual uFlag 0
+op add counter counter 1
+wLkeSkvJ:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump pSbFZgJc notEqual uFlag 0
+op add counter counter 1
+pSbFZgJc:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump XkSCFRbF notEqual uFlag 0
+op add counter counter 1
+XkSCFRbF:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump RmlldbCr notEqual uFlag 0
+op add counter counter 1
+RmlldbCr:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump ZIAhaVKa notEqual uFlag 0
+op add counter counter 1
+ZIAhaVKa:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump afrIXgLG notEqual uFlag 0
+op add counter counter 1
+afrIXgLG:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump TdCWkxhu notEqual uFlag 0
+op add counter counter 1
+TdCWkxhu:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump qqkcJUkN notEqual uFlag 0
+op add counter counter 1
+qqkcJUkN:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump UhITIWwm notEqual uFlag 0
+op add counter counter 1
+UhITIWwm:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump xLxddcGE notEqual uFlag 0
+op add counter counter 1
+xLxddcGE:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump yaPRBGXn notEqual uFlag 0
+op add counter counter 1
+yaPRBGXn:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump qlvKBAZZ notEqual uFlag 0
+op add counter counter 1
+qlvKBAZZ:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump iSOoXQZC notEqual uFlag 0
+op add counter counter 1
+iSOoXQZC:
+jump OzwmKYvN equal @unit uTag
+ubind @quasar
+sensor uFlag @unit @flag
+jump bhKegilX notEqual uFlag 0
+op add counter counter 1
+bhKegilX:
+jump OzwmKYvN equal @unit uTag
+sensor utDead uTag @dead
+jump OZsdgovd equal utDead true
+jump kxmATiun notEqual @unit uTag
+OzwmKYvN:
+write counter cell1 54
+set counter 0
+jump aBLJzLZU equal mega false
+ubind @mega
+jump aBLJzLZU equal @unit null
+ikuRyFNq:
+set counter 0
+set uTag @unit
+XSaoYoBC:
+ubind @mega
+sensor uFlag @unit @flag
+jump lnJgJRAO notEqual uFlag 0
+op add counter counter 1
+lnJgJRAO:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump lbUCxAhX notEqual uFlag 0
+op add counter counter 1
+lbUCxAhX:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump BmVyaTzs notEqual uFlag 0
+op add counter counter 1
+BmVyaTzs:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump HqBWjjWk notEqual uFlag 0
+op add counter counter 1
+HqBWjjWk:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump JaJezvGi notEqual uFlag 0
+op add counter counter 1
+JaJezvGi:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump eGHWiVNA notEqual uFlag 0
+op add counter counter 1
+eGHWiVNA:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump crcAYGsI notEqual uFlag 0
+op add counter counter 1
+crcAYGsI:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump wBmjAIkU notEqual uFlag 0
+op add counter counter 1
+wBmjAIkU:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump LqKnkIrQ notEqual uFlag 0
+op add counter counter 1
+LqKnkIrQ:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump TDsUNjdu notEqual uFlag 0
+op add counter counter 1
+TDsUNjdu:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump CnUVxbTH notEqual uFlag 0
+op add counter counter 1
+CnUVxbTH:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump OcGfMCsY notEqual uFlag 0
+op add counter counter 1
+OcGfMCsY:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump ZXFRIjuv notEqual uFlag 0
+op add counter counter 1
+ZXFRIjuv:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump vIZQPTqM notEqual uFlag 0
+op add counter counter 1
+vIZQPTqM:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump rPVBvfYW notEqual uFlag 0
+op add counter counter 1
+rPVBvfYW:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump cwNXqyOq notEqual uFlag 0
+op add counter counter 1
+cwNXqyOq:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump SonQyvRE notEqual uFlag 0
+op add counter counter 1
+SonQyvRE:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump cLoKZteD notEqual uFlag 0
+op add counter counter 1
+cLoKZteD:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump KCSjuuRD notEqual uFlag 0
+op add counter counter 1
+KCSjuuRD:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump pWsbCAXH notEqual uFlag 0
+op add counter counter 1
+pWsbCAXH:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump geXdDRhN notEqual uFlag 0
+op add counter counter 1
+geXdDRhN:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump cKEozGBj notEqual uFlag 0
+op add counter counter 1
+cKEozGBj:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump GieyTxrA notEqual uFlag 0
+op add counter counter 1
+GieyTxrA:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump cLpfraVK notEqual uFlag 0
+op add counter counter 1
+cLpfraVK:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump mTRiDjap notEqual uFlag 0
+op add counter counter 1
+mTRiDjap:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump PCvBfBKX notEqual uFlag 0
+op add counter counter 1
+PCvBfBKX:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump jtxXQPeQ notEqual uFlag 0
+op add counter counter 1
+jtxXQPeQ:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump aIqpWLfR notEqual uFlag 0
+op add counter counter 1
+aIqpWLfR:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump fqpjhZxQ notEqual uFlag 0
+op add counter counter 1
+fqpjhZxQ:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump dXWRkxry notEqual uFlag 0
+op add counter counter 1
+dXWRkxry:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump IClRjpCT notEqual uFlag 0
+op add counter counter 1
+IClRjpCT:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump aMpDJVjg notEqual uFlag 0
+op add counter counter 1
+aMpDJVjg:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump fyzhePIA notEqual uFlag 0
+op add counter counter 1
+fyzhePIA:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump lFgeJiCh notEqual uFlag 0
+op add counter counter 1
+lFgeJiCh:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump mzkPrkpw notEqual uFlag 0
+op add counter counter 1
+mzkPrkpw:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump fgbphdVg notEqual uFlag 0
+op add counter counter 1
+fgbphdVg:
+jump aBLJzLZU equal @unit uTag
+ubind @mega
+sensor uFlag @unit @flag
+jump tyyfvPWE notEqual uFlag 0
+op add counter counter 1
+tyyfvPWE:
+jump aBLJzLZU equal @unit uTag
+sensor utDead uTag @dead
+jump ikuRyFNq equal utDead true
+jump XSaoYoBC notEqual @unit uTag
+aBLJzLZU:
+write counter cell1 55
+set counter 0
+jump YFQozCdV equal pulsar false
+ubind @pulsar
+jump YFQozCdV equal @unit null
+wpxCQGWf:
+set counter 0
+set uTag @unit
+xkVHysvB:
+ubind @pulsar
+sensor uFlag @unit @flag
+jump OmuoSeAR notEqual uFlag 0
+op add counter counter 1
+OmuoSeAR:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump MZkMCczP notEqual uFlag 0
+op add counter counter 1
+MZkMCczP:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump ewAgmkzP notEqual uFlag 0
+op add counter counter 1
+ewAgmkzP:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump hVidyrev notEqual uFlag 0
+op add counter counter 1
+hVidyrev:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump HFrkasHX notEqual uFlag 0
+op add counter counter 1
+HFrkasHX:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump iRzoOqIg notEqual uFlag 0
+op add counter counter 1
+iRzoOqIg:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump fxNFfYAD notEqual uFlag 0
+op add counter counter 1
+fxNFfYAD:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump DzGcLtxd notEqual uFlag 0
+op add counter counter 1
+DzGcLtxd:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump IKDkPeCf notEqual uFlag 0
+op add counter counter 1
+IKDkPeCf:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump AQWIPVBS notEqual uFlag 0
+op add counter counter 1
+AQWIPVBS:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump nniprJzx notEqual uFlag 0
+op add counter counter 1
+nniprJzx:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump cAQSnmRy notEqual uFlag 0
+op add counter counter 1
+cAQSnmRy:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump lfbsVmSY notEqual uFlag 0
+op add counter counter 1
+lfbsVmSY:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump mjiEPMun notEqual uFlag 0
+op add counter counter 1
+mjiEPMun:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump BcbdQPQy notEqual uFlag 0
+op add counter counter 1
+BcbdQPQy:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump LtzWYJyU notEqual uFlag 0
+op add counter counter 1
+LtzWYJyU:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump MEhotqSC notEqual uFlag 0
+op add counter counter 1
+MEhotqSC:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump AzgOjjag notEqual uFlag 0
+op add counter counter 1
+AzgOjjag:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump cfCxLfzB notEqual uFlag 0
+op add counter counter 1
+cfCxLfzB:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump MoOdKqJh notEqual uFlag 0
+op add counter counter 1
+MoOdKqJh:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump roNNhJgI notEqual uFlag 0
+op add counter counter 1
+roNNhJgI:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump jHAvuvam notEqual uFlag 0
+op add counter counter 1
+jHAvuvam:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump vYvzFXDR notEqual uFlag 0
+op add counter counter 1
+vYvzFXDR:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump CqmVwJyh notEqual uFlag 0
+op add counter counter 1
+CqmVwJyh:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump MidItosy notEqual uFlag 0
+op add counter counter 1
+MidItosy:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump nmmvOlpC notEqual uFlag 0
+op add counter counter 1
+nmmvOlpC:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump cchldlBe notEqual uFlag 0
+op add counter counter 1
+cchldlBe:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump MvBEUmnW notEqual uFlag 0
+op add counter counter 1
+MvBEUmnW:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump ejEiEXOB notEqual uFlag 0
+op add counter counter 1
+ejEiEXOB:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump WNQzpZTd notEqual uFlag 0
+op add counter counter 1
+WNQzpZTd:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump jefNtLDL notEqual uFlag 0
+op add counter counter 1
+jefNtLDL:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump ypXQHpfm notEqual uFlag 0
+op add counter counter 1
+ypXQHpfm:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump EaMoidgD notEqual uFlag 0
+op add counter counter 1
+EaMoidgD:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump FfNNWPrm notEqual uFlag 0
+op add counter counter 1
+FfNNWPrm:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump qCAJwrML notEqual uFlag 0
+op add counter counter 1
+qCAJwrML:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump hbCHnCHp notEqual uFlag 0
+op add counter counter 1
+hbCHnCHp:
+jump YFQozCdV equal @unit uTag
+ubind @pulsar
+sensor uFlag @unit @flag
+jump sAsHHqAA notEqual uFlag 0
+op add counter counter 1
+sAsHHqAA:
+jump YFQozCdV equal @unit uTag
+sensor utDead uTag @dead
+jump wpxCQGWf equal utDead true
+jump xkVHysvB notEqual @unit uTag
+YFQozCdV:
+write counter cell1 56
+set counter 0
+jump WFvERQrJ equal poly false
+ubind @poly
+jump WFvERQrJ equal @unit null
+lmEUosCm:
+set counter 0
+set uTag @unit
+OSVNOiFV:
+ubind @poly
+sensor uFlag @unit @flag
+jump nDKEFLKc notEqual uFlag 0
+op add counter counter 1
+nDKEFLKc:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump FmMDnYDo notEqual uFlag 0
+op add counter counter 1
+FmMDnYDo:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump AoFKyfff notEqual uFlag 0
+op add counter counter 1
+AoFKyfff:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump GZXKJfyO notEqual uFlag 0
+op add counter counter 1
+GZXKJfyO:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump kFMcoYmX notEqual uFlag 0
+op add counter counter 1
+kFMcoYmX:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump nFbDtYAp notEqual uFlag 0
+op add counter counter 1
+nFbDtYAp:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump zddAnwBv notEqual uFlag 0
+op add counter counter 1
+zddAnwBv:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump pcmZRlZp notEqual uFlag 0
+op add counter counter 1
+pcmZRlZp:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump wTdLatzf notEqual uFlag 0
+op add counter counter 1
+wTdLatzf:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump IyQiuJWA notEqual uFlag 0
+op add counter counter 1
+IyQiuJWA:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump HjjABRMl notEqual uFlag 0
+op add counter counter 1
+HjjABRMl:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump WRqpgmyi notEqual uFlag 0
+op add counter counter 1
+WRqpgmyi:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump OSRtqjOg notEqual uFlag 0
+op add counter counter 1
+OSRtqjOg:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump yaZpYAqf notEqual uFlag 0
+op add counter counter 1
+yaZpYAqf:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump gnslkpSU notEqual uFlag 0
+op add counter counter 1
+gnslkpSU:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump YIcXdbrh notEqual uFlag 0
+op add counter counter 1
+YIcXdbrh:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump UFszaZra notEqual uFlag 0
+op add counter counter 1
+UFszaZra:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump SWjpQJzV notEqual uFlag 0
+op add counter counter 1
+SWjpQJzV:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump LyaYySyS notEqual uFlag 0
+op add counter counter 1
+LyaYySyS:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump wglasfUE notEqual uFlag 0
+op add counter counter 1
+wglasfUE:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump DCScHlFa notEqual uFlag 0
+op add counter counter 1
+DCScHlFa:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump itDjrTjU notEqual uFlag 0
+op add counter counter 1
+itDjrTjU:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump vJFnJGGP notEqual uFlag 0
+op add counter counter 1
+vJFnJGGP:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump kRaqPSrK notEqual uFlag 0
+op add counter counter 1
+kRaqPSrK:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump oachXgXc notEqual uFlag 0
+op add counter counter 1
+oachXgXc:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump zDxyfNJT notEqual uFlag 0
+op add counter counter 1
+zDxyfNJT:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump PPGdljCl notEqual uFlag 0
+op add counter counter 1
+PPGdljCl:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump muLcpJDH notEqual uFlag 0
+op add counter counter 1
+muLcpJDH:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump ciOhKJLR notEqual uFlag 0
+op add counter counter 1
+ciOhKJLR:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump uWLopxlX notEqual uFlag 0
+op add counter counter 1
+uWLopxlX:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump UwijBNIY notEqual uFlag 0
+op add counter counter 1
+UwijBNIY:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump cBRPheQw notEqual uFlag 0
+op add counter counter 1
+cBRPheQw:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump ZislRoBi notEqual uFlag 0
+op add counter counter 1
+ZislRoBi:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump OidyfWzO notEqual uFlag 0
+op add counter counter 1
+OidyfWzO:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump CoYEJfax notEqual uFlag 0
+op add counter counter 1
+CoYEJfax:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump ZHHUspyz notEqual uFlag 0
+op add counter counter 1
+ZHHUspyz:
+jump WFvERQrJ equal @unit uTag
+ubind @poly
+sensor uFlag @unit @flag
+jump IFslDwdZ notEqual uFlag 0
+op add counter counter 1
+IFslDwdZ:
+jump WFvERQrJ equal @unit uTag
+sensor utDead uTag @dead
+jump lmEUosCm equal utDead true
+jump OSVNOiFV notEqual @unit uTag
+WFvERQrJ:
+write counter cell1 57
+set counter 0
+jump nxqYRupd equal mono false
+ubind @mono
+jump nxqYRupd equal @unit null
+cefvIjAY:
+set counter 0
+set uTag @unit
+KwYCpsov:
+ubind @mono
+sensor uFlag @unit @flag
+jump LqvUhLbV notEqual uFlag 0
+op add counter counter 1
+LqvUhLbV:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump jxMStWlO notEqual uFlag 0
+op add counter counter 1
+jxMStWlO:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump hrxQeucU notEqual uFlag 0
+op add counter counter 1
+hrxQeucU:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump hqHIESdS notEqual uFlag 0
+op add counter counter 1
+hqHIESdS:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump BZrWfauO notEqual uFlag 0
+op add counter counter 1
+BZrWfauO:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump gvbiqOGG notEqual uFlag 0
+op add counter counter 1
+gvbiqOGG:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump DUDhnvbG notEqual uFlag 0
+op add counter counter 1
+DUDhnvbG:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump tIAYySbl notEqual uFlag 0
+op add counter counter 1
+tIAYySbl:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump XZeVaFDI notEqual uFlag 0
+op add counter counter 1
+XZeVaFDI:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump QjAJskrE notEqual uFlag 0
+op add counter counter 1
+QjAJskrE:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump rOmBmGit notEqual uFlag 0
+op add counter counter 1
+rOmBmGit:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump kaoEgXaH notEqual uFlag 0
+op add counter counter 1
+kaoEgXaH:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump viAegWyN notEqual uFlag 0
+op add counter counter 1
+viAegWyN:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump OYvONSCo notEqual uFlag 0
+op add counter counter 1
+OYvONSCo:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump mpNBulWr notEqual uFlag 0
+op add counter counter 1
+mpNBulWr:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump WoAsCeeY notEqual uFlag 0
+op add counter counter 1
+WoAsCeeY:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump vdvpHOOU notEqual uFlag 0
+op add counter counter 1
+vdvpHOOU:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump IOzerOMG notEqual uFlag 0
+op add counter counter 1
+IOzerOMG:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump ZtTQKbkF notEqual uFlag 0
+op add counter counter 1
+ZtTQKbkF:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump FwzYYbUi notEqual uFlag 0
+op add counter counter 1
+FwzYYbUi:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump lvSzEnKb notEqual uFlag 0
+op add counter counter 1
+lvSzEnKb:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump ohoDVSzc notEqual uFlag 0
+op add counter counter 1
+ohoDVSzc:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump NSFhtoLL notEqual uFlag 0
+op add counter counter 1
+NSFhtoLL:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump KIYfcfwQ notEqual uFlag 0
+op add counter counter 1
+KIYfcfwQ:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump aYdzhJEN notEqual uFlag 0
+op add counter counter 1
+aYdzhJEN:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump jRGDfCRo notEqual uFlag 0
+op add counter counter 1
+jRGDfCRo:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump tcAFdcYQ notEqual uFlag 0
+op add counter counter 1
+tcAFdcYQ:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump nleJMEhz notEqual uFlag 0
+op add counter counter 1
+nleJMEhz:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump JbAitvGg notEqual uFlag 0
+op add counter counter 1
+JbAitvGg:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump FVRaHgKT notEqual uFlag 0
+op add counter counter 1
+FVRaHgKT:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump jrokQxhU notEqual uFlag 0
+op add counter counter 1
+jrokQxhU:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump QsjNQtOw notEqual uFlag 0
+op add counter counter 1
+QsjNQtOw:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump NMEJosgr notEqual uFlag 0
+op add counter counter 1
+NMEJosgr:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump ZdTyNXhA notEqual uFlag 0
+op add counter counter 1
+ZdTyNXhA:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump azsnSuln notEqual uFlag 0
+op add counter counter 1
+azsnSuln:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump mHqOKFoV notEqual uFlag 0
+op add counter counter 1
+mHqOKFoV:
+jump nxqYRupd equal @unit uTag
+ubind @mono
+sensor uFlag @unit @flag
+jump nrcBmXmK notEqual uFlag 0
+op add counter counter 1
+nrcBmXmK:
+jump nxqYRupd equal @unit uTag
+sensor utDead uTag @dead
+jump cefvIjAY equal utDead true
+jump KwYCpsov notEqual @unit uTag
+nxqYRupd:
+write counter cell1 58
+set "Logic_for_5_utype_miner_by:" "�?Username#3530"
+set "Logic_for_5_utype_miner_by:" "Zxtej"
