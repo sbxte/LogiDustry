@@ -5,8 +5,8 @@ print "-- Edit above --"
 printflush message1
 
 # Initialization message
-# print "[sky]Unit Upgrader vDev\n[green]by SBytes\n\n[][]Initializing..."
-# print "[sky]Unit Upgrader vDev\n[green]by SBytes[][]"
+# print "[sky]Unit Upgrader v1.0\n[green]by SBytes\n\n[][]Initializing..."
+# print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]"
 # printflush message1
 
 # Cache set
@@ -59,7 +59,7 @@ set cachedReconType reconType
 
 # Tier 1
 jump tier_2 notEqual reconType @additive-reconstructor
-    set printInfo "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,  = ,  = \n = ,  = "
+    set printInfo "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,  = ,  = \n = ,  = "
     print printInfo
 
     jump t1_dagger notEqual sorterConfig @copper
@@ -110,7 +110,7 @@ jump tier_2 notEqual reconType @additive-reconstructor
 # Tier 2
 tier_2:
 jump tier_3 notEqual reconType @multiplicative-reconstructor
-    set printInfo "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,  = ,  = \n = ,  = "
+    set printInfo "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,  = ,  = \n = ,  = "
     print printInfo
 
     # Mace
@@ -157,7 +157,7 @@ jump tier_3 notEqual reconType @multiplicative-reconstructor
 # Tier 3
 tier_3:
 jump tier_4 notEqual reconType @exponential-reconstructor
-    set printInfo "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = ,  = ,  = "
+    set printInfo "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = ,  = ,  = "
     print printInfo
 
 
@@ -211,8 +211,8 @@ jump tier_4 notEqual reconType @exponential-reconstructor
 # Tier 4
 tier_4:
 # jump print_sorterNull notEqual reconType @tetrative-reconstructor
-    # print "[sky]unit Upgrader vDev\n[green]by SBytes[][]\n\nUse sorter  to select Unit\n = ,  = ,  = ,\n = ,  = ,  = "
-    set printInfo "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = "
+    # print "[sky]unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select Unit\n = ,  = ,  = ,\n = ,  = ,  = "
+    set printInfo "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\nUse sorter  to select unit\n = ,  = ,  = ,\n = ,  = "
     print printInfo
 
 
@@ -260,23 +260,23 @@ tier_4:
 # ------------------- Prints --------------------
 # -----------------------------------------------
 print_reconstructorError:
-    print "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\n[#ff]⚠ Reconstructor Error!\n[]> Link processor to a single reconstructor"
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[#ff]⚠ Reconstructor Error!\n[]> Link processor to a single reconstructor"
     printflush message1
     jump configCheck always 0
 
 print_sorterError:
-    print "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\n[#ff]⚠ Sorter Error!\n[]> Link processor to a single sorter (sorter1) and select an item representing the needed Unit"
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[#ff]⚠ Sorter Error!\n[]> Link processor to a single sorter (sorter1) and select an item representing the needed Unit"
     printflush message1
     jump configCheck always 0
 
 print_sorterNull:
-    # print "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\n[magenta]..Disabled\n[]> No units selected in sorter"
+    # print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[magenta]..Disabled\n[]> No units selected in sorter"
     print "\n\n[magenta] Disabled\n[white]> No units selected in sorter"
     printflush message1
     jump configCheck always 0
 
 # print_messageError:
-#     print "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\n[#ff]⚠ Message Error!\n[]> Link processor to a single message block (message1) for selection information"
+#     print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[#ff]⚠ Message Error!\n[]> Link processor to a single message block (message1) for selection information"
 #     printflush message1
 #     jump configCheck always 0
 
@@ -543,11 +543,11 @@ jump configCheck always 0
 
 # Print messages
 print_conDead:
-    print "[sky]Unit Upgrader vDev\n[green]by SBytes[][]\n\n[#ff]⚠ No Reconstructor Linked"
+    print "[sky]Unit Upgrader v1.0\n[green]by SBytes[][]\n\n[#ff]⚠ No Reconstructor Linked"
     printflush message1
     jump configCheck always 0
 
 jump configCheck always 0
 
 # Credits
-print "All Tier Upgrader vDev by SBytes"
+print "All Tier Upgrader v1.0 by SBytes"
