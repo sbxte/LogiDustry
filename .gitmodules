@@ -1,3 +1,6 @@
 [submodule "submodules/BalaM314"]
 	path = submodules/BalaM314
 	url = https://github.com/BalaM314/mlog
+[submodule "submodules/mlogx"]
+	path = submodules/mlogx
+	url = https://github.com/BalaM314/mlogx
