@@ -1,7 +1,7 @@
 # --------------------- Information ---------------------
 
-# print "Experimental Dev Version! DO NOT USE!!"
-print "Supply Crew v2.6.3 by SBytes"
+print "Supply Crew Dev Version! DO NOT PUBLICLY USE!"
+# print "Supply Crew v2.6.3 by SBytes"
 print "> The micro item retriever"
 print "#DethroneAttem83"
 print "------------------------------------------------------------------------------------"
@@ -13,6 +13,8 @@ print "-------------------------------------------------------------------------
 
 # --------------------- Default Settings ---------------------
 
+print "--- General Settings ---"
+
 print "Unit type and amount, max 9. Setting above 9 or below 1 will halt processor"
 set unitType @flare
 set unitAmount 1
@@ -23,21 +25,35 @@ set minRes 2e3
 print "Items to retrieve from core and their max amount"
 set item1 null
 set max1 0
+set prio1 1
 set item2 null
 set max2 0
+set prio2 1
 set item3 null
 set max3 0
+set prio3 1
 set item4 null
 set max4 0
+set prio4 1
 
 print "Items to return to core and their minimum amount before returning"
 set item5 null
 set min1 0
+set prio5 2
 set item6 null
 set min2 0
+set prio6 2
 
-print "Maximum inactive time before unbinding units in seconds"
+
+
+print "--- Advanced settings ---"
+print "Warning: Do not change these default settings unless you absolutely know what you're doing."
+
+print "Maximum inactive time before unbinding units (in seconds)"
 set maxInactiveTime 20
+
+print "Maximum drop take attempts"
+set dropTake_maxAttempts 1
 
 # --------------------- Debug ---------------------
 # set unitType @flare
@@ -63,8 +79,9 @@ set editDone 0
 editNotDone:
 jump editNotDone equal editDone 0
 
-print "-- Edit above --"
+print "--- Edit above ---"
 print "No touching stuff below :P"
+
 # --------------------- End of Settings ---------------------
 
 # -------------------- Setup and precalc --------------------
@@ -157,6 +174,7 @@ jump itemSel_R1 equal max1 0
         sensor have1 destination item1
         op sub need1 max1 have1
         op max need1 0 need1
+        op mul need1 need1 prio1
         jump itemSel_1minRes_end always 0
     itemSel_1minRes:
         set need1 0
@@ -169,6 +187,7 @@ jump itemSel_R1 equal max2 0
         sensor have2 destination item2
         op sub need2 max2 have2
         op max need2 0 need2
+        op mul need2 need2 prio2
         jump itemSel_2minRes_end always 0
     itemSel_2minRes:
         set need2 0
@@ -182,6 +201,7 @@ jump itemSel_R1 equal max3 0
         sensor have3 destination item3
         op sub need3 max3 have3
         op max need3 0 need3
+        op mul need3 need3 prio3
         jump itemSel_3minRes_end always 0
     itemSel_3minRes:
         set need3 0
@@ -194,6 +214,7 @@ jump itemSel_R1 equal max4 0
         sensor have4 destination item4
         op sub need4 max4 have4
         op max need4 0 need4
+        op mul need4 need4 prio4
         jump itemSel_4minRes_end always 0
     itemSel_4minRes:
         set need4 0
@@ -202,15 +223,17 @@ jump itemSel_R1 equal max4 0
 itemSel_R1:
 jump itemSel_end equal item5 null
     sensor have5 destination item5
-    op sub needR1 have5 min1
-    op max needR1 0 needR1
-    op add needTotal needTotal needR1
+    op sub need5 have5 min1
+    op max need5 0 need5
+    op mul need5 need5 prio5
+    op add needTotal needTotal need5
 itemSel_R2:
 jump itemSel_end equal item6 null
     sensor have6 destination item6
-    op sub needR2 have6 min2
-    op max needR2 0 needR2
-    op add needTotal needTotal needR2
+    op sub need6 have6 min2
+    op max need6 0 need6
+    op mul need6 need6 prio6
+    op add needTotal needTotal need6
 itemSel_end:
 
 
@@ -240,9 +263,9 @@ op add need3P need3P need2P
 op div need4P need4 needTotal
 op add need4P need4P need3P
 
-op div need5P needR1 needTotal
+op div need5P need5 needTotal
 op add need5P need5P need4P
-op div need6P needR2 needTotal
+op div need6P need6 needTotal
 op add need6P need6P need5P
 
 
@@ -304,6 +327,10 @@ ctrlLoop:
 
         # Bind new unit
         bind:
+
+        op shl unitsDropTaken_bitSel 1 unitIndex                        # make sure to mark them as dropTaken
+        op or unitsDropTaken unitsDropTaken unitsDropTaken_bitSel       # or else they might get stuck
+
         op add bindTillTime @time 333 # 5 / 120 * 1e3 * 8
         bind_loop:
             jump bind_decCounter greaterThanEq @time bindTillTime # to not waste time on a single unit
@@ -349,8 +376,8 @@ ctrlLoop:
             jump bind_clearItems_skip equal unitItem item3
             jump bind_clearItems_skip equal unitItem item4
                 # Bit hacking, set the nth bit
-                op shl unwantedItems_bitSet 1 unitIndex
-                op or unwantedItems unwantedItems unwantedItems_bitSet
+                op shl unwantedItems_bitSel 1 unitIndex
+                op or unwantedItems unwantedItems unwantedItems_bitSel
 
                 # Drop item to core
                 ulocate building core 0 0 coreX coreY 0 core
@@ -359,9 +386,9 @@ ctrlLoop:
                 jump bind_decCounter always 0
             bind_clearItems_skip:
                 # Bit hacking, clear the nth bit
-                op shl unwantedItems_bitSet 1 unitIndex
-                op not unwantedItems_bitSet unwantedItems_bitSet 0
-                op and unwantedItems unwantedItems unwantedItems_bitSet
+                op shl unwantedItems_bitSel 1 unitIndex
+                op not unwantedItems_bitSel unwantedItems_bitSel 0
+                op and unwantedItems unwantedItems unwantedItems_bitSel
                 jump bind_end always 0
 
         # Decrement counted units
@@ -415,7 +442,7 @@ ctrlLoop:
 
                 # Limit to only n attempts
                 op add dropTake_attempts dropTake_attempts 1
-                jump ctrl_dropTaken greaterThan dropTake_attempts 1
+                jump ctrl_dropTaken greaterThan dropTake_attempts dropTake_maxAttempts
 
                 # Bind status
                 sensor unitDead @unit @dead
@@ -442,15 +469,26 @@ ctrlLoop:
             # Reset drop take attempts
             set dropTake_attempts 0
 
+            # Check for invalid item
+            sensor unitItem @unit @firstItem
+            jump ctrl_drop_invalidItem_skip equal unitItem item1
+            jump ctrl_drop_invalidItem_skip equal unitItem item2
+            jump ctrl_drop_invalidItem_skip equal unitItem item3
+            jump ctrl_drop_invalidItem_skip equal unitItem item4
+                ucontrol itemDrop @air 999
+                jump ctrl_drop_sendBack always 0
+            ctrl_drop_invalidItem_skip:
+
             ctrl_drop_itemDrop:
 
             ucontrol itemDrop destination 999
             sensor unitItem @unit @firstItem
             jump ctrl_drop_sendBack equal unitItem null
             # jump ctrl_end equal unitItem null
+
                 # Limit to only n attempts
                 op add dropTake_attempts dropTake_attempts 1
-                jump ctrl_dropTaken greaterThan dropTake_attempts 1
+                jump ctrl_dropTaken greaterThan dropTake_attempts dropTake_maxAttempts
 
                 # Bind status
                 sensor unitDead @unit @dead
@@ -473,7 +511,7 @@ ctrlLoop:
     # Take item (from destination return to core)
     ctrl_Rtake:
         ucontrol within destX destY destWithinRadius within
-        jump ctrl_rTake_notWithin equal within 0
+        jump ctrl_Rtake_notWithin equal within 0
             # Reset drop take attempts
             set dropTake_attempts 0
 
@@ -492,7 +530,7 @@ ctrlLoop:
 
                 # Limit to only n attempts
                 op add dropTake_attempts dropTake_attempts 1
-                jump ctrl_dropTaken greaterThan dropTake_attempts 1
+                jump ctrl_dropTaken greaterThan dropTake_attempts dropTake_maxAttempts
 
                 # Bind status
                 sensor unitDead @unit @dead
@@ -508,7 +546,7 @@ ctrlLoop:
             ucontrol approach coreX coreY coreApproachRadius
             jump ctrl_dropTaken always 0
 
-        ctrl_rTake_notWithin:
+        ctrl_Rtake_notWithin:
         ucontrol approach destX destY destApproachRadius
         jump ctrl_end always 0
 
@@ -686,8 +724,9 @@ jump start always 0
 
 ### --------------------- CREDITS ---------------------
 
-# print "Supply Crew vDev by SBytes"
-# print "DO NOT USE!"
-print "Supply Crew v2.6.3 by SBytes"
-print "Changelog:"
-print "- Use @controller for regular checks and @controlled for binding."
+print "Supply Crew Dev by SBytes"
+print "Not for public use!"
+# print "Supply Crew v2.6.3 by SBytes"
+# print "Changelog:"
+# print "Added item priority coefficients. Return items are by default prioritized."
+# print "Configurable max drop take attempts"
