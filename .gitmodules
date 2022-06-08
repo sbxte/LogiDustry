@@ -1,0 +1,3 @@
+[submodule "submodules/mlog"]
+	path = submodules/mlog
+	url = https://github.com/BalaM314/mlog
