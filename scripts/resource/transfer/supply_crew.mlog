@@ -276,11 +276,9 @@ ulocate building core 0 0 coreX coreY 0 core
 sensor coreSize core @size
 jump coreSize_skip equal coreSize cachedCoreSize # Check for core size
     set cachedCoreSize coreSize                  # Recalculate approach and within radius if necessary
-    op mul coreApproachRadius 3 coreSize
-    op add coreApproachRadius 45 coreApproachRadius
-    op div coreApproachRadius coreApproachRadius 8
-    set coreWithinRadius coreApproachRadius
-    op sub coreApproachRadius coreApproachRadius 0.5
+    op mul coreWithinRadius 0.375 coreSize
+    op add coreWithinRadius 5.625 coreWithinRadius
+    op sub coreApproachRadius coreWithinRadius 0.5
 coreSize_skip:
 
 # Reset item index
