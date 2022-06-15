@@ -13,16 +13,18 @@ print "-------------------------------------------------------------------------
 
 # --------------------- Default Settings ---------------------
 
-print "--- General Settings ---"
+print "--- GENERAL SETTINGS ---"
 
 print "Unit type and amount, max 9. Setting above 9 or below 1 will halt processor"
 set unitType @flare
 set unitAmount 1
 
 print "Minimum resources in core before taking items (setting to 0 disables it)"
+print "Recommended minRes setting: 2k~5k"
 set minRes 2e3
 
 print "Items to retrieve from core and their max amount"
+print "Recommended max settings: 50~100"
 set item1 null
 set max1 0
 set item2 null
@@ -33,17 +35,23 @@ set item4 null
 set max4 0
 
 print "Items to return to core and their minimum amount before returning"
+print "Recommended min settings: 0~20"
 set item5 null
 set min1 0
 set item6 null
 set min2 0
 
 
+print "Set editDone to 1 if you are finished linking and setting everything up"
+print "If editdone is 0, the logic will halt."
+set editDone 0
 
-print "--- Advanced settings ---"
-print "Warning: Do not change these default settings unless you absolutely know what you're doing."
 
-print "Priority Constants, each item type distribution will be risen (exponent) by these constants"
+print "--- ADVANCED SETTINGS ---"
+print "Warning: Do not change these default settings unless you know what you're doing."
+
+print "Priority Constants, each item type distribution will be exponentiated by these constants"
+print "Recommended prio settings: 0.5~2 (these are exponent values, small differences do a lot)"
 set prio1 0.75
 set prio2 0.75
 set prio3 0.75
@@ -52,9 +60,11 @@ set prio5 0.75
 set prio6 0.75
 
 print "Maximum inactive time before unbinding units (in seconds)"
-set maxInactiveTime 20
+print "Recommended inactive time setting: 5~20"
+set maxInactiveTime 10
 
 print "Maximum drop take attempts"
+print "Recommended max attempts setting: 1~4"
 set dropTake_maxAttempts 2
 
 # --------------------- Debug ---------------------
@@ -81,21 +91,19 @@ set dropTake_maxAttempts 2
 # set min2 0
 # set prio6 0.75
 
-print "Set editDone to 1 if you are finished linking and setting everything up"
 # set editDone 1
-set editDone 0
-editNotDone:
-jump editNotDone equal editDone 0
+jump halt equal editDone 0
 
-print "--- Edit above ---"
+print "--------- END OF SETTINGS ---------"
 print "No touching stuff below :P"
+print "Do not blame me if you decide to modify things below and it ends up not working"
 
 # --------------------- End of Settings ---------------------
 
 # -------------------- Setup and precalc --------------------
 
-jump 0 greaterThanEq unitAmount 10     # Make sure amount is between 1 and 9
-jump 0 lessThanEq unitAmount 0
+jump halt greaterThanEq unitAmount 10     # Make sure amount is between 1 and 9
+jump halt lessThanEq unitAmount 0
 
 op mul maxInactiveTime maxInactiveTime 1e3       # Convert seconds to milliseconds
 
@@ -796,6 +804,11 @@ unbind:
     ucontrol move coreX coreY
 
 jump start always 0
+
+
+### ------------ Halting; Terminate ------------
+halt:
+jump halt always 0
 
 
 ### --------------------- CREDITS ---------------------
