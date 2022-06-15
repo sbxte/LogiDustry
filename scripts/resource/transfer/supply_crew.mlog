@@ -25,29 +25,31 @@ set minRes 2e3
 print "Items to retrieve from core and their max amount"
 set item1 null
 set max1 0
-set prio1 1
 set item2 null
 set max2 0
-set prio2 1
 set item3 null
 set max3 0
-set prio3 1
 set item4 null
 set max4 0
-set prio4 1
 
 print "Items to return to core and their minimum amount before returning"
 set item5 null
 set min1 0
-set prio5 2
 set item6 null
 set min2 0
-set prio6 2
 
 
 
 print "--- Advanced settings ---"
 print "Warning: Do not change these default settings unless you absolutely know what you're doing."
+
+print "Priority Constants, each item type distribution will be risen (exponent) by these constants"
+set prio1 0.75
+set prio2 0.75
+set prio3 0.75
+set prio4 0.75
+set prio5 0.75
+set prio6 0.75
 
 print "Maximum inactive time before unbinding units (in seconds)"
 set maxInactiveTime 20
@@ -57,27 +59,27 @@ set dropTake_maxAttempts 2
 
 # --------------------- Debug ---------------------
 # set unitType @flare
-# set unitAmount 6
+# set unitAmount 9
 
 # set item1 @sand
 # set max1 50
-# set prio1 1
+# set prio1 0.75
 # set item2 @lead
 # set max2 50
-# set prio2 1
+# set prio2 0.75
 # set item3 null
 # set max3 0
-# set prio3 1
+# set prio3 0.75
 # set item4 null
 # set max4 0
-# set prio4 1
+# set prio4 0.75
 
 # set item5 @metaglass
 # set min1 0
-# set prio5 2
+# set prio5 0.75
 # set item6 null
 # set min2 0
-# set prio6 2
+# set prio6 0.75
 
 print "Set editDone to 1 if you are finished linking and setting everything up"
 # set editDone 1
@@ -180,7 +182,7 @@ jump itemDist_R1 equal max1 0
         sensor have1 destination item1
         op sub need1 max1 have1
         op max need1 0 need1
-        op mul need1 need1 prio1
+        op pow need1 need1 prio1
         jump itemDist_1minRes_end always 0
     itemDist_1minRes:
         set need1 0
@@ -193,7 +195,7 @@ jump itemDist_R1 equal max2 0
         sensor have2 destination item2
         op sub need2 max2 have2
         op max need2 0 need2
-        op mul need2 need2 prio2
+        op pow need2 need2 prio2
         jump itemDist_2minRes_end always 0
     itemDist_2minRes:
         set need2 0
@@ -207,7 +209,7 @@ jump itemDist_R1 equal max3 0
         sensor have3 destination item3
         op sub need3 max3 have3
         op max need3 0 need3
-        op mul need3 need3 prio3
+        op pow need3 need3 prio3
         jump itemDist_3minRes_end always 0
     itemDist_3minRes:
         set need3 0
@@ -220,7 +222,7 @@ jump itemDist_R1 equal max4 0
         sensor have4 destination item4
         op sub need4 max4 have4
         op max need4 0 need4
-        op mul need4 need4 prio4
+        op pow need4 need4 prio4
         jump itemDist_4minRes_end always 0
     itemDist_4minRes:
         set need4 0
@@ -231,14 +233,14 @@ jump itemDist_end equal item5 null
     sensor have5 destination item5
     op sub need5 have5 min1
     op max need5 0 need5
-    op mul need5 need5 prio5
+    op pow need5 need5 prio5
     op add needTotal needTotal need5
 itemDist_R2:
 jump itemDist_end equal item6 null
     sensor have6 destination item6
     op sub need6 have6 min2
     op max need6 0 need6
-    op mul need6 need6 prio6
+    op pow need6 need6 prio6
     op add needTotal needTotal need6
 itemDist_end:
 
@@ -484,7 +486,7 @@ ctrlLoop:
             ucontrol itemTake core itemToTake 999
 
             sensor unitItem @unit @firstItem
-            jump ctrl_take_sendBack notEqual unitItem null
+            jump ctrl_take_next notEqual unitItem null
             # jump ctrl_end notEqual unitItem null
 
                 # Limit to only n attempts
@@ -501,7 +503,7 @@ ctrlLoop:
                 jump ctrl_end always 0
 
             # # Immediately send back to save time
-            ctrl_take_sendBack:
+            ctrl_take_next:
                 # set the 3 bits at the unit index
                 op shl unitTasks_bitSet 0b111 unitTaskI
                 op not unitTasks_bitSet unitTasks_bitSet 0
@@ -526,14 +528,14 @@ ctrlLoop:
             jump ctrl_drop_invalidItem_skip equal unitItem item3
             jump ctrl_drop_invalidItem_skip equal unitItem item4
                 ucontrol itemDrop @air 999
-                jump ctrl_drop_sendBack always 0
+                jump ctrl_drop_next always 0
             ctrl_drop_invalidItem_skip:
 
             ctrl_drop_itemDrop:
 
             ucontrol itemDrop destination 999
             sensor unitItem @unit @firstItem
-            jump ctrl_drop_sendBack equal unitItem null
+            jump ctrl_drop_next equal unitItem null
             # jump ctrl_end equal unitItem null
 
                 # Limit to only n attempts
@@ -550,12 +552,13 @@ ctrlLoop:
                 jump ctrl_end always 0
 
             # Immediately send back to save time
-            ctrl_drop_sendBack:
+            ctrl_drop_next:
                 # clear the 3 bits at the unit index
                 op shl unitTasks_bitSet 0b111 unitTaskI
                 op not unitTasks_bitSet unitTasks_bitSet 0
                 op and unitTasks unitTasks unitTasks_bitSet 0
-            ucontrol approach coreX coreY coreApproachRadius
+            jump ctrl_markCalcItemDist greaterThan unitItemI need4P
+                ucontrol approach coreX coreY coreApproachRadius
             jump ctrl_markCalcItemDist always 0
 
     # Take item (from destination return to core)
@@ -592,7 +595,7 @@ ctrlLoop:
             ucontrol itemTake destination itemToTake 999
 
             sensor unitItem @unit @firstItem
-            jump ctrl_Rtake_sendBack notEqual unitItem null
+            jump ctrl_Rtake_next notEqual unitItem null
             # jump ctrl_end notEqual unitItem null
 
                 # Limit to only n attempts
@@ -609,7 +612,7 @@ ctrlLoop:
                 jump ctrl_end always 0
 
             # Immediately send back to save time
-            ctrl_Rtake_sendBack:
+            ctrl_Rtake_next:
                 # set the 3 bits at the unit index
                 op shl unitTasks_bitSet 0b111 unitTaskI
                 op not unitTasks_bitSet unitTasks_bitSet 0
@@ -631,7 +634,7 @@ ctrlLoop:
 
             ucontrol itemDrop core 999
             sensor unitItem @unit @firstItem
-            jump ctrl_Rdrop_sendBack equal unitItem null
+            jump ctrl_Rdrop_next equal unitItem null
             # jump ctrl_end equal unitItem null
 
                 # Limit to only n attempts
@@ -648,12 +651,14 @@ ctrlLoop:
                 jump ctrl_end always 0
 
         # Immediately send back to save time
-        ctrl_Rdrop_sendBack:
+        ctrl_Rdrop_next:
             # clear the 3 bits at the unit index
             op shl unitTasks_bitSet 0b111 unitTaskI
             op not unitTasks_bitSet unitTasks_bitSet 0
             op and unitTasks unitTasks unitTasks_bitSet 0
-        ucontrol approach destX destY destApproachRadius
+        jump ctrl_markCalcItemDist lessThanEq unitItemI need4P
+            ucontrol approach destX destY destApproachRadius
+        # jump ctrl_markCalcItemDist always 0
 
     ctrl_markCalcItemDist:
         op shl unitsCalcItemDist_bitSel 1 unitIndex
