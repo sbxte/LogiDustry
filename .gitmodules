@@ -1,9 +1,0 @@
-[submodule "submodules/BalaM314"]
-	path = submodules/BalaM314
-	url = https://github.com/BalaM314/mlog
-[submodule "submodules/mlogx"]
-	path = submodules/mlogx
-	url = https://github.com/BalaM314/mlogx
-[submodule "submodules/Gewi"]
-	path = submodules/Gewi
-	url = https://github.com/Gewi413/mindustry-logic/
