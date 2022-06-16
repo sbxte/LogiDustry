@@ -22,10 +22,10 @@ ucontrol move cx cy
 ucontrol itemTake core @blast-compound 999
 sensor item @unit @firstItem
 jump 0 notEqual item 0
+ucontrol itemTake core @thorium 999
+jump 0 notEqual item 0
 ucontrol itemTake core @pyratite 999
 sensor item @unit @firstItem
-jump 0 notEqual item 0
-ucontrol itemTake core @thorium 999
 end
 
 print "Suicide Bomber Logic v1.0 by SBytes"
