@@ -286,9 +286,7 @@ op add need6P need6P need5P
 
 
 
-# Re-locate core building (incase there exists a closer one)
-ulocate building core 0 0 coreX coreY 0 core
-
+# Re-calculate core building (incase there exists a closer one)
 sensor coreSize core @size
 jump coreSize_skip equal coreSize cachedCoreSize # Check for core size
     set cachedCoreSize coreSize                  # Recalculate approach and within radius if necessary
@@ -566,6 +564,7 @@ ctrlLoop:
                 op not unitTasks_bitSet unitTasks_bitSet 0
                 op and unitTasks unitTasks unitTasks_bitSet 0
             jump ctrl_markCalcItemDist greaterThan unitItemI need4P
+                ulocate building core 0 0 coreX coreY 0 core
                 ucontrol approach coreX coreY coreApproachRadius
             jump ctrl_markCalcItemDist always 0
 
@@ -627,6 +626,7 @@ ctrlLoop:
                 op and unitTasks unitTasks unitTasks_bitSet 0
                 op shl unitTasks_bitSet 4 unitTaskI
                 op or unitTasks unitTasks unitTasks_bitSet
+            ulocate building core 0 0 coreX coreY 0 core
             ucontrol approach coreX coreY coreApproachRadius
             jump ctrl_markCalcItemDist always 0
 
