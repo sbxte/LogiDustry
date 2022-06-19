@@ -304,6 +304,10 @@ set unitItemI unitItemHalfStep
 # -------------------- Main Loop ---------------------
 
 ctrlLoop:
+    # Unbind if switch is disabled              # Pray this does not slow everything down significantly
+    sensor switch switch1 @enabled              # Because its 2 instructions being run alllllll the time. 
+    jump unbind strictEqual switch false
+
     # ------------------- Unit selection -------------------
 
     # Bind a unit from the array
