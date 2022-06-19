@@ -305,7 +305,7 @@ set unitItemI unitItemHalfStep
 
 ctrlLoop:
     # Unbind if switch is disabled              # Pray this does not slow everything down significantly
-    sensor switch switch1 @enabled              # Because its 2 instructions being run alllllll the time. 
+    sensor switch switch1 @enabled              # Because its 2 instructions being run alllllll the time.
     jump unbind strictEqual switch false
 
     # ------------------- Unit selection -------------------
@@ -348,16 +348,20 @@ ctrlLoop:
         # Bind new unit
         bind:
 
-        op shl unitsCalcItemDist_bitSel 1 unitIndex                        # make sure to mark them as dropTaken
-        op or unitsCalcItemDist unitsCalcItemDist unitsCalcItemDist_bitSel       # or else they might get stuck
+
+        op sub unitCounter unitCounter 1  # decrement amount of units for calc cache
+        # op shl unitsCalcItemDist_bitSel 1 unitIndex                        # make sure to mark them as dropTaken
+        # op or unitsCalcItemDist unitsCalcItemDist unitsCalcItemDist_bitSel       # or else they might get stuck
 
         op add bindTillTime @time 333 # 5 / 120 * 1e3 * 8
         bind_loop:
-            jump bind_decCounter greaterThanEq @time bindTillTime # to not waste time on a single unit
+            jump ctrl_end greaterThanEq @time bindTillTime # to not waste time on a single unit
             ubind unitType
             jump ctrl_end equal @unit null
             sensor unitFlag @unit @flag
             jump bind_loop notEqual unitFlag 0
+            sensor unitCtrld @unit @controlled
+            jump bind_loop greaterThanEq unitCtrld 2 # player check
 
         # Set flag and stop whatever the unit was doing
         ucontrol stop
@@ -407,18 +411,13 @@ ctrlLoop:
                 ulocate building core 0 0 coreX coreY 0 core
                 ucontrol itemDrop core 999
                 ucontrol approach coreX coreY coreApproachRadius
-                jump bind_decCounter always 0
+                jump ctrl_end always 0
             bind_clearItems_skip:
                 # Bit hacking, clear the nth bit
                 op shl unwantedItems_bitSel 1 unitIndex
                 op not unwantedItems_bitSel unwantedItems_bitSel 0
                 op and unwantedItems unwantedItems unwantedItems_bitSel
                 jump bind_end always 0
-
-        # Decrement counted units
-        bind_decCounter:
-        op sub unitCounter unitCounter 1
-        jump ctrl_end always 0
     bind_end:
 
 
