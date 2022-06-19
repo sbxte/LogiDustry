@@ -22,8 +22,8 @@ with open(FILE_NAME, "r", errors="replace") as inFile:
 with open("output.txt", "w", errors="replace") as outFile:
     with open(FILE_NAME, "r", errors="replace") as inFile:
         for line in inFile:
-            if re.search(r"jump \d+", line):
-                search = re.search(r"jump (\d+) (.+)\s", line)
+            if re.search(r"^jump \d+", line):
+                search = re.search(r"^jump (\d+) (.+)\s", line)
                 replace = "jump "
                 replace += jumps.get(search.group(1))
                 replace += " "
