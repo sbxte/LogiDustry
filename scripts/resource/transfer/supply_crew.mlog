@@ -150,13 +150,13 @@ op sub destApproachRadius destWithinRadius  0.5
 
 start:
 
-# Check for new destination building
-getlink destination 0
-jump initDest notEqual destination cachedDest
-
 # Unbind if switch is disabled
 sensor switch switch1 @enabled
 jump unbind strictEqual switch false
+
+# Check for new destination building
+getlink destination 0
+jump initDest notEqual destination cachedDest
 
 # Reset unitsCalcItemDist
 set unitsCalcItemDist 0
