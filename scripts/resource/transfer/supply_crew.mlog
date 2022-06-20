@@ -72,10 +72,10 @@ set dropTake_maxAttempts 2
 # set unitAmount 9
 
 # set item1 @sand
-# set max1 50
-# set prio1 0.75
-# set item2 @lead
-# set max2 50
+# set max1 80
+# set prio1 0.8
+# set item2 @thorium
+# set max2 80
 # set prio2 0.75
 # set item3 null
 # set max3 0
@@ -84,7 +84,7 @@ set dropTake_maxAttempts 2
 # set max4 0
 # set prio4 0.75
 
-# set item5 @metaglass
+# set item5 @phase-fabric
 # set min1 0
 # set prio5 0.75
 # set item6 null
@@ -126,7 +126,7 @@ jump initCore_end lessThanEq minRes 0
 
     sensor coreSize core @size                   # Approach and within radius
     set cachedCoreSize coreSize
-    op mul coreWithinRadius 0.375 coreSize
+    op div coreWithinRadius coreSize 2
     op add coreWithinRadius 5.625 coreWithinRadius
     op sub coreApproachRadius coreWithinRadius 0.5
 initCore_end:
@@ -141,9 +141,9 @@ sensor destX destination @x          # Coordinates
 sensor destY destination @y
 
 sensor destSize destination @size  # Approach and within radius
-op mul destWithinRadius 0.375 destSize
+op div destWithinRadius destSize 2
 op add destWithinRadius 5.625 destWithinRadius
-op sub destApproachRadius destWithinRadius  0.5
+op sub destApproachRadius destWithinRadius 0.5
 
 
 # -------------------- Main Execution ---------------------
@@ -290,7 +290,7 @@ op add need6P need6P need5P
 sensor coreSize core @size
 jump coreSize_skip equal coreSize cachedCoreSize # Check for core size
     set cachedCoreSize coreSize                  # Recalculate approach and within radius if necessary
-    op mul coreWithinRadius 0.375 coreSize
+    op div coreWithinRadius coreSize 2
     op add coreWithinRadius 5.625 coreWithinRadius
     op sub coreApproachRadius coreWithinRadius 0.5
 coreSize_skip:
@@ -445,7 +445,7 @@ ctrlLoop:
     jump ctrl_Rtake equal unitTasks_bitSel 3
     # itemSel_retrieve:
     jump ctrl_drop equal unitTasks_bitSel 2
-    jump ctrl_take equal  unitTasks_bitSel 1
+    jump ctrl_take equal unitTasks_bitSel 1
     # itemSel_zero:
     jump ctrl_Rtake_set greaterThan unitItemI need4P
 
