@@ -1,0 +1,87 @@
+start:
+
+jump print_end lessThan @time printTimer
+    op add printTimer @time 3e3
+    op mul counterJump msgIndex 2
+    op add @counter @counter counterJump
+        print "[purple]Spectre MD Outpost v1.1\n[gray]> Improved phase & projector logic\n> Updated to Supply Crew v2.6.3"
+        jump print_continue always 0
+        print "[cyan]Defence made by\n[orange]Commanders[] & [pink]BigSpeck"
+        jump print_continue always 0
+        print "[cyan]Suggestions by\n[red]Yo, [green]SBytes, [yellow]The M"
+        jump print_continue always 0
+        print "[yellow]Phase, Projector, and Supply Crew Logic\n[cyan]by [green]SBytes"
+        # jump print_continue always 0
+    print_continue:
+    printflush message1
+    op add msgIndex msgIndex 1
+    op mod msgIndex msgIndex 4
+print_end:
+
+getlink turret1 0
+getlink turret2 0
+
+radar enemy any any distance turret1 1 enemy
+jump enable notEqual enemy null
+radar enemy any any distance turret2 1 enemy
+jump enable notEqual enemy null
+
+sensor mending projector4 @enabled
+jump enable_overdrive_only equal mending 1
+
+sensor thorium container1 @thorium
+jump enable_overdrive_only lessThan thorium 250
+
+disabled:
+    control enabled projector1 0
+    control enabled projector2 0
+    control enabled projector3 0
+    set cachedEnabled 0
+jump start always 0
+
+enable:
+    jump start equal cachedEnabled 1
+    control enabled projector1 1
+    control enabled projector2 1
+
+    sensor timescale projector4 @timescale
+    jump enable_overdrive notEqual timescale 2.5
+    sensor timescale projector5 @timescale
+    jump enable_overdrive notEqual timescale 2.5
+    sensor timescale projector1 @timescale
+    jump enable_overdrive notEqual timescale 2.5
+    sensor timescale projector2 @timescale
+    jump enable_overdrive notEqual timescale 2.5
+        control enabled projector3 0
+    jump start always 0
+    enable_overdrive:
+        control enabled projector3 1
+        set cachedEnabled 1
+jump start always 0
+
+enable_overdrive_only:
+    control enabled projector1 0
+    control enabled projector2 0
+
+    sensor timescale projector4 @timescale
+    jump enable_overdrive_only_check notEqual timescale 2.5
+    sensor timescale projector5 @timescale
+    jump enable_overdrive_only_check notEqual timescale 2.5
+    sensor timescale projector1 @timescale
+    jump enable_overdrive_only_check notEqual timescale 2.5
+    sensor timescale projector2 @timescale
+    jump enable_overdrive_only_check notEqual timescale 2.5
+        control enabled projector3 0
+    jump enable_overdrive_only_check_end always 0
+    enable_overdrive_only_check:
+        control enabled projector3 1
+    enable_overdrive_only_check_end:
+
+    jump start lessThan @time disableTimer
+    op add disableTimer @time 3e3
+    control enabled projector1 0
+    control enabled projector2 0
+jump start always 0
+
+
+print "Spectre Outpost Logic by SBytes"
