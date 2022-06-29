@@ -6,6 +6,14 @@ set unbound 0
 
 start:
 
+sensor config unloader1 @config
+jump config_not notEqual config @thorium
+    set maxDropIndex 7
+    jump config_end always 0
+config_not:
+    set maxDropIndex 5
+config_end:
+
 jump start_projector equal unbound 1
 
 sensor unitDead @unit @dead
@@ -103,12 +111,9 @@ jump itemdrop equal unitItem @phase-fabric
     ucontrol itemTake core @phase-fabric 999
     sensor unitItem @unit @firstItem
     jump start_projector notEqual unitItem @phase-fabric
-    set shouldDrop 0
     sensor prevUnitPhase @unit @phase-fabric
 
 itemdrop:
-
-jump drop equal shouldDrop 1
 
 op mul counterJump dropIndex 3
 op add @counter @counter counterJump
@@ -139,9 +144,7 @@ op add @counter @counter counterJump
     dropSel_7:
     jump drop_next equal projector7 null
     set dropTarget projector7
-    jump dropSel_end always 0
 dropSel_end:
-set shouldDrop 1
 
 drop:
 sensor dropX dropTarget @x
@@ -153,18 +156,17 @@ jump dropped greaterThanEq phase 10
 
 ucontrol itemDrop dropTarget 999
 sensor unitPhase @unit @phase-fabric
-jump drop_next equal unitPhase prevUnitPhase
+jump drop_end equal unitPhase prevUnitPhase
 
 dropped:
-set shouldDrop 0
 set prevUnitPhase unitPhase
 jump drop_next notEqual unitPhase 0
     ulocate building core 0 0 coreX coreY 0 core
     ucontrol approach coreX coreY coreApproachRadius
 drop_next:
 op add dropIndex dropIndex 1
-op mod dropIndex dropIndex 7
-
+op mod dropIndex dropIndex maxDropIndex
+drop_end:
 
 # Projector activation
 start_projector:
@@ -273,8 +275,16 @@ disabled:
     jump restart lessThan phase 10
     sensor phase projector4 @phase-fabric
     jump restart lessThan phase 10
-    sensor phase projector5 @phase-fabric
-    jump restart lessThan phase 10
+    # sensor phase projector5 @phase-fabric
+    # jump restart lessThan phase 10
+
+    sensor config unloader1 @config
+    jump fproj_check_end notEqual config @thorium
+        sensor phase projector6 @phase-fabric
+        jump restart lessThan phase 10
+        sensor phase projector7 @phase-fabric
+        jump restart lessThan phase 10
+    fproj_check_end:
 
 
     jump unbindTimerStart_end equal unbindTimerStart 1
