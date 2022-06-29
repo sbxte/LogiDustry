@@ -1,9 +1,10 @@
 op mul thisFlag @thisx @maph
 op add thisFlag thisFlag @thisy
 
-start:
+restart:
+set unbound 0
 
-start_unit:
+start:
 
 jump start_projector equal unbound 1
 
@@ -111,24 +112,31 @@ jump drop equal shouldDrop 1
 
 op mul counterJump dropIndex 3
 op add @counter @counter counterJump
-    jump drop_next equal projector1 null
+    dropSel_1:
+    jump dropSel_2 equal projector1 null
     set dropTarget projector1
     jump dropSel_end always 0
-    jump drop_next equal projector2 null
+    dropSel_2:
+    jump dropSel_3 equal projector2 null
     set dropTarget projector2
     jump dropSel_end always 0
-    jump drop_next equal projector3 null
+    dropSel_3:
+    jump dropSel_4 equal projector3 null
     set dropTarget projector3
     jump dropSel_end always 0
-    jump drop_next equal projector4 null
+    dropSel_4:
+    jump dropSel_5 equal projector4 null
     set dropTarget projector4
     jump dropSel_end always 0
-    jump drop_next equal projector5 null
+    dropSel_5:
+    jump dropSel_6 equal projector5 null
     set dropTarget projector5
     jump dropSel_end always 0
-    jump drop_next equal projector6 null
+    dropSel_6:
+    jump dropSel_7 equal projector6 null
     set dropTarget projector6
     jump dropSel_end always 0
+    dropSel_7:
     jump drop_next equal projector7 null
     set dropTarget projector7
     jump dropSel_end always 0
@@ -141,7 +149,7 @@ sensor dropY dropTarget @y
 
 ucontrol approach dropX dropY 6.5
 sensor phase dropTarget @phase-fabric
-jump dropped equal phase 10
+jump dropped greaterThanEq phase 10
 
 ucontrol itemDrop dropTarget 999
 sensor unitPhase @unit @phase-fabric
@@ -151,6 +159,7 @@ dropped:
 set shouldDrop 0
 set prevUnitPhase unitPhase
 jump drop_next notEqual unitPhase 0
+    ulocate building core 0 0 coreX coreY 0 core
     ucontrol approach coreX coreY coreApproachRadius
 drop_next:
 op add dropIndex dropIndex 1
@@ -256,17 +265,17 @@ disabled:
     control enabled projector4 0
     set cachedEnabled 0
 
-
     sensor phase projector1 @phase-fabric
-    jump start lessThan phase 10
+    jump restart lessThan phase 10
     sensor phase projector2 @phase-fabric
-    jump start lessThan phase 10
+    jump restart lessThan phase 10
     sensor phase projector3 @phase-fabric
-    jump start lessThan phase 10
+    jump restart lessThan phase 10
     sensor phase projector4 @phase-fabric
-    jump start lessThan phase 10
+    jump restart lessThan phase 10
     sensor phase projector5 @phase-fabric
-    jump start lessThan phase 10
+    jump restart lessThan phase 10
+
 
     jump unbindTimerStart_end equal unbindTimerStart 1
         set unbindTimerStart 1
