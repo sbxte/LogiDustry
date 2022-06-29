@@ -1,8 +1,6 @@
 op mul thisFlag @thisx @maph
 op add thisFlag thisFlag @thisy
 
-
-
 start:
 
 start_unit:
@@ -104,14 +102,12 @@ jump itemdrop equal unitItem @phase-fabric
     ucontrol itemTake core @phase-fabric 999
     sensor unitItem @unit @firstItem
     jump start_projector notEqual unitItem @phase-fabric
-    sensor unitPhase @unit @phase-fabric
-    set cachedUnitPhase -1
+    set shouldDrop 0
+    sensor prevUnitPhase @unit @phase-fabric
 
 itemdrop:
 
-sensor unitPhase @unit @phase-fabric
-jump drop equal unitPhase cachedUnitPhase
-set cachedUnitPhase unitPhase
+jump drop equal shouldDrop 1
 
 op mul counterJump dropIndex 3
 op add @counter @counter counterJump
@@ -137,21 +133,25 @@ op add @counter @counter counterJump
     set dropTarget projector7
     jump dropSel_end always 0
 dropSel_end:
+set shouldDrop 1
+
+drop:
 sensor dropX dropTarget @x
 sensor dropY dropTarget @y
 
 ucontrol approach dropX dropY 6.5
-
-drop:
 sensor phase dropTarget @phase-fabric
-jump drop_invalidate_cache equal phase 10
-ucontrol itemDrop dropTarget 999
-sensor unitItem @unit @firstItem
-jump drop_next notEqual unitItem null
-ucontrol approach coreX coreY coreApproachRadius
+jump dropped equal phase 10
 
-drop_invalidate_cache:
-set cachedUnitPhase -1
+ucontrol itemDrop dropTarget 999
+sensor unitPhase @unit @phase-fabric
+jump drop_next equal unitPhase prevUnitPhase
+
+dropped:
+set shouldDrop 0
+set prevUnitPhase unitPhase
+jump drop_next notEqual unitPhase 0
+    ucontrol approach coreX coreY coreApproachRadius
 drop_next:
 op add dropIndex dropIndex 1
 op mod dropIndex dropIndex 7
@@ -271,7 +271,7 @@ disabled:
     jump unbindTimerStart_end equal unbindTimerStart 1
         set unbindTimerStart 1
         op add unbindTimer @time 30e3
-        # op add unbindTimer @time 2e3 
+        # op add unbindTimer @time 2e3
     unbindTimerStart_end:
 
     jump start lessThan @time unbindTimer
