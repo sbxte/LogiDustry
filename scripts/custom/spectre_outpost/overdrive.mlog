@@ -4,7 +4,7 @@ start:
 jump print_end lessThan @time printTimer
     op add printTimer @time 4e3
     jump print_p2 equal msgIndex 1
-        print "[purple]Spectre MD Outpost v1.1.4\n[gray]> Improved phase & projector logic\n> Updated to Supply Crew v2.6.3\n\n[white]Set left  to  to enable  for \nSet right  to  to override\n  "
+        print "[purple]Spectre MD Outpost v1.1.4\n[gray]> Improved phase & projector logic\n> Updated to Supply Crew v2.6.3\n\n[white]Set left  to  to enable  for \nSet right  to  to override\n  "
         # print "[purple]Spectre MD Outpost v1.1.4\n[gray]> Improved phase & projector logic\n> Updated to Supply Crew v2.6.3"
     jump print_continue always 0
         print_p2:
@@ -14,8 +14,8 @@ jump print_end lessThan @time printTimer
     op xor msgIndex msgIndex 1
 print_end:
 
-sensor config gate1 @type
-jump enable equal config @underflow-gate
+sensor config sorter1 @config
+jump enable equal config @surge-alloy
 
 getlink fturret1 0
 getlink fturret2 0
