@@ -6,8 +6,8 @@ set unbound 0
 
 start:
 
-sensor config unloader1 @config
-jump config_not notEqual config @thorium
+sensor config gate1 @type
+jump config_not notEqual config @underflow-gate
     set maxDropIndex 7
     jump config_end always 0
 config_not:
@@ -166,6 +166,7 @@ jump drop_next notEqual unitPhase 0
 drop_next:
 op add dropIndex dropIndex 1
 op mod dropIndex dropIndex maxDropIndex
+# op mod dropIndex dropIndex 7
 drop_end:
 
 # Projector activation
