@@ -180,83 +180,83 @@ jump enable equal shielding 1
 jump enable equal wall1 null
 sensor maxHealth wall1 @maxHealth
 sensor health wall1 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall2 null
 # sensor maxHealth wall2 @maxHealth
 sensor health wall2 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall3 null
 # sensor maxHealth wall3 @maxHealth
 sensor health wall3 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall4 null
 # sensor maxHealth wall4 @maxHealth
 sensor health wall4 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall5 null
 # sensor maxHealth wall5 @maxHealth
 sensor health wall5 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall6 null
 # sensor maxHealth wall6 @maxHealth
 sensor health wall6 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall7 null
 # sensor maxHealth wall7 @maxHealth
 sensor health wall7 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall8 null
 # sensor maxHealth wall8 @maxHealth
 sensor health wall8 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall9 null
 # sensor maxHealth wall9 @maxHealth
 sensor health wall9 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall10 null
 # sensor maxHealth wall10 @maxHealth
 sensor health wall10 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall11 null
 # sensor maxHealth wall11 @maxHealth
 sensor health wall11 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall12 null
 sensor maxHealth wall12 @maxHealth
 sensor health wall12 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall13 null
 # sensor maxHealth wall13 @maxHealth
 sensor health wall13 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall14 null
 # sensor maxHealth wall14 @maxHealth
 sensor health wall14 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall15 null
 # sensor maxHealth wall15 @maxHealth
 sensor health wall15 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall16 null
 # sensor maxHealth wall16 @maxHealth
 sensor health wall16 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall17 null
 # sensor maxHealth wall17 @maxHealth
 sensor health wall17 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall18 null
 # sensor maxHealth wall18 @maxHealth
 sensor health wall18 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall19 null
 # sensor maxHealth wall19 @maxHealth
 sensor health wall19 @health
-jump enable notEqual  health maxHealth
+jump enable lessThan  health maxHealth
 jump enable equal wall20 null
 # sensor maxHealth wall20 @maxHealth
 sensor health wall20 @health
-jump enable notEqual health maxHealth
+jump enable lessThan health maxHealth
 
 disabled:
     jump start lessThan @time disableTimer
