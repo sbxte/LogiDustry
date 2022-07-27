@@ -1,0 +1,18 @@
+{
+	"name": "Spectre Outpost",
+	"authors": [
+		"SBytes"
+	],
+	"compilerOptions": {
+		"include": [],
+		"verbose": false,
+		"removeComments": true,
+		"compileWithErrors": true,
+		"mode": "single",
+		"prependFileName": true,
+		"checkTypes": true,
+		"removeUnusedJumpLabels": true,
+		"removeCompilerMark": false
+	},
+	"compilerConstants": {}
+}

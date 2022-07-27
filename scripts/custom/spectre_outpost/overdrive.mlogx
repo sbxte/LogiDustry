@@ -1,0 +1,86 @@
+start:
+
+
+jump print_end lessThan @time printTimer
+    op add printTimer @time 4e3
+    jump print_p2 equal msgIndex 1
+        print "[purple]Spectre MD Outpost v1.1.7\n[gray]> Improved phase & projector logic\n> Updated to Supply Crew v2.6.3\n\n[white]Set left $_inverted_sorter to $_surge_alloy to enable $_phase_fabric for $_overdrive_projector\nSet right $_inverted_sorter to $_surge_alloy to override\n$_mend_projector $_force_projector $_overdrive_projector"
+    jump print_continue
+        print_p2:
+        print "[cyan]Defence made by\n[orange]Commanders[] & [pink]BigSpeck\n\n[cyan]Helped by\n[red]Yo, [sky]Qwertynoob, [yellow]The M\n\n[cyan]Logic by [green]SBytes"
+    print_continue:
+    printflush message1
+    op xor msgIndex msgIndex 1
+print_end:
+
+sensor config sorter1 @config
+jump enable equal config @surge-alloy
+
+getlink fturret1 0
+getlink fturret2 0
+
+radar enemy any any distance fturret1 1 enemy
+jump enable notEqual enemy null
+radar enemy any any distance fturret2 1 enemy
+jump enable notEqual enemy null
+sensor fprogress1 fturret1 @progress
+jump enable notEqual fprogress1 fPrevProgress1
+sensor fprogress2 fturret2 @progress
+jump enable notEqual fprogress2 fPrevProgress2
+
+sensor mending projector4 @enabled
+jump enable_overdrive_only equal mending 1
+
+sensor thorium container1 @thorium
+jump enable_overdrive_only lessThan thorium 250
+
+disabled:
+    control enabled projector1 0
+    control enabled projector2 0
+    control enabled projector3 0
+    set cachedEnabled 0
+jump start
+
+enable:
+    set fPrevProgress1 fprogress1
+    set fPrevProgress2 fprogress2
+
+    jump start equal cachedEnabled 1
+    control enabled projector1 1
+    control enabled projector2 1
+
+    &for building of projector4 projector5 turret1 turret2 {
+        sensor timescale $building @timescale
+        jump enable_overdrive notEqual timescale 2.5
+    }
+    control enabled projector3 0
+    set cachedEnabled 0
+    jump start
+    enable_overdrive:
+        control enabled projector3 1
+        set cachedEnabled 1
+jump start
+
+enable_overdrive_only:
+    control enabled projector1 0
+    control enabled projector2 0
+
+    &for building of projector4 projector5 turret1 turret2 {
+        sensor timescale $building @timescale
+        jump enable_overdrive_only_check notEqual timescale 2.5
+    }
+        control enabled projector3 0
+    jump enable_overdrive_only_check_end
+    enable_overdrive_only_check:
+        control enabled projector3 1
+    enable_overdrive_only_check_end:
+    set cachedEnabled 0
+
+    jump start lessThan @time disableTimer
+    op add disableTimer @time 3e3
+    control enabled projector1 0
+    control enabled projector2 0
+jump start
+
+
+print "Spectre Outpost Logic by SBytes"
