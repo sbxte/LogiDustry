@@ -4,202 +4,175 @@ set prefUnit @mega
 print "--- Edit above ---"
 op mul thisFlag @thisx @maph
 op add thisFlag thisFlag @thisy
-
 restart:
 set unbound 0
-
 start:
-
 sensor config sorter1 @config
 jump config_not notEqual config @surge-alloy
-    set maxDropIndex 7
-    jump config_end always 0
+set maxDropIndex 7
+jump config_end always 0 0
 config_not:
-    set maxDropIndex 5
+set maxDropIndex 5
 config_end:
-
 jump start_projector equal unbound 1
-
 sensor unitDead @unit @dead
 jump bind equal unitDead 1
 sensor unitCtrlr @unit @controller
 jump bind notEqual unitCtrlr @this
 sensor unitFlag @unit @flag
 jump bind_end equal unitFlag thisFlag
-    bind:
-    bind_prefered:
-    ubind prefUnit
-    jump bind_flare equal @unit null
-    set anchorUnit @unit
-    bind_prefered_loop:
-        ubind prefUnit
-        jump bind_flare equal @unit anchorUnit
-        sensor anchorDead anchorUnit @dead
-        jump bind_prefered equal anchorDead 1
-        sensor unitFlag @unit @flag
-        jump bind_prefered_loop notEqual unitFlag 0
-        sensor unitCtrld @unit @controlled
-        jump bind_prefered_loop greaterThanEq unitCtrld 2
-        jump bind_continue always 0
-    bind_flare:
-    ubind @flare
-    jump bind_poly equal @unit null
-    set anchorUnit @unit
-    bind_flare_loop:
-        ubind @flare
-        jump bind_poly equal @unit anchorUnit
-        sensor anchorDead anchorUnit @dead
-        jump bind_flare equal anchorDead 1
-        sensor unitFlag @unit @flag
-        jump bind_flare_loop notEqual unitFlag 0
-        sensor unitCtrld @unit @controlled
-        jump bind_flare_loop greaterThanEq unitCtrld 2
-        jump bind_continue always 0
-    bind_poly:
-    ubind @poly
-    jump bind_mega equal @unit null
-    set anchorUnit @unit
-    bind_poly_loop:
-        ubind @poly
-        jump bind_mega equal @unit anchorUnit
-        sensor anchorDead anchorUnit @dead
-        jump bind_poly equal anchorDead 1
-        sensor unitFlag @unit @flag
-        jump bind_poly_loop notEqual unitFlag 0
-        sensor unitCtrld @unit @controlled
-        jump bind_poly_loop greaterThanEq unitCtrld 2
-        jump bind_continue always 0
-    bind_mega:
-    ubind @mega
-    jump bind_zenith equal @unit null
-    set anchorUnit @unit
-    bind_mega_loop:
-        ubind @mega
-        jump bind_zenith equal @unit anchorUnit
-        sensor anchorDead anchorUnit @dead
-        jump bind_mega equal anchorDead 1
-        sensor unitFlag @unit @flag
-        jump bind_mega_loop notEqual unitFlag 0
-        sensor unitCtrld @unit @controlled
-        jump bind_mega_loop greaterThanEq unitCtrld 2
-        jump bind_continue always 0
-    bind_zenith:
-    ubind @zenith
-    jump bind_prefered equal @unit null
-    set anchorUnit @unit
-    bind_zenith_loop:
-        ubind @zenith
-        jump bind_prefered equal @unit anchorUnit
-        sensor anchorDead anchorUnit @dead
-        jump bind_zenith equal anchorDead 1
-        sensor unitFlag @unit @flag
-        jump bind_zenith_loop notEqual unitFlag 0
-        sensor unitCtrld @unit @controlled
-        jump bind_zenith_loop greaterThanEq unitCtrld 2
-
-    bind_continue:
-    ucontrol stop
-    ucontrol flag thisFlag
-    ulocate building core 0 0 coreX coreY 0 core
-    ucontrol approach coreX coreY 7
+bind:
+bind_prefered:
+ubind prefUnit
+jump bind_flare equal @unit null
+set anchorUnit @unit
+bind_prefered_loop:
+ubind prefUnit
+jump bind_flare equal @unit anchorUnit
+sensor anchorDead anchorUnit @dead
+jump bind_prefered equal anchorDead 1
+sensor unitFlag @unit @flag
+jump bind_prefered_loop notEqual unitFlag 0
+sensor unitCtrld @unit @controlled
+jump bind_prefered_loop greaterThanEq unitCtrld 2
+jump bind_continue always 0 0
+bind_flare:
+ubind @flare
+jump no_flare equal @unit null
+set anchorUnit @unit
+bind_flare_loop:
+ubind @flare
+jump no_flare equal @unit anchorUnit
+sensor anchorDead anchorUnit @dead
+jump bind_flare equal anchorDead 1
+sensor unitFlag @unit @flag
+jump bind_flare_loop notEqual unitFlag 0
+sensor unitCtrld @unit @controlled
+jump bind_flare_loop greaterThanEq unitCtrld 2
+jump bind_continue always 0 0
+no_flare:
+bind_poly:
+ubind @poly
+jump no_poly equal @unit null
+set anchorUnit @unit
+bind_poly_loop:
+ubind @poly
+jump no_poly equal @unit anchorUnit
+sensor anchorDead anchorUnit @dead
+jump bind_poly equal anchorDead 1
+sensor unitFlag @unit @flag
+jump bind_poly_loop notEqual unitFlag 0
+sensor unitCtrld @unit @controlled
+jump bind_poly_loop greaterThanEq unitCtrld 2
+jump bind_continue always 0 0
+no_poly:
+bind_mega:
+ubind @mega
+jump no_mega equal @unit null
+set anchorUnit @unit
+bind_mega_loop:
+ubind @mega
+jump no_mega equal @unit anchorUnit
+sensor anchorDead anchorUnit @dead
+jump bind_mega equal anchorDead 1
+sensor unitFlag @unit @flag
+jump bind_mega_loop notEqual unitFlag 0
+sensor unitCtrld @unit @controlled
+jump bind_mega_loop greaterThanEq unitCtrld 2
+jump bind_continue always 0 0
+no_mega:
+bind_zenith:
+ubind @zenith
+jump no_zenith equal @unit null
+set anchorUnit @unit
+bind_zenith_loop:
+ubind @zenith
+jump no_zenith equal @unit anchorUnit
+sensor anchorDead anchorUnit @dead
+jump bind_zenith equal anchorDead 1
+sensor unitFlag @unit @flag
+jump bind_zenith_loop notEqual unitFlag 0
+sensor unitCtrld @unit @controlled
+jump bind_zenith_loop greaterThanEq unitCtrld 2
+jump bind_continue always 0 0
+no_zenith:
+jump bind_prefered_loop always 0 0
+bind_continue:
+ucontrol stop
+ucontrol flag thisFlag
+ulocate building core false _ coreX coreY _ core
+ucontrol approach coreX coreY 7
 bind_end:
-
-
-# Re-calculate core building (incase there exists a closer one)
-jump coreSize_skip equal core cachedCore # Check for cached core
-    set cachedCore core
-    sensor coreSize core @size
-    jump coreSize_skip equal coreSize cachedCoreSize # Check for core size
-        set cachedCoreSize coreSize                  # Recalculate approach and within radius if necessary
-        op div coreWithinRadius coreSize 2
-        op add coreWithinRadius 5.625 coreWithinRadius
-        op sub coreApproachRadius coreWithinRadius 0.5
+jump coreSize_skip equal core cachedCore
+set cachedCore core
+sensor coreSize core @size
+jump coreSize_skip equal coreSize cachedCoreSize
+set cachedCoreSize coreSize
+op div coreWithinRadius coreSize 2
+op add coreWithinRadius 5.625 coreWithinRadius
+op sub coreApproachRadius coreWithinRadius 0.5
 coreSize_skip:
-
-
 sensor unitItem @unit @firstItem
 jump itemdrop equal unitItem @phase-fabric
-
-    ucontrol approach coreX coreY coreApproachRadius
-    ucontrol within coreX coreY coreWithinRadius within
-    jump start_projector equal within 0
-
-    ucontrol itemDrop core 999
-    ucontrol itemTake core @phase-fabric 999
-    sensor unitItem @unit @firstItem
-    jump start_projector notEqual unitItem @phase-fabric
-    sensor prevUnitPhase @unit @phase-fabric
-
+ucontrol approach coreX coreY coreApproachRadius
+ucontrol within coreX coreY coreWithinRadius within
+jump start_projector equal within 0
+ucontrol itemDrop core 999
+ucontrol itemTake core @phase-fabric 999
+sensor unitItem @unit @firstItem
+jump start_projector notEqual unitItem @phase-fabric
+sensor prevUnitPhase @unit @phase-fabric
 itemdrop:
-
 op mul counterJump dropIndex 3
 op add @counter @counter counterJump
-    dropSel_1:
-    jump dropSel_2 equal projector1 null
-    set dropTarget projector1
-    jump dropSel_end always 0
-    dropSel_2:
-    jump dropSel_3 equal projector2 null
-    set dropTarget projector2
-    jump dropSel_end always 0
-    dropSel_3:
-    jump dropSel_4 equal projector3 null
-    set dropTarget projector3
-    jump dropSel_end always 0
-    dropSel_4:
-    jump dropSel_5 equal projector4 null
-    set dropTarget projector4
-    jump dropSel_end always 0
-    dropSel_5:
-    jump dropSel_6 equal projector5 null
-    set dropTarget projector5
-    jump dropSel_end always 0
-    dropSel_6:
-    jump dropSel_7 equal projector6 null
-    set dropTarget projector6
-    jump dropSel_end always 0
-    dropSel_7:
-    jump drop_next equal projector7 null
-    set dropTarget projector7
+jump dropSel_1 equal projector1 null
+set dropTarget projector1
+jump dropSel_end always 0 0
+dropSel_1:
+jump dropSel_2 equal projector2 null
+set dropTarget projector2
+jump dropSel_end always 0 0
+dropSel_2:
+jump dropSel_3 equal projector3 null
+set dropTarget projector3
+jump dropSel_end always 0 0
+dropSel_3:
+jump dropSel_4 equal projector4 null
+set dropTarget projector4
+jump dropSel_end always 0 0
+dropSel_4:
+jump dropSel_5 equal projector5 null
+set dropTarget projector5
+jump dropSel_end always 0 0
+dropSel_5:
+jump dropSel_6 equal projector6 null
+set dropTarget projector6
+jump dropSel_end always 0 0
+dropSel_6:
+jump dropSel_7 equal projector7 null
+set dropTarget projector7
+jump dropSel_end always 0 0
+dropSel_7:
+jump drop_next always 0 0
 dropSel_end:
-
-drop:
 sensor dropX dropTarget @x
 sensor dropY dropTarget @y
-
 ucontrol approach dropX dropY 6.5
 sensor phase dropTarget @phase-fabric
 jump dropped greaterThanEq phase 10
-
 ucontrol itemDrop dropTarget 999
 sensor unitPhase @unit @phase-fabric
 jump drop_end equal unitPhase prevUnitPhase
-
 dropped:
 set prevUnitPhase unitPhase
 jump drop_next notEqual unitPhase 0
-    ulocate building core 0 0 coreX coreY 0 core
-    ucontrol approach coreX coreY coreApproachRadius
+ulocate building core false _ coreX coreY _ core
+ucontrol approach coreX coreY coreApproachRadius
 drop_next:
 op add dropIndex dropIndex 1
 op mod dropIndex dropIndex maxDropIndex
-# op mod dropIndex dropIndex 7
 drop_end:
-
-
-
-
-
-
-
-
-
-# Projector activation
 start_projector:
-
-
-
-# Turret scan
 sensor t1Dead turret1 @dead
 sensor t2Dead turret2 @dead
 sensor t3Dead turret3 @dead
@@ -208,52 +181,48 @@ jump searchTurret equal t1Dead 1
 jump searchTurret equal t2Dead 1
 jump searchTurret equal t3Dead 1
 jump searchTurret_end equal t4Dead 0
-    searchTurret:
-    searchTurret_loop:
-        getlink block linkIndex
-        jump searchTurret_next equal block turret1
-        jump searchTurret_next equal block turret2
-        jump searchTurret_next equal block turret3
-        jump searchTurret_next equal block turret4
-        sensor blockAmmoCap block @ammoCapacity
-        jump searchTurret_next equal blockAmmoCap 0
-            jump searchTurret_t2 equal t1Dead 0
-                sensor turret1MaxHealth block @maxHealth
-                set turret1 block
-                set t1Dead 0
-                jump searchTurret_next always 0
-            searchTurret_t2:
-            jump searchTurret_t3 equal t2Dead 0
-                sensor turret2MaxHealth block @maxHealth
-                set turret2 block
-                set t2Dead 0
-                jump searchTurret_next always 0
-            searchTurret_t3:
-            jump searchTurret_t4 equal t3Dead 0
-                sensor turret3MaxHealth block @maxHealth
-                set turret3 block
-                set t3Dead 0
-                jump searchTurret_next always 0
-            searchTurret_t4:
-            jump searchTurret_next equal t4Dead 0
-                sensor turret4MaxHealth block @maxHealth
-                set turret4 block
-                set t4Dead 0
-        searchTurret_next:
-        op add linkIndex linkIndex 1
-    jump searchTurret_loop lessThan linkIndex @links
-    set linkIndex 0
+searchTurret:
+searchTurret_loop:
+getlink block linkIndex
+jump searchTurret_next equal block turret1
+jump searchTurret_next equal block turret2
+jump searchTurret_next equal block turret3
+jump searchTurret_next equal block turret4
+sensor blockAmmoCap block @ammoCapacity
+jump searchTurret_next equal blockAmmoCap 0
+jump turret1_searched equal t1Dead 0
+sensor turret1MaxHealth block @maxHealth
+set turret1 block
+set t1Dead 0
+jump searchTurret_next always 0 0
+turret1_searched:
+jump turret2_searched equal t2Dead 0
+sensor turret2MaxHealth block @maxHealth
+set turret2 block
+set t2Dead 0
+jump searchTurret_next always 0 0
+turret2_searched:
+jump turret3_searched equal t3Dead 0
+sensor turret3MaxHealth block @maxHealth
+set turret3 block
+set t3Dead 0
+jump searchTurret_next always 0 0
+turret3_searched:
+jump turret4_searched equal t4Dead 0
+sensor turret4MaxHealth block @maxHealth
+set turret4 block
+set t4Dead 0
+jump searchTurret_next always 0 0
+turret4_searched:
+searchTurret_next:
+op add linkIndex linkIndex 1
+jump searchTurret_loop lessThan linkIndex @links
+set linkIndex 0
 searchTurret_end:
-
-
-
-# Scanning for health
 sensor shielding projector6 @enabled
 jump enable equal shielding 1
 sensor shielding projector7 @enabled
 jump enable equal shielding 1
-
-# Spectre health check
 jump enable equal turret1 null
 sensor health turret1 @health
 jump enable lessThan health turret1MaxHealth
@@ -266,144 +235,112 @@ jump enable lessThan health turret3MaxHealth
 jump enable equal turret4 null
 sensor health turret4 @health
 jump enable lessThan health turret4MaxHealth
-
-# Wall health check
-jump enable equal wall1 null
 sensor maxHealth wall1 @maxHealth
+jump enable equal wall1 null
 sensor health wall1 @health
 jump enable lessThan health maxHealth
 jump enable equal wall2 null
-# sensor maxHealth wall2 @maxHealth
 sensor health wall2 @health
 jump enable lessThan health maxHealth
 jump enable equal wall3 null
-# sensor maxHealth wall3 @maxHealth
 sensor health wall3 @health
 jump enable lessThan health maxHealth
 jump enable equal wall4 null
-# sensor maxHealth wall4 @maxHealth
 sensor health wall4 @health
 jump enable lessThan health maxHealth
 jump enable equal wall5 null
-# sensor maxHealth wall5 @maxHealth
 sensor health wall5 @health
 jump enable lessThan health maxHealth
 jump enable equal wall6 null
-# sensor maxHealth wall6 @maxHealth
 sensor health wall6 @health
 jump enable lessThan health maxHealth
 jump enable equal wall7 null
-# sensor maxHealth wall7 @maxHealth
 sensor health wall7 @health
 jump enable lessThan health maxHealth
 jump enable equal wall8 null
-# sensor maxHealth wall8 @maxHealth
 sensor health wall8 @health
 jump enable lessThan health maxHealth
 jump enable equal wall9 null
-# sensor maxHealth wall9 @maxHealth
 sensor health wall9 @health
 jump enable lessThan health maxHealth
 jump enable equal wall10 null
-# sensor maxHealth wall10 @maxHealth
 sensor health wall10 @health
 jump enable lessThan health maxHealth
 jump enable equal wall11 null
-# sensor maxHealth wall11 @maxHealth
 sensor health wall11 @health
 jump enable lessThan health maxHealth
 jump enable equal wall12 null
-sensor maxHealth wall12 @maxHealth
 sensor health wall12 @health
 jump enable lessThan health maxHealth
 jump enable equal wall13 null
-# sensor maxHealth wall13 @maxHealth
 sensor health wall13 @health
 jump enable lessThan health maxHealth
 jump enable equal wall14 null
-# sensor maxHealth wall14 @maxHealth
 sensor health wall14 @health
 jump enable lessThan health maxHealth
 jump enable equal wall15 null
-# sensor maxHealth wall15 @maxHealth
 sensor health wall15 @health
 jump enable lessThan health maxHealth
 jump enable equal wall16 null
-# sensor maxHealth wall16 @maxHealth
 sensor health wall16 @health
 jump enable lessThan health maxHealth
 jump enable equal wall17 null
-# sensor maxHealth wall17 @maxHealth
 sensor health wall17 @health
 jump enable lessThan health maxHealth
 jump enable equal wall18 null
-# sensor maxHealth wall18 @maxHealth
 sensor health wall18 @health
 jump enable lessThan health maxHealth
 jump enable equal wall19 null
-# sensor maxHealth wall19 @maxHealth
 sensor health wall19 @health
-jump enable lessThan  health maxHealth
+jump enable lessThan health maxHealth
 jump enable equal wall20 null
-# sensor maxHealth wall20 @maxHealth
 sensor health wall20 @health
 jump enable lessThan health maxHealth
-
-disabled:
-    jump start lessThan @time disableTimer
-
-    op add disableTimer @time 3e3
-    control enabled projector1 0
-    control enabled projector2 0
-    control enabled projector3 0
-    control enabled projector4 0
-    set cachedEnabled 0
-
-    sensor phase projector1 @phase-fabric
-    jump restart lessThan phase 10
-    sensor phase projector2 @phase-fabric
-    jump restart lessThan phase 10
-    sensor phase projector3 @phase-fabric
-    jump restart lessThan phase 10
-    sensor phase projector4 @phase-fabric
-    jump restart lessThan phase 10
-    # sensor phase projector5 @phase-fabric
-    # jump restart lessThan phase 10
-
-    sensor config unloader1 @config
-    jump fproj_check_end notEqual config @thorium
-        sensor phase projector6 @phase-fabric
-        jump restart lessThan phase 10
-        sensor phase projector7 @phase-fabric
-        jump restart lessThan phase 10
-    fproj_check_end:
-
-
-    jump unbindTimerStart_end equal unbindTimerStart 1
-        set unbindTimerStart 1
-        op add unbindTimer @time 30e3
-        # op add unbindTimer @time 2e3
-    unbindTimerStart_end:
-
-    jump start lessThan @time unbindTimer
-        ulocate building core 0 0 coreX coreY 0 core
-        ucontrol move coreX coreY
-        ucontrol flag 0
-        ubind null
-        set unbindTimerStart 0
-        set unbound 1
-    jump start_projector always 0
-# jump start always 0
-
+jump start lessThan @time disableTimer
+op add disableTimer @time 3e3
+control enabled projector1 0
+control enabled projector2 0
+control enabled projector3 0
+control enabled projector4 0
+set cachedEnabled 0
+sensor phase projector1 @phase-fabric
+jump restart lessThan phase 10
+sensor phase projector2 @phase-fabric
+jump restart lessThan phase 10
+sensor phase projector3 @phase-fabric
+jump restart lessThan phase 10
+sensor phase projector4 @phase-fabric
+jump restart lessThan phase 10
+sensor config unloader1 @config
+jump fproj_check_end notEqual config @thorium
+sensor phase projector6 @phase-fabric
+jump restart lessThan phase 10
+sensor phase projector7 @phase-fabric
+jump restart lessThan phase 10
+fproj_check_end:
+jump unbindTimerStart_end equal unbindTimerStart 1
+set unbindTimerStart 1
+op add unbindTimer @time 30e3
+unbindTimerStart_end:
+jump start lessThan @time unbindTimer
+ulocate building core false _ coreX coreY _ core
+ucontrol move coreX coreY
+ucontrol flag 0
+ubind null
+set unbindTimerStart 0
+set unbound 1
+jump start_projector always 0 0
 enable:
-    jump start equal cachedEnabled 1
-    control enabled projector1 1
-    control enabled projector2 1
-    control enabled projector3 1
-    control enabled projector4 1
-    set unbindTimerStart 0
-    set unbound 0
-    set cachedEnabled 1
-jump start always 0
-
+jump start equal cachedEnabled 1
+control enabled projector1 1
+control enabled projector2 1
+control enabled projector3 1
+control enabled projector4 1
+set unbindTimerStart 0
+set unbound 0
+set cachedEnabled 1
+jump start always 0 0
 print "Spectre Outpost Logic by SBytes"
+end
+print "Made with mlogx"
+print "github.com/BalaM314/mlogx/"
