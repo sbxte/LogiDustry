@@ -1,3 +1,7 @@
+print "Set what prefered unit to use for feeding"
+print "Good speed and item capacity is better"
+set prefUnit @mega
+print "--- Edit above ---"
 op mul thisFlag @thisx @maph
 op add thisFlag thisFlag @thisy
 
@@ -23,6 +27,20 @@ jump bind notEqual unitCtrlr @this
 sensor unitFlag @unit @flag
 jump bind_end equal unitFlag thisFlag
     bind:
+    bind_prefered:
+    ubind prefUnit
+    jump bind_flare equal @unit null
+    set anchorUnit @unit
+    bind_prefered_loop:
+        ubind prefUnit
+        jump bind_flare equal @unit anchorUnit
+        sensor anchorDead anchorUnit @dead
+        jump bind_prefered equal anchorDead 1
+        sensor unitFlag @unit @flag
+        jump bind_prefered_loop notEqual unitFlag 0
+        sensor unitCtrld @unit @controlled
+        jump bind_prefered_loop greaterThanEq unitCtrld 2
+        jump bind_continue always 0
     bind_flare:
     ubind @flare
     jump bind_poly equal @unit null
@@ -67,18 +85,17 @@ jump bind_end equal unitFlag thisFlag
         jump bind_continue always 0
     bind_zenith:
     ubind @zenith
-    jump bind_flare equal @unit null
+    jump bind_prefered equal @unit null
     set anchorUnit @unit
     bind_zenith_loop:
         ubind @zenith
-        jump bind_flare equal @unit anchorUnit
+        jump bind_prefered equal @unit anchorUnit
         sensor anchorDead anchorUnit @dead
-        jump bind_flare equal anchorDead 1
+        jump bind_zenith equal anchorDead 1
         sensor unitFlag @unit @flag
         jump bind_zenith_loop notEqual unitFlag 0
         sensor unitCtrld @unit @controlled
         jump bind_zenith_loop greaterThanEq unitCtrld 2
-        jump bind_continue always 0
 
     bind_continue:
     ucontrol stop
@@ -169,14 +186,88 @@ op mod dropIndex dropIndex maxDropIndex
 # op mod dropIndex dropIndex 7
 drop_end:
 
+
+
+
+
+
+
+
+
 # Projector activation
 start_projector:
 
+
+
+# Turret scan
+sensor t1Dead turret1 @dead
+sensor t2Dead turret2 @dead
+sensor t3Dead turret3 @dead
+sensor t4Dead turret4 @dead
+jump searchTurret equal t1Dead 1
+jump searchTurret equal t2Dead 1
+jump searchTurret equal t3Dead 1
+jump searchTurret_end equal t4Dead 0
+    searchTurret:
+    searchTurret_loop:
+        getlink block linkIndex
+        jump searchTurret_next equal block turret1
+        jump searchTurret_next equal block turret2
+        jump searchTurret_next equal block turret3
+        jump searchTurret_next equal block turret4
+        sensor blockAmmoCap block @ammoCapacity
+        jump searchTurret_next equal blockAmmoCap 0
+            jump searchTurret_t2 equal t1Dead 0
+                sensor turret1MaxHealth block @maxHealth
+                set turret1 block
+                set t1Dead 0
+                jump searchTurret_next always 0
+            searchTurret_t2:
+            jump searchTurret_t3 equal t2Dead 0
+                sensor turret2MaxHealth block @maxHealth
+                set turret2 block
+                set t2Dead 0
+                jump searchTurret_next always 0
+            searchTurret_t3:
+            jump searchTurret_t4 equal t3Dead 0
+                sensor turret3MaxHealth block @maxHealth
+                set turret3 block
+                set t3Dead 0
+                jump searchTurret_next always 0
+            searchTurret_t4:
+            jump searchTurret_next equal t4Dead 0
+                sensor turret4MaxHealth block @maxHealth
+                set turret4 block
+                set t4Dead 0
+        searchTurret_next:
+        op add linkIndex linkIndex 1
+    jump searchTurret_loop lessThan linkIndex @links
+    set linkIndex 0
+searchTurret_end:
+
+
+
+# Scanning for health
 sensor shielding projector6 @enabled
 jump enable equal shielding 1
 sensor shielding projector7 @enabled
 jump enable equal shielding 1
 
+# Spectre health check
+jump enable equal turret1 null
+sensor health turret1 @health
+jump enable lessThan health turret1MaxHealth
+jump enable equal turret2 null
+sensor health turret2 @health
+jump enable lessThan health turret2MaxHealth
+jump enable equal turret3 null
+sensor health turret3 @health
+jump enable lessThan health turret3MaxHealth
+jump enable equal turret4 null
+sensor health turret4 @health
+jump enable lessThan health turret4MaxHealth
+
+# Wall health check
 jump enable equal wall1 null
 sensor maxHealth wall1 @maxHealth
 sensor health wall1 @health
