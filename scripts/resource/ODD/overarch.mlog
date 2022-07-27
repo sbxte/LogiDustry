@@ -4,7 +4,7 @@
 # Note to self: Make a transpiler, this is killing me.
 
 ## Some description in prints
-print "OverArch v0.3.7 by SBytes"
+print "OverArch v0.3.8 by SBytes"
 print "heavily inspired by Ultimate Dome Loader (thanks highfire1 :D)"
 
 ### Setup
@@ -21,9 +21,9 @@ set coreAppr 7
 
 # double units
 # unit 1 bind jump
-set U1_bind_jump 326
-set U21_bind_jump 625
-set U22_bind_jump 745
+set U1_bind_jump 328
+set U21_bind_jump 627
+set U22_bind_jump 747
 # shift -3 and
 
 
@@ -62,8 +62,10 @@ jump noDome equal domeDead 1
 
 sensor powerIn domeBlock @powerNetIn
 sensor powerOut domeBlock @powerNetOut
-jump setupNoPower lessThanEq powerIn powerOut
-
+jump hasPower lessThanEq powerIn powerOut
+    print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[#ff]Error: Dome unpowered!"
+    printflush messageBlock
+hasPower:
 
 jump S1_end equal domeBlock cachedDomeBlock
 
@@ -78,7 +80,7 @@ jump S1_end equal domeBlock cachedDomeBlock
 S1:
     set cachedDomeBlock domeBlock
     printflush messageBlock
-    print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Calculating distance..."
+    print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Calculating distance..."
     printflush messageBlock
 
 
@@ -93,7 +95,7 @@ S1:
 
     ## Bind a unit
     S1_bind:
-        print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Calculating distance. Binding new unit..."
+        print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Calculating distance. Binding new unit..."
         printflush messageBlock
 
         S1_bind_flare:
@@ -120,7 +122,7 @@ S1:
                 sensor unitCtrld @unit @controlled
                 jump S1_bind_flare_loop greaterThanEq unitCtrld 2 # player / formation ctrl
             S1_bind_flare_continue:
-            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a flare.\nResuming calculation..."
+            print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Bound a flare.\nResuming calculation..."
             printflush messageBlock
             jump S1_bind_continue always 0
 
@@ -148,7 +150,7 @@ S1:
                 sensor unitCtrld @unit @controlled
                 jump S1_bind_poly_loop greaterThanEq unitCtrld 2 # player / formation ctrl
             S1_bind_poly_continue:
-            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a poly.\nResuming calculation..."
+            print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Bound a poly.\nResuming calculation..."
             printflush messageBlock
             jump S1_bind_continue always 0
 
@@ -176,7 +178,7 @@ S1:
                 sensor unitCtrld @unit @controlled
                 jump S1_bind_mega_loop greaterThanEq unitCtrld 2 # player / formation ctrl
             S1_bind_mega_continue:
-            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a mega.\nResuming calculation..."
+            print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Bound a mega.\nResuming calculation..."
             printflush messageBlock
             jump S1_bind_continue always 0
 
@@ -204,7 +206,7 @@ S1:
                 sensor unitCtrld @unit @controlled
                 jump S1_bind_mono_loop greaterThanEq unitCtrld 2 # player / formation ctrl
             S1_bind_mono_continue:
-            print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Bound a mono.\nResuming calculation..."
+            print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Bound a mono.\nResuming calculation..."
             printflush messageBlock
             jump S1_bind_continue always 0
 
@@ -359,7 +361,7 @@ S1:
 
 
         # print
-        print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[teal]Distance calculated : "
+        print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[teal]Distance calculated : "
         op idiv distanceF distance 1e-2
         op div distanceF distanceF 1e2
         print distanceF
@@ -403,7 +405,7 @@ U1:
         U1_print:
         set printCycle 0
 
-        print "[sky]OverArch v0.3.7 [green]By SBytes\n[violet]Inspired by Ultimate Dome Loader"
+        print "[sky]OverArch v0.3.8 [green]By SBytes\n[violet]Inspired by Ultimate Dome Loader"
 
         # dome no power
         sensor powerIn domeBlock @powerNetIn
@@ -534,7 +536,7 @@ U1:
             set @counter U1_bind_jump
 
             U1_bind_flare:
-            set U1_bind_jump 346
+            set U1_bind_jump 348
             set unitType1 @flare
             op div unitRate1 distDomeRate 22.5
 
@@ -558,7 +560,7 @@ U1:
                 jump U1_bind_continue always 0
 
             U1_bind_poly:
-            set U1_bind_jump 366
+            set U1_bind_jump 368
             set unitType1 @poly
             op div unitRate1 distDomeRate 19.5
 
@@ -582,7 +584,7 @@ U1:
                 jump U1_bind_continue always 0
 
             U1_bind_mega:
-            set U1_bind_jump 386
+            set U1_bind_jump 388
             set unitType1 @mega
             op div unitRate1 distDomeRate 18.8
 
@@ -606,7 +608,7 @@ U1:
                 jump U1_bind_continue always 0
 
             U1_bind_mono:
-            set U1_bind_jump 326
+            set U1_bind_jump 328
             set unitType1 @mono
             op div unitRate1 distDomeRate 11.25
 
@@ -784,7 +786,7 @@ U2:
         U2_print:
         set printCycle 0
 
-        print "[sky]OverArch v0.3.7 [green]By SBytes\n[violet]Inspired by Ultimate Dome Loader"
+        print "[sky]OverArch v0.3.8 [green]By SBytes\n[violet]Inspired by Ultimate Dome Loader"
 
         # dome no power
         sensor powerIn domeBlock @powerNetIn
@@ -983,7 +985,7 @@ U2:
                 set @counter U21_bind_jump
 
                 U21_bind_flare:
-                set U21_bind_jump 645
+                set U21_bind_jump 647
                 set unitType1 @flare
                 set unitRate1 281.25 # 22.5 * 10 / 2 / 0.4
 
@@ -1007,7 +1009,7 @@ U2:
                     jump U21_bind_continue always 0
 
                 U21_bind_poly:
-                set U21_bind_jump 659
+                set U21_bind_jump 661
                 set unitType1 @poly
                 set unitRate1 243.75 # 19.5 * 10 / 2 / 0.4
 
@@ -1031,7 +1033,7 @@ U2:
                     jump U21_bind_continue always 0
 
                 U21_bind_mega:
-                set U21_bind_jump 685
+                set U21_bind_jump 687
                 set unitType1 @mega
                 set unitRate1 235 # 18.8 * 10 / 2 / 0.4
 
@@ -1055,7 +1057,7 @@ U2:
                     jump U21_bind_continue always 0
 
                 U21_bind_mono:
-                set U21_bind_jump 625 # be careful when replacing this one
+                set U21_bind_jump 627 # be careful when replacing this one
                 set unitType1 @mono
                 set unitRate1 140.625 # 11.25 * 10 / 2 / 0.4
 
@@ -1145,7 +1147,7 @@ U2:
                 set @counter U22_bind_jump
 
                 U22_bind_flare:
-                set U22_bind_jump 765
+                set U22_bind_jump 767
                 set unitType2 @flare
                 set unitRate2 281.25 # 22.5 * 10 / 2 / 0.4
 
@@ -1169,7 +1171,7 @@ U2:
                     jump U22_bind_continue always 0
 
                 U22_bind_poly:
-                set U22_bind_jump 785
+                set U22_bind_jump 787
                 set unitType2 @poly
                 set unitRate2 243.75 # 19.5 * 10 / 2 / 0.4
 
@@ -1193,7 +1195,7 @@ U2:
                     jump U22_bind_continue always 0
 
                 U22_bind_mega:
-                set U22_bind_jump 805
+                set U22_bind_jump 807
                 set unitType2 @mega
                 set unitRate2 235 # 18.8 * 10 / 2 / 0.4
 
@@ -1217,7 +1219,7 @@ U2:
                     jump U22_bind_continue always 0
 
                 U22_bind_mono:
-                set U22_bind_jump 745
+                set U22_bind_jump 747
                 set unitType2 @mono
                 set unitRate2 140.625 # 11.25 * 10 / 2 / 0.4
 
@@ -1285,18 +1287,11 @@ U2:
 jump U2 always 0
 
 
-### No power detected during setup/refresh blocks
-setupNoPower:
-    print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[#ff]Error: Dome unpowered!"
-    printflush messageBlock
-
-    jump unitIdle always 0
-
 ### No dome
 noDome:
     set printCycle printCycleMax # force print
 
-    print "[sky]OverArch v0.3.7 [green]By SBytes\n\n[#ff]Error: No linked dome found!"
+    print "[sky]OverArch v0.3.8 [green]By SBytes\n\n[#ff]Error: No linked dome found!"
     printflush messageBlock
 
 ## idle da units
@@ -1381,7 +1376,7 @@ unitIdle:
 jump refreshBlocks always 0
 
 ### Some end credits
-print "OverArch v0.3.7 by SBytes"
+print "OverArch v0.3.8 by SBytes"
 print "-------- Change logs --------"
 print "- Forgot to set bindingUnit1"
 print "- Stop unit actions after binding (to prevent issues like still mining)"
