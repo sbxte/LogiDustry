@@ -10,8 +10,8 @@ set unbound 0
 
 start:
 
-sensor config sorter1 @config
-jump config_not notEqual config @surge-alloy
+sensor config gate1 @type
+jump config_not notEqual config @underflow-gate
     set maxDropIndex 7
     jump config_end always 0
 config_not:
