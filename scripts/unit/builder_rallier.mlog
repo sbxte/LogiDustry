@@ -1,11 +1,15 @@
-print "Builder Rallier v1.1 by SBytes"
+print "Builder Rallier v1.2 by SBytes"
 print "Rallies 9 megas or polies around this processor"
 print "Null: Off (unbind)"
 print "Copper: Highest tier unit"
 print "Lead: Mega only"
 print "Metaglass: Poly only"
+print "Graphite: Quasar only"
+printflush message1
+print ""
+printflush message1
 
-# [sky]Builder Rallier v1.1
+# [sky]Builder Rallier v1.2
 # [green]by SBytes
 
 # [white]Rallies 9 megas or polies around this processor
@@ -18,12 +22,15 @@ print "Metaglass: Poly only"
 op mul thisFlag @thisx @maph
 op add thisFlag thisFlag @thisy
 
+# set maxIndex 9 # default
+
 start:
+print "[sky]Builder Rallier v1.2\n[green]by SBytes\n\n[white]Rallies megas/quasars/polys around this processor\n\n[gray] = Off (unbind)[]\n = Highest possible\n = \n = \n = "
+printflush message1
 
 sensor setting sorter1 @config
 jump disabled equal setting null
 jump disabled notEqual setting cachedSetting
-
 
 # Bind counter array
 op mul counterJump unitIndex 2
@@ -45,6 +52,10 @@ op add @counter @counter counterJump
     ubind unitRef8
     jump unitSel_end always 0
     ubind unitRef9
+    jump unitSel_end always 0
+    ubind unitRef10
+    jump unitSel_end always 0
+    ubind unitRef11
 unitSel_end:
 
 sensor unitFlag @unit @flag
@@ -56,6 +67,7 @@ jump bind_end equal unitDead 0 # dead unit
     bind:
 
     jump bind_poly equal setting @metaglass # metaglass setting = poly only
+    jump bind_quasar equal setting @graphite # graphite setting = quasar only
 
     bind_mega:
         ubind @mega
@@ -73,8 +85,7 @@ jump bind_end equal unitDead 0 # dead unit
             jump bind_continue always 0
     bind_mega_end:
 
-    jump nextUnit equal setting @lead # lead setting = mega only
-
+    jump nextUnit equal setting @lead
 
     bind_poly:
         ubind @poly
@@ -89,13 +100,36 @@ jump bind_end equal unitDead 0 # dead unit
             jump bind_poly_loop notEqual unitFlag 0
             sensor unitCtrl @unit @controlled
             jump bind_poly_loop greaterThanEq unitCtrl 2
+            set maxIndex 9
             jump bind_continue always 0
     bind_poly_end:
 
-    jump nextUnit equal setting @metaglass # metaglass setting = poly only
+    jump nextUnit equal setting @metaglass
+
+    bind_quasar:
+        ubind @quasar
+        jump bind_quasar_end equal @unit null
+        set anchorUnit @unit
+        bind_quasar_loop:
+            sensor anchorDead anchorUnit @dead
+            jump bind_quasar_end equal anchorDead 1
+            ubind @quasar
+            jump bind_quasar_end equal @unit anchorUnit
+            sensor unitFlag @unit @flag
+            jump bind_quasar_loop notEqual unitFlag 0
+            sensor unitCtrl @unit @controlled
+            jump bind_quasar_loop greaterThanEq unitCtrl 2
+            set maxIndex 11
+            jump bind_continue always 0
+    bind_quasar_end:
+
+    # jump nextUnit equal setting @graphite
+    jump nextUnit always 0 # no unit found
 
     bind_continue:
     ucontrol flag thisFlag
+    ucontrol stop # stops mining
+    ucontrol boost 1 # for flying ground
 
     # Set unit
     op add @counter @counter counterJump
@@ -116,6 +150,10 @@ jump bind_end equal unitDead 0 # dead unit
         set unitRef8 @unit
         jump unitSet_end always 0
         set unitRef9 @unit
+        jump unitSet_end always 0
+        set unitRef10 @unit
+        jump unitSet_end always 0
+        set unitRef11 @unit
     unitSet_end:
 bind_end:
 
@@ -124,7 +162,7 @@ ucontrol approach @thisx @thisy 5
 
 nextUnit:
 op add unitIndex unitIndex 1
-op mod unitIndex unitIndex 9
+op mod unitIndex unitIndex maxIndex
 
 jump start always 0
 
@@ -135,48 +173,76 @@ disabled:
 set cachedSetting setting
 
 ubind unitRef1
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef1 null
 
 ubind unitRef2
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef2 null
 
 ubind unitRef3
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef3 null
 
 ubind unitRef4
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef4 null
 
 ubind unitRef5
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef5 null
 
 ubind unitRef6
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef6 null
 
 ubind unitRef7
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef7 null
 
 ubind unitRef8
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef8 null
 
 ubind unitRef9
-jump start equal @unit null
+jump disable_next equal @unit null
 ucontrol flag 0
 set unitRef9 null
+
+# Quasars command limit 10 + 1 = 11
+ubind unitRef10
+jump disable_next equal @unit null
+ucontrol flag 0
+set unitRef10 null
+
+ubind unitRef11
+jump disable_next equal @unit null
+ucontrol flag 0
+set unitRef11 null
+
+disable_next:
+
+
+# Recalculate setting configurations
+sensor setting sorter1 @config
+jump maxIndex_11 equal setting @copper
+jump maxIndex_9 equal setting @lead
+jump maxIndex_9 equal setting @metaglass
+jump maxIndex_11 equal setting @graphite
+jump disabled always 0 # invalid setting
+maxIndex_9:
+    set maxIndex 9
+    jump maxIndex_end always 0
+maxIndex_11:
+    set maxIndex 11
+maxIndex_end:
 
 jump start always 0
